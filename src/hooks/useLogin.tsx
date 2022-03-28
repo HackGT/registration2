@@ -7,7 +7,7 @@ import { app } from "../util/firebase";
 const auth = getAuth(app);
 
 export const useLogin = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
 

@@ -34,7 +34,7 @@ export const useLogin = () => {
           }
         );
 
-        signInWithCustomToken(auth, response.data.customToken);
+        await signInWithCustomToken(auth, response.data.customToken);
         setLoggedIn(true);
         setLoading(false);
 

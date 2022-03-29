@@ -13,6 +13,9 @@ import { ColorModeSwitcher } from "./ColorModeSwitcher";
 import { Logo } from "./Logo";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 export const App = () => {
   const [loading, loggedIn] = useLogin();

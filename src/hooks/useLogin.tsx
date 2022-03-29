@@ -19,7 +19,7 @@ export const useLogin = () => {
       try {
         if (searchParams.get("idToken")) {
           await axios.post(
-            "https://users.api.hexlabs.org/auth/login",
+            "https://auth.api.hexlabs.org/auth/login",
             {
               idToken: searchParams.get("idToken"),
             },
@@ -28,7 +28,7 @@ export const useLogin = () => {
         }
 
         const response = await axios.get(
-          "https://users.api.hexlabs.org/auth/status",
+          "https://auth.api.hexlabs.org/auth/status",
           {
             withCredentials: true,
           }

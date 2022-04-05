@@ -19,18 +19,12 @@ export const useLogin = () => {
     const login = async () => {
       try {
         if (searchParams.get("idToken")) {
-          await axios.post(
-            "https://users.api.hexlabs.org/auth/login",
-            {
-              idToken: searchParams.get("idToken"),
-            },
-            { withCredentials: true }
-          );
+          await axios.post("https://auth.api.hexlabs.org/auth/login", {
+            idToken: searchParams.get("idToken"),
+          });
         }
 
-        const response = await axios.get("https://users.api.hexlabs.org/auth/status", {
-          withCredentials: true,
-        });
+        const response = await axios.get("https://auth.api.hexlabs.org/auth/status");
 
         await signInWithCustomToken(auth, response.data.customToken);
         setLoggedIn(true);

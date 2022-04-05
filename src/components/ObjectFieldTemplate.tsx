@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Divider } from "@chakra-ui/react";
 
-const FormFieldTemplate = (props: any) => (
+const ObjectFieldTemplate = (props: any) => (
   <Box>
     <Box fontSize="24px" marginY="5px">
       {props.title}
@@ -10,8 +10,9 @@ const FormFieldTemplate = (props: any) => (
     <Box fontSize="16px" marginY="15px">
       {props.description}
     </Box>
+    {console.log(props.properties)}
     {props.properties.map((element: any) => (
-      <Box key={element.content.title} fontWeight="bold" marginBottom="15px">
+      <Box key={element.content.key} marginBottom="15px">
         {element.content}
       </Box>
     ))}
@@ -19,4 +20,4 @@ const FormFieldTemplate = (props: any) => (
   </Box>
 );
 
-export default FormFieldTemplate;
+export default ObjectFieldTemplate;

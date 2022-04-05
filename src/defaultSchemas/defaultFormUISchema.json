@@ -9,15 +9,14 @@
   "email": {
     "ui:emptyValue": ""
   },
-  "age": {
-    "ui:widget": "updown"
-  },
   "phoneNumber": {
+    "ui:emptyValue": "",
     "ui:options": {
       "inputType": "tel"
     }
   },
-  "bio": {
-    "ui:widget": "textarea"
+  "year": {
+    "ui:emptyValue": "",
+    "ui:field": "select"
   }
 }

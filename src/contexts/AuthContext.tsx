@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useContext, createContext, useState, useMemo } from "react";
 import { getAuth, onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 
 import { app } from "../util/firebase";
@@ -21,6 +21,8 @@ const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
 
+  const value = useMemo(() => ({ user, loading }), [user, loading]);
+
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, firebaseUser => {
       console.log("AUTH STATE CHANGED!");
@@ -32,7 +34,7 @@ const AuthProvider: React.FC = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export { AuthProvider };

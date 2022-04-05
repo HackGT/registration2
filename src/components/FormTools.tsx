@@ -7,7 +7,8 @@ import defaultFormSchema from "../defaultSchemas/defaultFormSchema.json";
 import defaultFormUISchema from "../defaultSchemas/defaultFormUISchema.json";
 import defaultFormData from "../defaultSchemas/defaultFormData.json";
 import SchemaInput from "./SchemaInput";
-import FormFieldTemplate from "./FormFieldTemplate";
+import FormFieldTemplate from "./ObjectFieldTemplate";
+import SelectFieldTemplate from "./SelectFieldTemplate";
 
 const FormTools: React.FC<any> = (props: any) => {
   const [formSchema, setFormSchema] = useState(JSON.stringify(defaultFormSchema, null, 2));
@@ -50,8 +51,11 @@ const FormTools: React.FC<any> = (props: any) => {
           schema={JSON.parse(formSchema) as JSONSchema7}
           uiSchema={JSON.parse(formUISchema)}
           formData={JSON.parse(formData)}
-          onChange={(val: any, event: any) => setFormData(JSON.stringify(val.formData, null, 2))}
+          onChange={(val: any, event: any) => {
+            setFormData(JSON.stringify(val.formData, null, 2));
+          }}
           ObjectFieldTemplate={FormFieldTemplate}
+          fields={{ select: SelectFieldTemplate }}
         />
       </Box>
     </Box>

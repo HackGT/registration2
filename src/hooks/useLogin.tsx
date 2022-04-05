@@ -46,7 +46,7 @@ export const useLogin = () => {
     };
 
     login();
-  }, [searchParams]);
+  }, [searchParams, location.pathname, navigate]);
 
   return [loading, loggedIn];
 };

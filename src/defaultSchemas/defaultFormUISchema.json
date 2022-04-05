@@ -1,0 +1,22 @@
+{
+  "firstName": {
+    "ui:autofocus": true,
+    "ui:emptyValue": ""
+  },
+  "lastName": {
+    "ui:emptyValue": ""
+  },
+  "email": {
+    "ui:emptyValue": ""
+  },
+  "phoneNumber": {
+    "ui:emptyValue": "",
+    "ui:options": {
+      "inputType": "tel"
+    }
+  },
+  "year": {
+    "ui:emptyValue": "",
+    "ui:field": "select"
+  }
+}

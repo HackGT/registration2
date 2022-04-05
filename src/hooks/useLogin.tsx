@@ -2,6 +2,7 @@ import axios from "axios";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
 import { app } from "../util/firebase";
 
 const auth = getAuth(app);
@@ -23,9 +24,7 @@ export const useLogin = () => {
           });
         }
 
-        const response = await axios.get(
-          "https://auth.api.hexlabs.org/auth/status"
-        );
+        const response = await axios.get("https://auth.api.hexlabs.org/auth/status");
 
         await signInWithCustomToken(auth, response.data.customToken);
         setLoggedIn(true);
@@ -33,7 +32,7 @@ export const useLogin = () => {
 
         // Remove idToken from URL after we use it
         searchParams.delete("idToken");
-        navigate(location.pathname + "?" + searchParams.toString());
+        navigate(`${location.pathname}?${searchParams.toString()}`);
       } catch (err: any) {
         console.log(err.message);
         setLoading(false);
@@ -41,7 +40,7 @@ export const useLogin = () => {
     };
 
     login();
-  }, [searchParams]);
+  }, [searchParams, location.pathname, navigate]);
 
   return [loading, loggedIn];
 };

@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "title": "Registration Form",
+  "description": "A simple example of a registration form.",
+  "required": ["firstName", "lastName", "email"],
+  "properties": {
+    "firstName": { "type": "string", "title": "First Name" },
+    "lastName": { "type": "string", "title": "Last Name" },
+    "email": {
+      "type": "string",
+      "title": "Email",
+      "format": "email"
+    },
+    "phoneNumber": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "year": {
+      "type": "string",
+      "title": "Year",
+      "format": "year",
+      "enum": [
+        "First Year",
+        "Second Year",
+        "Third Year",
+        "Fourth Year",
+        "Fifth Year +",
+        "Graduate Student"
+      ]
+    }
+  }
+}

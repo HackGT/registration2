@@ -9,12 +9,11 @@
     "email": {
       "type": "string",
       "title": "Email",
-      "format": "emailAddressFormat"
+      "format": "email"
     },
     "phoneNumber": {
       "type": "string",
-      "title": "Phone Number",
-      "format": "phoneNumberFormat"
+      "title": "Phone Number"
     },
     "year": {
       "type": "string",

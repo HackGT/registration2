@@ -10,7 +10,6 @@ const ObjectFieldTemplate = (props: any) => (
     <Box fontSize="16px" marginY="15px">
       {props.description}
     </Box>
-    {console.log(props.properties)}
     {props.properties.map((element: any) => (
       <Box key={element.content.key} marginBottom="15px">
         {element.content}

@@ -30,7 +30,6 @@ const SelectFieldTemplate = (props: any) => {
           props.onChange(e.value);
         }}
       />
-      {console.log(props.formData.year)}
     </Box>
   );
 };

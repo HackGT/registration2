@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Heading, Text } from "@chakra-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 
 const Widget = ({ title }: { title: string }) => (
-  <Box boxShadow="lg" padding="24px 32px">
+  <Box
+    boxShadow={{
+      base: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    }}
+    padding="20px 32px"
+    borderRadius="4px"
+  >
     <Heading fontWeight={500} marginBottom="10px" size="md" color="#212121">
       {title}
     </Heading>
@@ -14,17 +20,18 @@ const Widget = ({ title }: { title: string }) => (
 );
 
 const Admin = () => (
-  <Flex flexDir="column" padding={{ base: "0", md: "48px 72px" }} gap="20px">
+  <Flex flexDir="column" padding={{ base: "0 0 8px 0", md: "32px 48px" }} gap="15px">
     <Flex
       flexDir={{ base: "column", md: "row" }}
       bgGradient={{ base: "linear(to-b, #33c2ff, #7b69ec)", md: "linear(to-r, #33c2ff, #7b69ec)" }}
-      boxShadow="lg"
+      boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
       alignItems="center"
       justifyContent="space-around"
+      marginBottom={{ base: "8px", md: "20px" }}
     >
       <Box
         color="white"
-        paddingY={{ base: "32px", md: "64px" }}
+        paddingY={{ base: "32px", md: "32px" }}
         paddingLeft={{ base: "16px", md: "64px" }}
         paddingRight={{ base: "16px", md: "0" }}
       >
@@ -57,16 +64,18 @@ const Admin = () => (
             },
             email: "test@hexlabs.org",
           })}
-          size={160}
+          size={140}
           bgColor="#b4c0fa"
         />
       </Box>
     </Flex>
-    <Widget title="Autoranker" />
-    <Widget title="Statistics" />
-    <Widget title="Applicants" />
-    <Widget title="Emailing" />
-    <Widget title="Internal Settings" />
+    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 8 }}>
+      <Widget title="Autoranker" />
+      <Widget title="Statistics" />
+      <Widget title="Applicants" />
+      <Widget title="Emailing" />
+      <Widget title="Internal Settings" />
+    </SimpleGrid>
   </Flex>
 );
 

@@ -3,30 +3,30 @@ import { Box, Container, Flex, Heading, Text } from "@chakra-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 
 const Widget = ({ title }: { title: string }) => (
-  <Box boxShadow="md" padding="30px">
-    <Heading fontWeight={500} marginBottom="10px" fontSize="28px">
+  <Box boxShadow="lg" padding="24px 32px">
+    <Heading fontWeight={500} marginBottom="10px" fontSize="24px" color="#212121">
       {title}
     </Heading>
-    <Text color="gray.400" fontSize="16px">
+    <Text color="#858585" fontSize="16px" fontWeight={400}>
       Short Description of Title
     </Text>
   </Box>
 );
 
 const Admin = () => (
-  <Flex flexDir="column" padding="30px" gap="20px">
+  <Flex flexDir="column" padding="48px 72px" gap="20px">
     <Flex
       flexDir="row"
-      bgGradient="linear(to-r, cyan.400, purple.500)"
+      bgGradient="linear(to-r, #33c2ff, #7b69ec)"
       boxShadow="md"
       alignItems="center"
-      justifyContent="space-between"
+      justifyContent="space-around"
     >
-      <Box color="white" paddingLeft="40px">
-        <Heading size="3xl">Welcome Back Noah!</Heading>
-        <Text fontSize="25px">
+      <Box color="white" paddingY="64px" paddingLeft="64px">
+        <Heading fontSize="64px">Welcome Back Noah!</Heading>
+        <Text fontSize="38px">
           We're happy to see that you're an{" "}
-          <Text as="span" color="purple.500">
+          <Text as="span" color="#4569e9">
             attending staff member.
           </Text>{" "}
           Make sure to scan the QR here while you're checking in!
@@ -40,6 +40,7 @@ const Admin = () => (
         padding="10px"
         bgColor="#b4c0fa"
         margin="40px"
+        marginRight="94px"
       >
         <QRCodeSVG
           value={JSON.stringify({

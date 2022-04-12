@@ -18,7 +18,7 @@ const Admin = () => (
     <Flex
       flexDir="row"
       bgGradient="linear(to-r, #33c2ff, #7b69ec)"
-      boxShadow="md"
+      boxShadow="lg"
       alignItems="center"
       justifyContent="space-around"
     >

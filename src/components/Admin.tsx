@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 const Widget = ({ title }: { title: string }) => (
   <Box boxShadow="lg" padding="24px 32px">
-    <Heading fontWeight={500} marginBottom="10px" size="lg" color="#212121">
+    <Heading fontWeight={500} marginBottom="10px" size="md" color="#212121">
       {title}
     </Heading>
     <Text color="#858585" fontSize="sm" fontWeight={400}>
@@ -28,7 +28,7 @@ const Admin = () => (
         paddingLeft={{ base: "16px", md: "64px" }}
         paddingRight={{ base: "16px", md: "0" }}
       >
-        <Heading size="3xl">Welcome Back Noah!</Heading>
+        <Heading size="2xl">Welcome Back Noah!</Heading>
         <Text fontSize="lg">
           We're happy to see that you're an{" "}
           <Text as="span" color="#4569e9">
@@ -44,7 +44,7 @@ const Admin = () => (
         borderRadius="3xl"
         padding="10px"
         bgColor="#b4c0fa"
-        marginY={{ md: "40px" }}
+        marginY={{ md: "20px" }}
         marginBottom={{ base: "40px" }}
         marginX={{ base: "auto", md: "64px" }}
       >
@@ -57,7 +57,7 @@ const Admin = () => (
             },
             email: "test@hexlabs.org",
           })}
-          size={200}
+          size={160}
           bgColor="#b4c0fa"
         />
       </Box>

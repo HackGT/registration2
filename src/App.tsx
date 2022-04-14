@@ -5,6 +5,8 @@ import axios from "axios";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
 import FormTools from "./components/FormTools";
+import UserInfoTable from "./components/UserInfoTable"
+
 
 axios.defaults.withCredentials = true;
 
@@ -24,7 +26,10 @@ export const App = () => {
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <FormTools />
+        <UserInfoTable/>
+
       </AuthProvider>
+
     </ChakraProvider>
   );
 };

@@ -1,11 +1,10 @@
-import React from "react";
+import React from 'react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import axios from "axios";
-
+import Admin from "./components/Admin";
 import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
-import FormTools from "./components/FormTools";
-import Admin from "./components/Admin";
 
 axios.defaults.withCredentials = true;
 
@@ -20,12 +19,12 @@ export const App = () => {
     window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
     return <h1>Loading...</h1>;
   }
-
   return (
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <Admin />
-      </AuthProvider>
+        </AuthProvider>
     </ChakraProvider>
   );
 };
+

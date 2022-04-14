@@ -25,7 +25,8 @@
     "firebase": "^9.6.7",
     "framer-motion": "^4.0.0",
     "json-schema": "^0.4.0",
-    "rc-table": "^7.24.1",
+    "qrcode.react": "^3.0.1",
+
     "react": "^17.0.2",
     "react-bootstrap-table-next": "^4.0.3",
     "react-bootstrap-table-pro": "^0.0.5",

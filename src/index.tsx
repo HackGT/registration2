@@ -1,23 +1,22 @@
 import { ColorModeScript } from "@chakra-ui/react";
-import ReactDOM, { render } from "react-dom";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import * as React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
-import React, { Component }  from 'react';
 import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
-import User from './components/User';
 
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
     <Router>
-    <Route path='/' element={<User/>} />
-      <App />
+    <App />
     </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA

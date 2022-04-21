@@ -26,6 +26,10 @@
     "framer-motion": "^4.0.0",
     "json-schema": "^0.4.0",
     "qrcode.react": "^3.0.1",
+<<<<<<< HEAD
+=======
+
+>>>>>>> 25634d83a24ec6e7d18507c378d8d89a8d0103eb
     "react": "^17.0.2",
     "react-bootstrap-table-next": "^4.0.3",
     "react-bootstrap-table-pro": "^0.0.5",

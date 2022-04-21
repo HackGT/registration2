@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
   Table,
   Thead,
@@ -23,25 +23,56 @@ import {
 } from '@chakra-ui/react'
 
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
+import axios from 'axios'
+import { useAxios } from 'use-axios-client'
+
 
 const UserInfoTable: React.FC<any> = (props: any) => {
+  const [realData, realsetData] = React.useState(null);
+
+
   const [input, setInput] = React.useState('')
   const [filters, setFilters] = React.useState(['SETUP', 'LEARN']);
 
   const [search, setSearch] = React.useState('');
+  let count = 0;
+  /* const fetchData = () => axios.get('/applications')
+      .then((response:any)=> console.log(response.data))
+  */
+  useEffect(() => {
+    fetch("https://registration.api.hexlabs.org/applications")
+      .then(response => {
+        if (response.ok) {
+          count = Object.keys(response.json()).length;
+          return response.json();
+        }
+        throw response;
+      }).then(data => {
+        realsetData(data);
+      })
 
-  const names = ["Jane Doe","Mike Smith", "Random Person"]
-  const emails = ["janedoe@gmail.com", "mikey@gmail.com", "rando@gmail.com"]
-  const status = ["Accepted", "Status Pending", "Status Pending"]
+  }, [])
+
+  const names:any[] = []
+  const emails:any[] = []
+  const status:any[] = []
+
   const handleInputChange = (e: any) => {
+
     setInput(e.target.value)
     let i, x, j;
     const table = document.getElementById("table") as HTMLTableElement;
     j = 1;
+
     const { rows } = table;
     for (i = 1; i < rows.length; i ++) {
       table.deleteRow(i);
       i -= 1;
+    }
+    if (realData != null) {
+      for (i = 0; i < count; i ++) {
+        names.push(realData[i])
+      }
     }
 
     for (i = 1; i < names.length+1; i ++) {
@@ -56,27 +87,6 @@ const UserInfoTable: React.FC<any> = (props: any) => {
         j ++;
       }
     }
-    /*
-    for (i = 1; i < names.length+1; i ++) {
-      const r = table.insertRow(i);
-      const cell1 = r.insertCell(0);
-      const cell2 = r.insertCell(1);
-      const cell3 = r.insertCell(2);
-      cell1.innerHTML = names[i-1];
-      cell3.innerHTML = emails[i-1];
-      cell2.innerHTML = status[i-1];
-    }
-    for (i = 1; i < rows.length; i ++) {
-      const cellText = rows[i].cells[0].innerHTML.toLowerCase();
-      if (names[i-1].toLowerCase().startsWith(e.target.value.toLowerCase())) {
-        rows[i].cells[0].innerHTML = names[i-1];
-      } else {
-
-      }
-
-
-    }
-    */
 
 
   }
@@ -84,6 +94,7 @@ const UserInfoTable: React.FC<any> = (props: any) => {
 
   return (
   <div>
+
         <Input placeholder='Basic usage' id='inputText' value = {input} onChange={handleInputChange} />
           <Table variant='simple' id = 'table'>
             <TableCaption>Participant Registration</TableCaption>
@@ -94,23 +105,7 @@ const UserInfoTable: React.FC<any> = (props: any) => {
                 <Th>Status</Th>
               </Tr>
             </Thead>
-            <Tbody>
-              <Tr>
-                <Td>Jane Doe</Td>
-                <Td>janedoe@gmail.com</Td>
-                <Td>Accepted</Td>
-              </Tr>
-              <Tr>
-                <Td>Mike Smith</Td>
-                <Td>mikey@gmail.com</Td>
-                <Td>Status Pending</Td>
-              </Tr>
-              <Tr>
-                <Td>Random Person</Td>
-                <Td>rando@gmail.com</Td>
-                <Td>Status</Td>
-              </Tr>
-            </Tbody>
+
           </Table>
 
 

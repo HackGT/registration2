@@ -26,7 +26,17 @@ import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import axios from 'axios'
 import { useAxios } from 'use-axios-client'
 
-
+function rowSet(props:any) {
+    return (
+       <Tr>
+           <Td>
+              { props.name }
+           </Td>
+           <Td align="right">{ props.url }</Td>
+           <Td align="right">{ props.status }</Td>
+       </Tr>
+    )
+}
 const UserInfoTable: React.FC<any> = (props: any) => {
   const [realData, realsetData] = React.useState(null);
 
@@ -84,6 +94,13 @@ const UserInfoTable: React.FC<any> = (props: any) => {
         cell1.innerHTML = names[i-1];
         cell3.innerHTML = emails[i-1];
         cell2.innerHTML = status[i-1];
+        const temp = {
+          "name": names[i-1],
+          "status": status[i-1],
+          "url": emails[i-1]
+        }
+
+        rowSet(temp)
         j ++;
       }
     }
@@ -109,8 +126,8 @@ const UserInfoTable: React.FC<any> = (props: any) => {
           </Table>
 
 
-</div>
-)
+  </div>
+  )
 };
 
 export default UserInfoTable;

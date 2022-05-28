@@ -1,25 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Flex, SimpleGrid, Heading, Text } from "@chakra-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 
-const Widget = ({ title }: { title: string }) => (
-  <Box
-    boxShadow={{
-      base: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    }}
-    padding="20px 32px"
-    borderRadius="4px"
-  >
-    <Heading fontWeight={500} marginBottom="10px" size="md" color="#212121">
-      {title}
-    </Heading>
-    <Text color="#858585" fontSize="sm" fontWeight={400}>
-      Short Description of Title
-    </Text>
-  </Box>
-);
+import Widget from "./Widget";
 
-const Admin = () => (
+const Dashboard: React.FC = () => (
   <Flex flexDir="column" padding={{ base: "0 0 8px 0", md: "32px 48px" }} gap="15px">
     <Flex
       flexDir={{ base: "column", md: "row" }}
@@ -79,4 +64,4 @@ const Admin = () => (
   </Flex>
 );
 
-export default Admin;
+export default Dashboard;

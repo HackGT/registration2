@@ -5,9 +5,9 @@ import { Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
-import FormTools from "./components/FormTools";
-import Admin from "./components/Admin";
-import User from "./components/User";
+import FormPlayground from "./components/formPlayground/FormPlayground";
+import Admin from "./components/dashboard/Dashboard";
+import User from "./components/user/User";
 
 axios.defaults.withCredentials = true;
 
@@ -27,9 +27,10 @@ export const App = () => {
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Admin />} />
           <Route path="/user/:userId" element={<User />} />
+          <Route path="/form-playground" element={<FormPlayground />} />
         </Routes>
-        <Admin />
       </AuthProvider>
     </ChakraProvider>
   );

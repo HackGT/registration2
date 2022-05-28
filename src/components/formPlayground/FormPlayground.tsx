@@ -3,14 +3,14 @@ import { Box, Stack } from "@chakra-ui/react";
 import Form from "@rjsf/chakra-ui";
 import { JSONSchema7 } from "json-schema";
 
-import defaultFormSchema from "../defaultSchemas/defaultFormSchema.json";
-import defaultFormUISchema from "../defaultSchemas/defaultFormUISchema.json";
-import defaultFormData from "../defaultSchemas/defaultFormData.json";
+import defaultFormSchema from "./defaultSchemas/defaultFormSchema.json";
+import defaultFormUISchema from "./defaultSchemas/defaultFormUISchema.json";
+import defaultFormData from "./defaultSchemas/defaultFormData.json";
 import SchemaInput from "./SchemaInput";
-import FormFieldTemplate from "./ObjectFieldTemplate";
+import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 
-const FormTools: React.FC<any> = (props: any) => {
+const FormPlayground: React.FC = () => {
   const [formSchema, setFormSchema] = useState(JSON.stringify(defaultFormSchema, null, 2));
   const [formUISchema, setFormUISchema] = useState(JSON.stringify(defaultFormUISchema, null, 2));
   const [formData, setFormData] = useState(JSON.stringify(defaultFormData, null, 2));
@@ -54,7 +54,7 @@ const FormTools: React.FC<any> = (props: any) => {
           onChange={(val: any, event: any) => {
             setFormData(JSON.stringify(val.formData, null, 2));
           }}
-          ObjectFieldTemplate={FormFieldTemplate}
+          ObjectFieldTemplate={ObjectFieldTemplate}
           fields={{ select: SelectFieldTemplate }}
         />
       </Box>
@@ -62,4 +62,4 @@ const FormTools: React.FC<any> = (props: any) => {
   );
 };
 
-export default FormTools;
+export default FormPlayground;

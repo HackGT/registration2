@@ -8,6 +8,7 @@ import { useLogin } from "./hooks/useLogin";
 import FormPlayground from "./components/formPlayground/FormPlayground";
 import Admin from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
+import EmailScreen from "./components/emailScreen/EmailScreen";
 
 axios.defaults.withCredentials = true;
 
@@ -30,6 +31,7 @@ export const App = () => {
           <Route path="/" element={<Admin />} />
           <Route path="/user/:userId" element={<User />} />
           <Route path="/form-playground" element={<FormPlayground />} />
+          <Route path="/email" element={<EmailScreen />} />
         </Routes>
       </AuthProvider>
     </ChakraProvider>

@@ -2,7 +2,6 @@ import React from "react";
 import {
   Box,
   Heading,
-  Text,
   Textarea,
   Button,
   Tabs,
@@ -12,7 +11,12 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Wrap,
+  WrapItem,
+  Stack,
 } from "@chakra-ui/react";
+
+import EmailContent from "./EmailContent";
 
 const EmailScreen: React.FC = () => (
   <>
@@ -23,44 +27,54 @@ const EmailScreen: React.FC = () => (
       paddingRight={{ base: "16px", md: "0" }}
     >
       <Heading size="2xl">Send a Batch Email</Heading>
-      <Text fontSize="lg">test text</Text>
     </Box>
 
-    {/* left side */}
-    <Box>
-      <Select placeholder="Select Recipient">
-        <option value="participants">Participants</option>
-        <option value="sponsors">Sponsors</option>
-        <option value="mentors">Mentors</option>
-      </Select>
+    <Wrap
+      paddingY={{ base: "32px", md: "32px" }}
+      paddingLeft={{ base: "16px", md: "64px" }}
+      paddingRight={{ base: "16px", md: "0" }}
+    >
+      {/* left side */}
+      <WrapItem width="45%">
+        <Stack width="100%">
+          <Select placeholder="Select Recipient">
+            <option value="participants">Participants</option>
+            <option value="sponsors">Sponsors</option>
+            <option value="mentors">Mentors</option>
+          </Select>
 
-      <Input placeholder="Subject" />
+          <Input placeholder="Subject" />
 
-      <Textarea placeholder="Email Content..." />
-      <Button colorScheme="purple">Send</Button>
-    </Box>
+          <Textarea placeholder="Email Content..." h="50vh" />
+          <Button colorScheme="purple">Send</Button>
+        </Stack>
+      </WrapItem>
 
-    {/* right side */}
-    <Box>
-      <Tabs variant="enclosed">
-        <TabList>
-          <Tab>Format Guide</Tab>
-          <Tab>Email Log</Tab>
-          <Tab>Preview</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <p>format guide...</p>
-          </TabPanel>
-          <TabPanel>
-            <p>email log...</p>
-          </TabPanel>
-          <TabPanel>
-            <p>preview...</p>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Box>
+      {/* right side */}
+      <WrapItem width="45%">
+        <Tabs variant="soft-rounded" colorScheme="purple" width="100%">
+          <TabList>
+            <Tab>Format Guide</Tab>
+            <Tab>Email Log</Tab>
+            <Tab>Preview</Tab>
+          </TabList>
+          <TabPanels shadow="md">
+            <TabPanel>
+              <EmailContent
+                heading="HTML & Variable Considerations"
+                content="format guide content..."
+              />
+            </TabPanel>
+            <TabPanel>
+              <EmailContent heading="Email Log" content="content..." />
+            </TabPanel>
+            <TabPanel>
+              <EmailContent heading="Preview" content="preview content..." />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </WrapItem>
+    </Wrap>
   </>
 );
 

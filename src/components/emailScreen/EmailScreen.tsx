@@ -33,8 +33,9 @@ const EmailScreen: React.FC = () => (
       paddingY={{ base: "32px", md: "32px" }}
       paddingLeft={{ base: "16px", md: "64px" }}
       paddingRight={{ base: "16px", md: "0" }}
+      spacing="30px"
     >
-      {/* left side */}
+      {/* left panel */}
       <WrapItem width="45%">
         <Stack width="100%">
           <Select placeholder="Select Recipient">
@@ -50,7 +51,7 @@ const EmailScreen: React.FC = () => (
         </Stack>
       </WrapItem>
 
-      {/* right side */}
+      {/* right panel */}
       <WrapItem width="45%">
         <Tabs variant="soft-rounded" colorScheme="purple" width="100%">
           <TabList>

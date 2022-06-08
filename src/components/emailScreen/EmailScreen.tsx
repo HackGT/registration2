@@ -36,7 +36,7 @@ const EmailScreen: React.FC = () => (
       spacing="30px"
     >
       {/* left panel */}
-      <WrapItem width="45%">
+      <WrapItem width={{ base: "100%", md: "45%" }}>
         <Stack width="100%">
           <Select placeholder="Select Recipient">
             <option value="participants">Participants</option>
@@ -52,14 +52,14 @@ const EmailScreen: React.FC = () => (
       </WrapItem>
 
       {/* right panel */}
-      <WrapItem width="45%">
+      <WrapItem width={{ base: "100%", md: "45%" }}>
         <Tabs variant="soft-rounded" colorScheme="purple" width="100%">
           <TabList>
             <Tab>Format Guide</Tab>
             <Tab>Email Log</Tab>
             <Tab>Preview</Tab>
           </TabList>
-          <TabPanels shadow="md">
+          <TabPanels shadow="md" borderRadius="md" mt={2}>
             <TabPanel>
               <EmailContent
                 heading="HTML & Variable Considerations"

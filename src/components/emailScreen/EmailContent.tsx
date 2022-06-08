@@ -7,7 +7,7 @@ interface Props {
 }
 
 const EmailContent: React.FC<Props> = props => (
-  <Box width="100%" height="59vh">
+  <Box width="100%" height="58vh">
     <Heading size="lg" paddingBottom={{ base: "8px" }}>
       {props.heading}
     </Heading>

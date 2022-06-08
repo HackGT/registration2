@@ -9,6 +9,7 @@ import FormPlayground from "./components/formPlayground/FormPlayground";
 import Admin from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import EmailScreen from "./components/emailScreen/EmailScreen";
+import SelectEvent from "./components/SelectEvent";
 
 axios.defaults.withCredentials = true;
 
@@ -28,10 +29,13 @@ export const App = () => {
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Admin />} />
-          <Route path="/user/:userId" element={<User />} />
-          <Route path="/form-playground" element={<FormPlayground />} />
-          <Route path="/email" element={<EmailScreen />} />
+          <Route path="/" element={<SelectEvent />} />
+          <Route path="/:hexathonId">
+            <Route path="" element={<Admin />} />
+            <Route path="user/:userId" element={<User />} />
+            <Route path="form-playground" element={<FormPlayground />} />
+            <Route path="email" element={<EmailScreen />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </ChakraProvider>

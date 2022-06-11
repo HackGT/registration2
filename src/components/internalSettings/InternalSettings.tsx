@@ -21,12 +21,10 @@ const InternalSettings: React.FC = () => {
     const getData = async () => {
       try {
         const res = await axios.get(`https://registration.api.hexlabs.org/applications/`);
-        console.log(res.data.length);
         const groupedData: Record<string, any> = {};
         for (const element of res.data) {
           if (element.hexathon === hexathonId) {
             const applicationBranchName = element.applicationBranch.name;
-            console.log(applicationBranchName);
             if (!groupedData[applicationBranchName]) {
               groupedData[applicationBranchName] = [];
             }
@@ -34,6 +32,7 @@ const InternalSettings: React.FC = () => {
           }
         }
         setApplicationDict(groupedData);
+
       } catch (e: any) {
         console.log(e.message);
       }
@@ -56,11 +55,12 @@ const InternalSettings: React.FC = () => {
             </h2>
             <AccordionPanel pb={4}>
               <Select placeholder="Recipient">
-                {/** need to display recipients for the current application branch, and based on selected recipient, set placeholders for open and close times */}
+                <option value="application">Application</option>
+                <option value="confirmation">Confirmation</option>
               </Select>
               <InputGroup>
-                <Input width="15rem" placeholder="Open Time" size="sm" />
-                <Input width="15rem" placeholder="Close Time" size="sm" />
+                <Input width="15rem" placeholder={applicationDict[applicationBranchName][0].applicationBranch.settings.open} size="sm" />
+                <Input width="15rem" placeholder={applicationDict[applicationBranchName][0].applicationBranch.settings.close} size="sm" />
               </InputGroup>
             </AccordionPanel>
           </AccordionItem>

@@ -10,6 +10,7 @@ import Admin from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
+import InternalSettings from "./components/internalSettings/InternalSettings";
 
 axios.defaults.withCredentials = true;
 
@@ -35,6 +36,7 @@ export const App = () => {
             <Route path="user/:userId" element={<User />} />
             <Route path="form-playground" element={<FormPlayground />} />
             <Route path="email" element={<EmailScreen />} />
+            <Route path="internal-settings" element={<InternalSettings />} />
           </Route>
         </Routes>
       </AuthProvider>

@@ -1,0 +1,69 @@
+{
+  "type": "object",
+  "title": "Welcome Noah Longhi!",
+  "description": "Enter quick note/disclaimer here, like ayo you gotta be a student at GT or u can turn your goofy flat ass around and attend your own hackathons preciate it, we boutta check em buzzcards during check in so you better watch it buddy or else",
+  "properties": {
+    "adult": {
+      "type": "string",
+      "title": "Are you over 18?",
+      "format": "adult",
+      "enum": [
+        "Yes",
+        "No"
+      ]
+    },
+    "phoneNumber": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "university": {
+      "type": "string",
+      "title": "University"
+    },
+    "email": {
+      "type": "string",
+      "title": "School Email",
+      "format": "email"
+    },
+    "year": {
+      "type": "string",
+      "title": "Year",
+      "format": "year",
+      "enum": [
+        "First Year",
+        "Second Year",
+        "Third Year",
+        "Fourth Year",
+        "Fifth Year +",
+        "Graduate Student"
+      ]
+    },
+    "gender": {
+      "type": "string",
+      "title": "Gender",
+      "format": "gender",
+      "enum": [
+        "Female",
+        "Male",
+        "Non-binary",
+        "Transgender",
+        "Intersex",
+        "Other",
+        "Prefer not to say"
+      ]
+    },
+    "race": {
+      "type": "string",
+      "title": "Race",
+      "format": "race",
+      "enum": [
+        "American Indian or Alaska Native",
+        "Asian",
+        "Black or African American",
+        "Native Hawaiian or Other Pacific Islander",
+        "White",
+        "Prefer not to say"
+      ]
+    }
+  }
+}

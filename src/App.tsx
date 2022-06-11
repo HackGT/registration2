@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
-import FormPlayground from "./components/formPlayground/FormPlayground";
+import FormPlayground from "./components/registration/Application";
 import Admin from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import EmailScreen from "./components/emailScreen/EmailScreen";
@@ -30,10 +30,10 @@ export const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<SelectEvent />} />
+          <Route path="form-playground" element={<FormPlayground />} />
           <Route path="/:hexathonId">
             <Route path="" element={<Admin />} />
             <Route path="user/:userId" element={<User />} />
-            <Route path="form-playground" element={<FormPlayground />} />
             <Route path="email" element={<EmailScreen />} />
           </Route>
         </Routes>

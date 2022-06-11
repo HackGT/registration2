@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "title": "Welcome Noah Longhi!",
+  "description": "Enter quick note/disclaimer here, like ayo you gotta be a student at GT or u can turn your goofy flat ass around and attend your own hackathons preciate it, we boutta check em buzzcards during check in so you better watch it buddy or else",
+  "extraInfo": "Hello there",
+  "properties": {
+    
+    "additional_information": {
+      "type": "string",
+      "title": "Additional Info here:"
+    }
+  }
+}

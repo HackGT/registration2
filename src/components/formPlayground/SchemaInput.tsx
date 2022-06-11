@@ -28,13 +28,15 @@ const SchemaInput: React.FC<Props> = (props: Props) => {
       borderRadius="3px"
       borderWidth="1px"
       {...style}
+      fontSize="20px"
     >
-      <Box paddingLeft="15px" paddingY="10px" height="44px" bg="#f5f5f5" borderTopRadius="3px">
+      <Box paddingLeft="15px" paddingY="10px" height="44px" bg="#f5f5f5" borderTopRadius="3px" fontSize="100px">
         {title}
       </Box>
       <Editor
         width="100%"
         height="353px"
+        
         value={schema}
         language="json"
         options={{

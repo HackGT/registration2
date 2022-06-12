@@ -30,11 +30,13 @@ export const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<SelectEvent />} />
+          <Route path="/:hexathonId">
             <Route path="" element={<Admin />} />
             <Route path="user/:userId" element={<User />} />
             <Route path="form-playground" element={<FormPlayground />} />
-            <Route path="/participant/:applicationId" element={<ParticipantIndividual />} />
+            <Route path="participant/:applicationId" element={<ParticipantIndividual />} />
             <Route path="email" element={<EmailScreen />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </ChakraProvider>

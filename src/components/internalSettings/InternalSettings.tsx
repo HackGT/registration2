@@ -12,7 +12,6 @@ const InternalSettings: React.FC = () => {
   const saveBranches = async () => {
     const promises: any[] = [];
     for (const branchId of Object.keys(branchDict)) {
-      console.log(branchDict[branchId])
       promises.push(
         axios.patch(
           `https://registration.api.hexlabs.org/branches/${branchId}`,

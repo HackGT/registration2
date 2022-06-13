@@ -1,71 +1,68 @@
 import React, { useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  Stack,
-  Input,
-  InputGroup,
-  Select,
-} from "@chakra-ui/react";
+import { Accordion, Button, Stack } from "@chakra-ui/react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
+import AccordionSection from "./AccordionSection";
+
 const InternalSettings: React.FC = () => {
-  const [applicationDict, setApplicationDict] = useState<Record<string, any>>({});
+  const [branches, setBranches] = useState<any[]>([]);
+  const [branchDict, setBranchDict] = useState<Record<string, any>>({});
   const { hexathonId } = useParams();
+  const saveBranches = async () => {
+    const promises: any[] = [];
+    for (const branchId of Object.keys(branchDict)) {
+      promises.push(
+        axios.patch(
+          `https://registration.api.hexlabs.org/branches/${branchId}`,
+          branchDict[branchId]
+        )
+      );
+    }
+    await Promise.all(promises);
+  };
   useEffect(() => {
     const getData = async () => {
       try {
         const res = await axios.get(`https://registration.api.hexlabs.org/applications/`);
-        const groupedData: Record<string, any> = {};
+        const allBranches: any[] = [];
         for (const element of res.data) {
           if (element.hexathon === hexathonId) {
             const applicationBranchName = element.applicationBranch.name;
-            if (!groupedData[applicationBranchName]) {
-              groupedData[applicationBranchName] = [];
+            if (element.confirmationBranch) {
+              const confirmationBranchName = element.confirmationBranch.name;
+              if (!allBranches.includes(confirmationBranchName)) {
+                allBranches.push(element.confirmationBranch);
+              }
             }
-            groupedData[applicationBranchName].push(element);
+            if (!allBranches.includes(applicationBranchName)) {
+              allBranches.push(element.applicationBranch);
+            }
           }
         }
-        setApplicationDict(groupedData);
-
+        setBranches(allBranches);
       } catch (e: any) {
         console.log(e.message);
       }
     };
     getData();
-  }, []);
+  }, [hexathonId]);
 
   return (
     <Stack>
       <Accordion>
-        {Object.keys(applicationDict).map((applicationBranchName: string) => (
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  {applicationBranchName}
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Select placeholder="Recipient">
-                <option value="application">Application</option>
-                <option value="confirmation">Confirmation</option>
-              </Select>
-              <InputGroup>
-                <Input width="15rem" placeholder={applicationDict[applicationBranchName][0].applicationBranch.settings.open} size="sm" />
-                <Input width="15rem" placeholder={applicationDict[applicationBranchName][0].applicationBranch.settings.close} size="sm" />
-              </InputGroup>
-            </AccordionPanel>
-          </AccordionItem>
+        {branches.map((branch: any) => (
+          <AccordionSection
+            {...branch}
+            setBranchDict={setBranchDict}
+            branchDict={branchDict}
+            id={branch._id}
+          />
         ))}
       </Accordion>
+      <Button colorScheme="purple" size="sm" width="80px" onClick={saveBranches}>
+        Save
+      </Button>
     </Stack>
   );
 };

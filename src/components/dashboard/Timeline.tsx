@@ -3,18 +3,23 @@ import { Stack, Box } from "@chakra-ui/react";
 
 import Hex from "./hex";
 
-const Timeline: React.FC<{events: string[]}> = (props: any) => (
+interface Props {
+  hexathons: any;
+  curHexathon: any;
+}
+
+const Timeline: React.FC<Props> = (props: any) => (
   <Stack
     margin="auto"
     direction={{ base: 'column', md: 'row' }}
     width={{ base: "300px", md: "100%" }}
-    height={{ base: props.events.length * 200, md: "200px" }}
+    height={{ base: `${props.hexathons.length * 200 + 120}px`, md: "220px" }}
     spacing="0"
     paddingY={{ base: "30px", md: 0 }}
   >
     {
-      props.events.map((event: string, index: number) => (
-        <React.Fragment key={event}>
+      props.hexathons.map((hexathon: any) => (
+        <React.Fragment key={hexathon.name}>
           <Box
             display="flex"
             flexDirection={{ base: 'row', md: 'column' }}
@@ -27,8 +32,8 @@ const Timeline: React.FC<{events: string[]}> = (props: any) => (
               className="hex"
               size={40}
               borderSize={6}
-              borderColor={index === 0 ? "#7B69EC" : "#E0E0E0"}
-              color={index === 0 ? "#7B69EC" : "white"}
+              borderColor={props.hexathon === props.curHexathon ? "#7B69EC" : "#E0E0E0"}
+              color={props.hexathon === props.curHexathon ? "#7B69EC" : "white"}
             />
             <Box
               width={{ base: "100%", md: "160%" }}
@@ -37,11 +42,11 @@ const Timeline: React.FC<{events: string[]}> = (props: any) => (
               marginLeft={{ base: "50px", md: "-30%" }}
               marginRight={{ base: "0", md: "-30%" }}
               textAlign="center"
-              color={index === 0 ? "#7B69EC" : "#E0E0E0"}
+              color={props.hexathon === props.curHexathon ? "#7B69EC" : "#E0E0E0"}
               fontSize="20px"
               fontWeight={500}
             >
-              {event}
+              {hexathon.name}
             </Box>
           </Box>
           <Box
@@ -53,8 +58,8 @@ const Timeline: React.FC<{events: string[]}> = (props: any) => (
             <Box
               width={{base: "6px", md: "100%"}}
               height={{base: "100%", md: "6px"}}
-              bg={index === 0 ? "" : "#E0E0E0"}
-              bgGradient={index === 0 ? { base: "linear(to-b, #7B69EC 50%, #E0E0E0 50%)", md: "linear(to-r, #7B69EC 50%, #E0E0E0 50%)" } : ""}
+              bg={props.hexathon === props.curHexathon ? "" : "#E0E0E0"}
+              bgGradient={props.hexathon === props.curHexathon ? { base: "linear(to-b, #7B69EC 50%, #E0E0E0 50%)", md: "linear(to-r, #7B69EC 50%, #E0E0E0 50%)" } : ""}
               verticalAlign="center"
             />
           </Box>
@@ -67,6 +72,7 @@ const Timeline: React.FC<{events: string[]}> = (props: any) => (
       maxWidth={{ base: "100%", md: "69.28px" }}
       maxHeight={76}
       paddingTop={{ base: 0, md:"60px" }}
+      marginX={(Object.keys(props.curHexathon).length === 0) ? "auto" : "0px"}
     >
       <Hex
         rotation={90}
@@ -76,11 +82,11 @@ const Timeline: React.FC<{events: string[]}> = (props: any) => (
         color="white"
       />
       <Box
-        width={{ base: "100%", md: "160%" }}
+        width={{ base: "100%", md: "200%" }}
         margin="auto"
         marginTop={{ md: "15px" }}
-        marginLeft={{ base: "50px", md: "-30%" }}
-        marginRight={{ base: "0", md: "-30%" }}
+        marginLeft={{ base: "50px", md: "-50%" }}
+        marginRight={{ base: "0", md: "-50%" }}
         textAlign="center"
         color="#E0E0E0"
         fontSize="20px"

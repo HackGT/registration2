@@ -11,6 +11,7 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>({});
   const [hexathons, setHexathons] = useState<any>([]);
+  const [curHexathon, setCurHexathon] = useState<any>({});
 
   useEffect(() => {
     const getDetails = async () => {
@@ -21,15 +22,24 @@ const Dashboard: React.FC = () => {
       setLoading(false);
     };
     const getHexathons = async () => {
+      const curDate = new Date();
       const res = await axios.get(
-        `https://hexathons.api.hexlabs.org/hexathons`
+        "http://hexathons.api.hexlabs.org/hexathons"
       );
-      setHexathons(res.data);
+      const filteredHexathons = res.data.filter((a: any) => (
+        (a.startDate <= curDate <= a.endDate) || (a.startDate >= curDate)
+      ))
+      const sortedHexathons = filteredHexathons.sort((a: any, b: any) => (
+        (a.startDate < b.startDate) ? -1 : 1
+      )).slice(0, 3);
+      setHexathons(sortedHexathons);
+      if (sortedHexathons.length > 0 && sortedHexathons[0].startDate <= curDate <= sortedHexathons[0].endDate) {
+        setCurHexathon(sortedHexathons[0]);
+      }
     };
-
     getDetails();
     getHexathons();
-  }, [hexathons, user?.uid]);
+  }, [curHexathon, hexathons, user?.uid]);
     
   if (loading) {
     return <Loading/>
@@ -39,7 +49,13 @@ const Dashboard: React.FC = () => {
     return <AdminDashboard profile={profile}/>;
   }
 
-  return <ParticipantDashboard profile={profile} hexathons={hexathons}/>;
+  return (
+    <ParticipantDashboard
+      profile={profile}
+      hexathons={hexathons}
+      curHexathon={curHexathon}
+    />
+  );
 }
 
 export default Dashboard;

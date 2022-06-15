@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Stack, Flex } from "@chakra-ui/react";
 import Form from "@rjsf/chakra-ui";
+import { JSONSchema7 } from "json-schema";
 
-import defaultEssaySchema from "./Essay_Schemas/defaultFormSchema.json";
-import defaultEssayUISchema from "./Essay_Schemas/defaultFormUISchema.json";
-import defaultEssayData from "./Essay_Schemas/defaultFormData.json";
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import axios from "axios";
@@ -13,16 +11,15 @@ axios.defaults.withCredentials = true;
 
 interface props {
   setFormPage: (value: number | ((prevVar: number) => number)) => void;
+  essayData: string;
+  setEssayData: React.Dispatch<React.SetStateAction<string>>;
   schema: string;
   uiSchema: string;
   applicationId: string;
 }
 
 
-const EssayPage = ({ setFormPage, schema, uiSchema, applicationId }: props) => {
-  const [formSchema, setFormSchema] = useState(JSON.stringify(defaultEssaySchema, null, 2));
-  const [formUISchema, setFormUISchema] = useState(JSON.stringify(defaultEssayUISchema, null, 2));
-  const [essayData, setEssayData] = useState(JSON.stringify(defaultEssayData, null, 2));
+const EssayPage = ({ setFormPage, essayData, setEssayData, schema, uiSchema, applicationId }: props) => {
 
   const saveEssayPage = async (nextPage: number) => {
     const response = await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/save-application-data`,
@@ -50,8 +47,8 @@ const EssayPage = ({ setFormPage, schema, uiSchema, applicationId }: props) => {
         direction="column"
       >
         <Form
-          schema={JSON.parse(formSchema)}
-          uiSchema={JSON.parse(formUISchema)}
+          schema={JSON.parse(schema)}
+          uiSchema={JSON.parse(uiSchema)}
           formData={JSON.parse(essayData)}
           onChange={(val: any, event: any) => {
             setEssayData(JSON.stringify(val.formData, null, 2));

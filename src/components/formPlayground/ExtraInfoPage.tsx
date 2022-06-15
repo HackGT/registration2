@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, ButtonGroup, Checkbox, Flex, Text, Stack, Divider, Textarea } from "@chakra-ui/react";
+
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
@@ -12,8 +13,7 @@ interface props {
 }
 
 const ExtraInfoPage = ({ setFormPage, setSubmit, branch, applicationId }: props) => {
-  const [extraInfoData, setExtraInfoData] = useState("");
-
+  const [extraInfoData, setExtraInfoData] = useState("")
   const rules = ["I have read and agree to the MLH Code of Conduct",
     "I agree to the HackGT Liability Waiver",
     "I agree to the HackGT Photo Release Waiver",

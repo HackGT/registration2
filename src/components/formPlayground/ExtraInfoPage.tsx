@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import { Box, Button, ButtonGroup, Checkbox, Flex, Text, Stack, Divider, Textarea } from "@chakra-ui/react";
-import Form from "@rjsf/chakra-ui";
+import axios from "axios";
 
-import defaultExtraInfoSchema from "./ExtraInfo_Schemas/defaultFormSchema.json"
-import defaultExtraInfoUISchema from "./ExtraInfo_Schemas/defaultFormUISchema.json"
-import ExtraInfoTemplate from "./ExtraInfoTemplate";
-import SelectFieldTemplate from "./SelectFieldTemplate";
+axios.defaults.withCredentials = true;
 
 interface props {
   setFormPage: (value: number | ((prevVar: number) => number)) => void;
-  extraInfoData: string;
-  setExtraInfoData: React.Dispatch<React.SetStateAction<string>>;
   setSubmit: React.Dispatch<React.SetStateAction<boolean>>;
+  branch: string;
+  applicationId: string;
 }
 
-const ExtraInfoPage = ({ setFormPage, extraInfoData, setExtraInfoData, setSubmit }: props) => {
+const ExtraInfoPage = ({ setFormPage, setSubmit, branch, applicationId }: props) => {
+  const [extraInfoData, setExtraInfoData] = useState("");
+
   const rules = ["I have read and agree to the MLH Code of Conduct",
     "I agree to the HackGT Liability Waiver",
     "I agree to the HackGT Photo Release Waiver",
@@ -23,7 +22,23 @@ const ExtraInfoPage = ({ setFormPage, extraInfoData, setExtraInfoData, setSubmit
     "I agree to the HexLabs Privacy Policy"]
 
   const ruleChecks = rules.map(rule => <Checkbox><Text fontSize="20px">{rule}</Text></Checkbox>)
+  const saveExtraInfoPage = async (nextPage: number) => {
+    const response = await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/save-application-data`,
+      {
+        "applicationData": extraInfoData,
+        "branchFormPage": 3
+      }
 
+    );
+    console.log("saved extra data")
+    console.log(extraInfoData)
+
+    if (nextPage != 2) {
+      setSubmit(true)
+    } else {
+      setFormPage(nextPage)
+    }
+  }
   return (
     <Flex align="center" justify="center" direction="column">
       <Flex
@@ -37,20 +52,20 @@ const ExtraInfoPage = ({ setFormPage, extraInfoData, setExtraInfoData, setSubmit
         direction="column"
       >
         <Box fontSize="36px" marginY="5px" >
-          <b>Welcome Noah Longhi!</b>
+          <b>Welcome {branch}</b>
         </Box>
         <Divider />
         <Box fontSize="20px" marginY="15px">
           Enter quick note/disclaimer here, like ayo you gotta be a student at GT or u can turn your goofy flat ass around and attend your own hackathons preciate it, we boutta check em buzzcards during check in so you better watch it buddy or else
         </Box>
-        <br/>
+        <br />
         <Box fontSize="25px" marginY="15px">
           <b>Please Confirm the Following</b>
         </Box>
         <Stack marginLeft="25px" spacing={5} direction='column'>
           {ruleChecks}
         </Stack>
-        <br/>
+        <br />
         <Box fontSize="25px" marginY="15px">
           <b>Anything else you'd like us to know?</b>
         </Box>
@@ -63,26 +78,14 @@ const ExtraInfoPage = ({ setFormPage, extraInfoData, setExtraInfoData, setSubmit
           size='sm'
           marginY="5px"
         />
-        {/* <Form
-          schema={JSON.parse(confirmationSchema)}
-          uiSchema={JSON.parse(confirmationUISchema)}
-          formData={JSON.parse(extraInfoData)}
-          onChange={(val: any, event: any) => {
-            setExtraInfoData(JSON.stringify(val.formData, null, 2));
-            // console.log(formData)
-          }}
-          ObjectFieldTemplate={ExtraInfoTemplate}
-          fields={{ select: SelectFieldTemplate }}
 
-        > */}
         <ButtonGroup
           width="100%"
           spacing='6'
         >
-          <Button width="100%" colorScheme='purple' type="submit" onClick={() => setFormPage(2)}>Previous</Button>
-          <Button width="100%" colorScheme='purple' type="submit" onClick={() => setSubmit(true)}>SUBMIT</Button>
+          <Button width="100%" colorScheme='purple' type="submit" onClick={() => saveExtraInfoPage(2)}>Previous</Button>
+          <Button width="100%" colorScheme='purple' type="submit" onClick={() => saveExtraInfoPage(4)}>SUBMIT</Button>
         </ButtonGroup>
-        {/* </Form> */}
       </Flex>
     </Flex>
   );

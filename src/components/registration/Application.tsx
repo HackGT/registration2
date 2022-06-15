@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect, useState } from "react";
 import { ChakraProvider, Flex, theme } from "@chakra-ui/react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "../../contexts/AuthContext";
 import { useLogin } from "../../hooks/useLogin";
@@ -10,40 +9,33 @@ import FormPage from "../formPlayground/FormPage";
 import EssayPage from "../formPlayground/EssayPage";
 import ExtraInfoPage from "../formPlayground/ExtraInfoPage"
 import SubmittedPage from "../formPlayground/SubmittedPage"
-import defaultFormData from "../formPlayground/Form_Schemas/defaultFormData.json";
-import defaultEssayData from "../formPlayground/Essay_Schemas/defaultFormData.json";
-
-import Admin from "../dashboard/Dashboard";
-import User from "../user/User";
 
 axios.defaults.withCredentials = true;
 
-const Application: React.FC = () => {
+interface props {
+  applicationId: string;
+}
+
+const Application = ({ applicationId }: props) => {
   const [loading, loggedIn] = useLogin();
-  const {branchId} = useParams();
-  const [formPage, setFormPage] = useState(1);
-  const [formData, setFormData] = useState(JSON.stringify(defaultFormData, null, 2));
-  const [essayData, setEssayData] = useState(JSON.stringify(defaultEssayData, null, 2));
-  const [extraInfoData, setExtraInfoData] = useState("");
+  const { branchId } = useParams();
+  const [formPage, setFormPage] = useState(3);
   const [submit, setSubmit] = useState(false)
-  const [formSchema, setFormSchema] = useState();
-  const [formUISchema, setFormUISchema] = useState();
-  const [essaySchema, setEssaySchema] = useState();
-  const [essayUISchema, setEssayUISchema] = useState();
 
+  const [formSchema, setFormSchema] = useState("");
+  const [formUISchema, setFormUISchema] = useState("");
+  const [essaySchema, setEssaySchema] = useState("");
+  const [essayUISchema, setEssayUISchema] = useState("");
+  const [branch, setBranch] = useState("")
 
-  // TODO: get application branch 
-  // branch = axios.get("registration.api.hexlabs.org/applications/"+id)
-  // branch.applicationBranch.formPages...
-  // fetch branch data
   useEffect(() => {
     const fetchBranchData = async () => {
-      const response = await axios.get("https://registration.api.hexlabs.org/branches"+branchId);
-      const formPages = response.data.formPages
-      setFormSchema(formPages[0].jsonSchema)
-      setFormUISchema(formPages[0].uiSchema)
-      setEssaySchema(formPages[1].jsonSchema)
-      setEssayUISchema(formPages[1].uiSchema)
+      const { data:{formPages:formPages,name:branch} } = await axios.get(`https://registration.api.hexlabs.org/branches/${branchId}`);
+      setBranch(branch)
+      setFormSchema(JSON.stringify(formPages[0].jsonSchema, null, 2))
+      setFormUISchema(JSON.stringify(formPages[0].uiSchema, null, 2))
+      setEssaySchema(JSON.stringify(formPages[1].jsonSchema, null, 2))
+      setEssayUISchema(JSON.stringify(formPages[1].uiSchema, null, 2))
     }
 
     fetchBranchData()
@@ -52,11 +44,7 @@ const Application: React.FC = () => {
 
   useEffect(() => {
     const submitApp = async () => {
-      const appData = JSON.parse(formData)
-      appData.essays = JSON.parse(essayData)
-      appData.extraInfo = { "extra": extraInfoData }
-      // save and submit application
-      await axios.post("", JSON.stringify(appData))
+      const response = await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/submit-application`)
       setFormPage(4)
     }
     if (submit) {
@@ -88,25 +76,24 @@ const Application: React.FC = () => {
         >
           {formPage == 1 && <FormPage
             setFormPage={setFormPage}
-            formData={formData}
-            setFormData={setFormData}
-            schema = {formSchema}
-            uiSchema = {formUISchema}
+            schema={formSchema}
+            uiSchema={formUISchema}
+            applicationId={applicationId}
+
 
           />}
 
           {formPage == 2 && <EssayPage
             setFormPage={setFormPage}
-            essayData={essayData}
-            setEssayData={setEssayData}
-            schema = {essaySchema}
-            uiSchema = {essayUISchema}
+            schema={essaySchema}
+            uiSchema={essayUISchema}
+            applicationId={applicationId}
           />}
           {formPage == 3 && <ExtraInfoPage
             setFormPage={setFormPage}
-            extraInfoData={extraInfoData}
-            setExtraInfoData={setExtraInfoData}
             setSubmit={setSubmit}
+            branch={branch}
+            applicationId={applicationId}
           />}
           {formPage == 4 && <SubmittedPage />}
         </Flex>

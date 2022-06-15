@@ -1,29 +1,42 @@
 import React, { useState } from "react";
-import { Box, Button, ButtonGroup, Stack, Flex } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex } from "@chakra-ui/react";
 import Form from "@rjsf/chakra-ui";
-import { JSONSchema7 } from "json-schema";
 
-import defaultFormSchema from "./Essay_Schemas/defaultFormSchema.json";
-import defaultFormUISchema from "./Essay_Schemas/defaultFormUISchema.json";
-import defaultFormData from "./Essay_Schemas/defaultFormData.json";
-import SchemaInput from "./SchemaInput";
+import defaultEssaySchema from "./Essay_Schemas/defaultFormSchema.json";
+import defaultEssayUISchema from "./Essay_Schemas/defaultFormUISchema.json";
+import defaultEssayData from "./Essay_Schemas/defaultFormData.json";
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
+import axios from "axios";
 
+axios.defaults.withCredentials = true;
 
 interface props {
   setFormPage: (value: number | ((prevVar: number) => number)) => void;
-  essayData: string;
-  setEssayData: React.Dispatch<React.SetStateAction<string>>;
-  schema: {string: string};
-  uiSchema: {string: string};
+  schema: string;
+  uiSchema: string;
+  applicationId: string;
 }
 
 
-const EssayPage = ({ setFormPage, essayData, setEssayData, schema, uiSchema }: props) => {
-  const [formSchema, setFormSchema] = useState(JSON.stringify(defaultFormSchema, null, 2));
-  const [formUISchema, setFormUISchema] = useState(JSON.stringify(defaultFormUISchema, null, 2));
+const EssayPage = ({ setFormPage, schema, uiSchema, applicationId }: props) => {
+  const [formSchema, setFormSchema] = useState(JSON.stringify(defaultEssaySchema, null, 2));
+  const [formUISchema, setFormUISchema] = useState(JSON.stringify(defaultEssayUISchema, null, 2));
+  const [essayData, setEssayData] = useState(JSON.stringify(defaultEssayData, null, 2));
 
+  const saveEssayPage = async (nextPage: number) => {
+    const response = await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/save-application-data`,
+      {
+        "applicationData": essayData,
+        "branchFormPage": 2
+      }
+
+    );
+    console.log("saved essay data")
+    console.log(essayData)
+
+    setFormPage(nextPage)
+  }
   return (
     <Flex align="center" justify="center" direction="column">
       <Flex
@@ -56,8 +69,8 @@ const EssayPage = ({ setFormPage, essayData, setEssayData, schema, uiSchema }: p
             width="100%"
             spacing='6'
           >
-            <Button width="100%" colorScheme='purple' type="submit" onClick={() => setFormPage(1)}>Previous</Button>
-            <Button width="100%" colorScheme='purple' type="submit" onClick={() => setFormPage(3)}>Next</Button>
+            <Button width="100%" colorScheme='purple' type="submit" onClick={() => saveEssayPage(1)}>Previous</Button>
+            <Button width="100%" colorScheme='purple' type="submit" onClick={() => saveEssayPage(3)}>Next</Button>
           </ButtonGroup>
         </Form>
       </Flex>

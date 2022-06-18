@@ -19,15 +19,14 @@ const ParticipantDashboard: React.FC<Props> = (props: any) => {
 
   useEffect(() => {
     const getBranches = async () => {
-      if (props.hexathons.length > 0) {
-        const res = await axios.get(
-          `https://registration.api.hexlabs.org/branches/?hexathon=${props.hexathons[0].id}`
-        );
-        setBranches(res.data);
-      }
+      const res = await axios.get(
+        // eslint-disable-next-line
+        `https://registration.api.hexlabs.org/branches/?hexathon=${props.curHexathon._id}`
+      );
+      setBranches(res.data);
     }
     getBranches();
-  }, [branches, props.hexathons])
+  }, [branches, props.curHexathon])
 
   return (
     <Flex flexDir="column" padding={{ base: "0 0 16px", md: "32px 48px" }} margin="auto" maxWidth="1000px">
@@ -50,30 +49,9 @@ const ParticipantDashboard: React.FC<Props> = (props: any) => {
           >
             Welcome Back {props.profile.name?.first}!
           </Heading>
-          
-            {
-              (() => {
-                if (Object.keys(props.curHexathon).length !== 0) {
-                  return(
-                    <Text>
-                      We’re happy to see you here! We’re currently running our {props.curHexathon.name} and we’d love to see you there!
-                    </Text>
-                  );
-                }
-                if (props.hexathons.length > 0) {
-                  return (
-                    <Text>
-                      We're happy to see you here! We're still preparing for our {props.hexathons[0].name}, but we’d love to see you there! Check your email or our social media to see when you can begin applying to {props.hexathons[0].name}!
-                    </Text>
-                  )
-                }
-                return (
-                  <Text>
-                    We are currently in the middle of planning events! Check out our social media to stay up to date on when our next event will be held!
-                  </Text>
-                )
-              })()
-            }
+          <Text>
+            We’re happy to see you here! We’re currently running our {props.curHexathon.name} and we’d love to see you there!
+          </Text>
           <HStack
             maxWidth={{ base: "500px", md: "400px" }}
             justifyContent="space-around"
@@ -112,29 +90,23 @@ const ParticipantDashboard: React.FC<Props> = (props: any) => {
       <Stack margin={{base: "20px", md: 0}} marginBottom={{base: 0, md: "15px"}}>
         <Box margin="35px 25px 15px 25px">
           <Heading fontSize="36px" fontWeight="semibold" marginBottom="10px">Tracks</Heading>
-          {
-            (Object.keys(props.curHexathon).length === 0) ? (
-              <Text>We are currently not running any events! Come back later or check out our Hexlabs social media accounts to keep up with any new information about our events!</Text>
-            ) : (
-              <Text>Select one of the tracks from below to apply to {props.curHexathon.name}.</Text>
-            )
-          }
+          <Text>Select one of the tracks from below to apply to {props.curHexathon.name}.</Text>
         </Box>
-        {
-          (Object.keys(props.curHexathon).length === 0) ? (
-            null
-          ) : (
-            <SimpleGrid columns={(branches.length === 0) ? 1 : {base: 1, md: 2}} spacing={4}>
-              {
-                branches.length === 0 ? (
-                  <Text textAlign="center" fontStyle="italic">We are currently working hard to finalize the tracks for {props.curHexathon.name}! Please check back later!</Text>
-                ) : branches.map((branch: any) => (
-                  <Tile key={branch.name} title={branch.name} description={`${(new Date(branch.settings.open)).toDateString()} - ${(new Date(branch.settings.close)).toDateString()}`}/>
-                ))
-              }
-            </SimpleGrid>
-          )
-        }
+        <SimpleGrid columns={(branches.length === 0) ? 1 : {base: 1, md: 2}} spacing={4}>
+          {
+            branches.length === 0 ? (
+              <Text textAlign="center" fontStyle="italic" paddingX="40px">
+                We are currently working hard to finalize the tracks for {props.curHexathon.name}! Please check back later!
+              </Text>
+            ) : branches.map((branch: any) => (
+              <Tile
+                key={branch.name}
+                title={branch.name}
+                description={`${(new Date(branch.settings.open)).toDateString()} - ${(new Date(branch.settings.close)).toDateString()}`}
+              />
+            ))
+          }
+        </SimpleGrid>
       </Stack>
       <Divider marginY={{ base: "30px", md: "40px" }} alignSelf="center" width="95%"/>
       <Stack marginX={{ base: "20px", md: 0 }}>
@@ -146,29 +118,9 @@ const ParticipantDashboard: React.FC<Props> = (props: any) => {
         >
           Future Events
         </Heading>
-        {
-          (() => {
-            if (Object.keys(props.curHexathon).length !== 0) {
-              return(
-                <Text>
-                  If you can’t make {props.curHexathon.name}, don’t worry! We’re having more events coming up in the next year, so be on the look out :). Follow us on social media to stay in the loop!
-                </Text>
-              );
-            }
-            if (props.hexathons.length > 0) {
-              return (
-                <Text>
-                  We’re having more events coming up in the next year, so be on the look out :). Follow us on social media to stay in the loop!
-                </Text>
-              )
-            }
-            return (
-              <Text>
-                We have not yet finalized any plans for future events! Come back later or follow us on social media to be notified of any upcoming Hexlabs events!
-              </Text>
-            )
-          })()
-        }
+        <Text>
+          If you can’t make it to {props.curHexathon.name}, don’t worry! We have more events planned for the next year, so be on the look out :). Follow us on social media to stay in the loop!
+        </Text>
         <Box
           paddingX="30px"
         >

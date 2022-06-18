@@ -15,7 +15,7 @@ const HexathonsProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const getHexathons = async () => {
       const res = await axios.get(
-        "http://hexathons.api.hexlabs.org/hexathons"
+        "https://hexathons.api.hexlabs.org/hexathons"
       );
       setHexathons(res.data.sort((a: any, b: any) => (
         (a.startDate < b.startDate) ? -1 : 1

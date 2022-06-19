@@ -3,24 +3,6 @@ import { Box, Flex, SimpleGrid, Heading, Text, Accordion, AccordionItem, Accordi
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-
-const Widget = ({ title }: { title: string }) => (
-  <Box
-    boxShadow={{
-      base: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    }}
-    padding="20px 32px"
-    borderRadius="4px"
-  >
-    <Heading fontWeight={500} marginBottom="10px" size="md" color="#212121">
-      {title}
-    </Heading>
-    <Text color="#858585" fontSize="sm" fontWeight={400}>
-      Short Description of Title
-    </Text>
-  </Box>
-);
-
 const ParticipantIndividual: React.FC = () => {
   const { applicationId } = useParams();
   const [name, setName] = useState("name");
@@ -45,7 +27,7 @@ const ParticipantIndividual: React.FC = () => {
         const user = await axios.get(
           `https://users.api.hexlabs.org/users/'${app.data.applicationData.userId}`
         )
-        setName(`${user.data.name.first}${user.data.name.last}`);
+        setName(`${user.data.name.first}{' '}${user.data.name.last}`);
         setGmail(user.data.email);
         setPhone(app.data.applicationData.phoneNumber);
         setLinkedin(app.data.applicationData.linkedin);
@@ -82,7 +64,7 @@ const ParticipantIndividual: React.FC = () => {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={3}>
-            <Text /* style={{color: "green", display: 'flex'}} */>{gmail}</Text>
+            <Text>{gmail}</Text>
             <Text>{phone}</Text>
             <Text>{linkedin}</Text>
           </AccordionPanel>
@@ -102,16 +84,28 @@ const ParticipantIndividual: React.FC = () => {
               {adult ? 'Older' : 'Younger'} than 18 years old
             </Text>
             <Text>
-              Attends {school}
+              <span style={{color: "Grey"}}>
+                Attends
+              </span> 
+              {" "} {school}
             </Text>
             <Text>
-              Studies {major}
+              <span style={{color: "Grey"}}>
+                Studies
+              </span> 
+              {" "} {major}
             </Text>
             <Text>
-              Identifies as a {gender}
+              <span style={{color: "Grey"}}>
+                Identifies
+              </span> 
+              {" "} as a {gender}
             </Text>
             <Text>
-              Ethnicity is {ethnicity}
+              <span style={{color: "Grey"}}>
+                Ethnicity
+              </span> 
+              {" "} is {ethnicity}
             </Text>
           </AccordionPanel>
         </AccordionItem>

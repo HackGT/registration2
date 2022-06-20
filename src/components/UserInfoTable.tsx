@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   Table,
   Thead,
@@ -25,94 +25,53 @@ import {
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import axios from 'axios'
 import { useAxios } from 'use-axios-client'
+import {useTable, useSortBy} from 'react-table'
 
-function rowSet(props:any) {
-    return (
-       <Tr>
-           <Td>
-              { props.name }
-           </Td>
-           <Td align="right">{ props.url }</Td>
-           <Td align="right">{ props.status }</Td>
-       </Tr>
-    )
-}
+
 const UserInfoTable: React.FC<any> = (props: any) => {
+  const [value, setValue] = React.useState("")
+  const [tableRows, setRows] = React.useState([{
+    Name: "",
+    Email: "",
+    Status: ""
+  }]);
+  /*
   const [realData, realsetData] = React.useState(null);
 
 
-  const [input, setInput] = React.useState('')
+
   const [filters, setFilters] = React.useState(['SETUP', 'LEARN']);
 
   const [search, setSearch] = React.useState('');
-  let count = 0;
+  const count = 0;
   /* const fetchData = () => axios.get('/applications')
       .then((response:any)=> console.log(response.data))
-  */
-  useEffect(() => {
-    fetch("https://registration.api.hexlabs.org/applications")
-      .then(response => {
-        if (response.ok) {
-          count = Object.keys(response.json()).length;
-          return response.json();
-        }
-        throw response;
-      }).then(data => {
-        realsetData(data);
-      })
+*/
+  const [headers, setHeaders] = useState([]);
+  const [data, setData] = useState([]);
+  const fetchData = () => {
+        axios.get('https://registration.api.hexlabs.org/applications')
+            .then((res) => {
+                let i;
+                const residualData = res.data as JSON;
+                const tableValues = [[]];
+                for (i = 0; i < Object.keys(residualData).length; i ++) {
+                  tableValues.push([residualData[i].applicationBranch.name, residualData[i].userId, residualData[i].confirmed]);
+                }
+                setRows(tableValues);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
-  }, [])
-
-  const names:any[] = []
-  const emails:any[] = []
-  const status:any[] = []
-
-  const handleInputChange = (e: any) => {
-
-    setInput(e.target.value)
-    let i, x, j;
-    const table = document.getElementById("table") as HTMLTableElement;
-    j = 1;
-
-    const { rows } = table;
-    for (i = 1; i < rows.length; i ++) {
-      table.deleteRow(i);
-      i -= 1;
-    }
-    if (realData != null) {
-      for (i = 0; i < count; i ++) {
-        names.push(realData[i])
-      }
-    }
-
-    for (i = 1; i < names.length+1; i ++) {
-      if (names[i-1].toLowerCase().startsWith(e.target.value.toLowerCase()) || emails[i-1].toLowerCase().startsWith(e.target.value.toLowerCase())) {
-        const r = table.insertRow(j);
-        const cell1 = r.insertCell(0);
-        const cell2 = r.insertCell(1);
-        const cell3 = r.insertCell(2);
-        cell1.innerHTML = names[i-1];
-        cell3.innerHTML = emails[i-1];
-        cell2.innerHTML = status[i-1];
-        const temp = {
-          "name": names[i-1],
-          "status": status[i-1],
-          "url": emails[i-1]
-        }
-
-        rowSet(temp)
-        j ++;
-      }
-    }
-
-
-  }
-  const isError = input === ''
+    useEffect(() => {
+      fetchData();
+  }, [value]);
 
   return (
-  <div>
-
-        <Input placeholder='Basic usage' id='inputText' value = {input} onChange={handleInputChange} />
+      <div>
+        <Input id='inputText' placeholder='Filter Participants' isReadOnly={false} onChange={fetchData}/>
           <Table variant='simple' id = 'table'>
             <TableCaption>Participant Registration</TableCaption>
             <Thead>
@@ -122,12 +81,20 @@ const UserInfoTable: React.FC<any> = (props: any) => {
                 <Th>Status</Th>
               </Tr>
             </Thead>
-
+            <Tbody>
+              {tableRows.map(row => (
+                <Tr>
+                  <Td>row.Name</Td>
+                  <Td>row.Email</Td>
+                  <Td>row.Status</Td>
+                </Tr>
+              ))}
+            </Tbody>
           </Table>
 
-
-  </div>
+      </div>
   )
+
 };
 
 export default UserInfoTable;

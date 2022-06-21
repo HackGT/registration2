@@ -12,6 +12,7 @@ import User from "./components/user/User";
 import Loading from "./util/Loading";
 import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
+import CheckValidHexathon from "./util/CheckValidHexathon";
 
 axios.defaults.withCredentials = true;
 
@@ -29,15 +30,15 @@ export const App = () => {
           {loading || !loggedIn ? (
             <Loading />
           ) : (
-              <Routes>
-                <Route path="/" element={<SelectEvent />} />
-                <Route path="/:hexathonId">
-                  <Route path="" element={<Dashboard />} />
-                  <Route path="user/:userId" element={<User />} />
-                  <Route path="form-playground" element={<FormPlayground />} />
-                  <Route path="email" element={<EmailScreen />} />
-                </Route>
-              </Routes>
+            <Routes>
+              <Route path="/" element={<SelectEvent />} />
+              <Route path="/:hexathonId" element={<CheckValidHexathon />}>
+                <Route path="" element={<Dashboard />} />
+                <Route path="user/:userId" element={<User />} />
+                <Route path="form-playground" element={<FormPlayground />} />
+                <Route path="email" element={<EmailScreen />} />
+              </Route>
+            </Routes>
           )}
         </HexathonsProvider>
       </AuthProvider>

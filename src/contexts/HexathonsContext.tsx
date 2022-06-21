@@ -1,7 +1,11 @@
 import React, { useContext, createContext, useEffect, useState, useMemo } from "react";
 import axios from "axios";
 
-const HexathonsContext = createContext<any>(null);
+const initialState = {
+  hexathons: [],
+};
+
+const HexathonsContext = createContext<{ hexathons: any[] }>(initialState);
 
 export function useHexathons() {
   return useContext(HexathonsContext);
@@ -14,12 +18,8 @@ const HexathonsProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     const getHexathons = async () => {
-      const res = await axios.get(
-        "https://hexathons.api.hexlabs.org/hexathons"
-      );
-      setHexathons(res.data.sort((a: any, b: any) => (
-        (a.startDate < b.startDate) ? -1 : 1
-      )));
+      const res = await axios.get("https://hexathons.api.hexlabs.org/hexathons");
+      setHexathons(res.data.sort((a: any, b: any) => (a.startDate < b.startDate ? -1 : 1)));
     };
     getHexathons();
   }, []);

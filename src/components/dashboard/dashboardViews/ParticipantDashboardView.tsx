@@ -16,7 +16,7 @@ import useAxios from "axios-hooks";
 import { useAuth } from "../../../contexts/AuthContext";
 import Tile from "../Tile";
 import Timeline from "../Timeline";
-import useCurrentHexathon from "../../../util/useCurrentHexathon";
+import useCurrentHexathon from "../../../hooks/useCurrentHexathon";
 import Loading from "../../../util/Loading";
 
 interface Props {

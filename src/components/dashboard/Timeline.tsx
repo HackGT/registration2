@@ -3,7 +3,7 @@ import { Stack, Box } from "@chakra-ui/react";
 
 import Hex from "./hex";
 import { useHexathons } from "../../contexts/HexathonsContext";
-import useCurrentHexathon from "../../util/useCurrentHexathon";
+import useCurrentHexathon from "../../hooks/useCurrentHexathon";
 
 const Timeline: React.FC = () => {
   const currentHexathon = useCurrentHexathon();

@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-import useCurrentHexathon from "./useCurrentHexathon";
+import useCurrentHexathon from "../hooks/useCurrentHexathon";
 
 const CheckValidHexathon: React.FC = () => {
   const currentHexathon = useCurrentHexathon();

@@ -16,12 +16,6 @@ import axios from "axios";
 const AccordionSection: React.FC = (props: any) => {
   const { register, watch } = useForm();
   const saveBranch = async () => {
-    axios.patch(
-      `https://registration.api.hexlabs.org/branches/${props.id}`,
-      props.branchDict[props.id]
-    );
-  };
-  const updateBranches = () => {
     const updatedBranchBody = {
       type: watch("type") || props.type,
       settings: {
@@ -29,11 +23,12 @@ const AccordionSection: React.FC = (props: any) => {
         close: watch("settings.close") || props.settings.close,
       },
     };
-
-    const newBranchDict = props.branchDict;
-    newBranchDict[props.id] = updatedBranchBody;
-    props.setBranchDict({ ...newBranchDict });
+    await axios.patch(
+      `https://registration.api.hexlabs.org/branches/${props.id}`,
+      updatedBranchBody
+    );
   };
+
   return (
     <AccordionItem>
       <h2>
@@ -45,7 +40,7 @@ const AccordionSection: React.FC = (props: any) => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <Select defaultValue={props.type} {...register("type")} onChange={updateBranches}>
+        <Select defaultValue={props.type} {...register("type")}>
           <option value="APPLICATION">Application</option>
           <option value="CONFIRMATION">Confirmation</option>
         </Select>
@@ -55,14 +50,12 @@ const AccordionSection: React.FC = (props: any) => {
             placeholder={props.settings.open}
             size="sm"
             {...register("settings.open")}
-            onChange={updateBranches}
           />
           <Input
             width="15rem"
             placeholder={props.settings.close}
             size="sm"
             {...register("settings.close")}
-            onChange={updateBranches}
           />
         </InputGroup>
         <Button colorScheme="purple" size="sm" width="80px" onClick={saveBranch}>

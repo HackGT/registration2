@@ -4,27 +4,32 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
   Input,
   InputGroup,
   Select,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
 import React from "react";
+import axios from "axios";
 
 const AccordionSection: React.FC = (props: any) => {
+  const { register, watch } = useForm();
+  const saveBranch = async () => {
+    axios.patch(
+      `https://registration.api.hexlabs.org/branches/${props.id}`,
+      props.branchDict[props.id]
+    );
+  };
   const updateBranches = () => {
-    const selectId = `type${props.id}`;
-    const openTimeId = `open${props.id}`;
-    const closeTimeId = `close${props.id}`;
-
     const updatedBranchBody = {
-      type: (document.getElementById(selectId) as HTMLSelectElement).value,
+      type: watch("type") || props.type,
       settings: {
-        open:
-          (document.getElementById(openTimeId) as HTMLInputElement).value || props.settings.open,
-        close:
-          (document.getElementById(closeTimeId) as HTMLInputElement).value || props.settings.close,
+        open: watch("settings.open") || props.settings.open,
+        close: watch("settings.close") || props.settings.close,
       },
     };
+
     const newBranchDict = props.branchDict;
     newBranchDict[props.id] = updatedBranchBody;
     props.setBranchDict({ ...newBranchDict });
@@ -40,26 +45,29 @@ const AccordionSection: React.FC = (props: any) => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <Select id={`type${props.id}`} defaultValue={props.type} onChange={updateBranches}>
+        <Select defaultValue={props.type} {...register("type")} onChange={updateBranches}>
           <option value="APPLICATION">Application</option>
           <option value="CONFIRMATION">Confirmation</option>
         </Select>
         <InputGroup>
           <Input
-            id={`open${props.id}`}
             width="15rem"
             placeholder={props.settings.open}
             size="sm"
+            {...register("settings.open")}
             onChange={updateBranches}
           />
           <Input
-            id={`close${props.id}`}
             width="15rem"
             placeholder={props.settings.close}
             size="sm"
+            {...register("settings.close")}
             onChange={updateBranches}
           />
         </InputGroup>
+        <Button colorScheme="purple" size="sm" width="80px" onClick={saveBranch}>
+          Save
+        </Button>
       </AccordionPanel>
     </AccordionItem>
   );

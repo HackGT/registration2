@@ -9,18 +9,7 @@ const InternalSettings: React.FC = () => {
   const [branches, setBranches] = useState<any[]>([]);
   const [branchDict, setBranchDict] = useState<Record<string, any>>({});
   const { hexathonId } = useParams();
-  const saveBranches = async () => {
-    const promises: any[] = [];
-    for (const branchId of Object.keys(branchDict)) {
-      promises.push(
-        axios.patch(
-          `https://registration.api.hexlabs.org/branches/${branchId}`,
-          branchDict[branchId]
-        )
-      );
-    }
-    await Promise.all(promises);
-  };
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -60,9 +49,6 @@ const InternalSettings: React.FC = () => {
           />
         ))}
       </Accordion>
-      <Button colorScheme="purple" size="sm" width="80px" onClick={saveBranches}>
-        Save
-      </Button>
     </Stack>
   );
 };

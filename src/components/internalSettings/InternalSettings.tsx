@@ -7,11 +7,32 @@ import useAxios from "axios-hooks";
 import AccordionSection from "./AccordionSection";
 import Loading from "../../util/Loading";
 
+enum BranchType {
+  APPLICATION = "APPLICATION",
+  CONFIRMATION = "CONFIRMATION",
+}
+
+export interface Branch {
+  _id: number;
+  name: string;
+  hexathon: number;
+  type: BranchType;
+  settings: {
+    open: string;
+    close: string;
+  };
+  formPages: {
+    title: string;
+    jsonSchema: string;
+    uiSchema: string;
+  }[];
+}
+
 const InternalSettings: React.FC = () => {
   const { hexathonId } = useParams();
 
-  const [{ data: applications, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/applications/`
+  const [{ data: branches, loading, error }] = useAxios(
+    `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
   );
 
   if (loading) return <Loading />;
@@ -19,23 +40,9 @@ const InternalSettings: React.FC = () => {
   return (
     <Stack>
       <Accordion>
-        {applications
-          .filter((application: any) => application.hexathon === hexathonId)
-          .map(
-            (application: any) =>
-              (application.applicationBranch && (
-                <AccordionSection
-                  {...application.applicationBranch}
-                  id={application.applicationBranch._id}
-                />
-              )) ||
-              (application.confirmationBranch && (
-                <AccordionSection
-                  {...application.confirmationBranch}
-                  id={application.confirmationBranch._id}
-                />
-              ))
-          )}
+        {branches.map((branch: Branch) => (
+          <AccordionSection {...branch} />
+        ))}
       </Accordion>
     </Stack>
   );

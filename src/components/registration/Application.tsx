@@ -67,7 +67,7 @@ const Application = ({ applicationId }: props) => {
           fontFamily="verdana"
         >
           <FormPage
-            formData={formData}
+            formData={convertToDefaultData(formPages[formPageNumber].uiSchema)}
             setFormData={setFormData}
             setFormPageNumber={setFormPageNumber}
             formPageNumber={formPageNumber}

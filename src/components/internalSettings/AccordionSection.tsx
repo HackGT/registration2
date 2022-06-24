@@ -32,7 +32,7 @@ const AccordionSection: React.FC<Branch> = props => {
         <h2>
           <AccordionButton>
             <Box flex="1" textAlign="left">
-              {props.name}
+              <Input defaultValue={props.name} {...register("name")} />
             </Box>
             <AccordionIcon />
           </AccordionButton>
@@ -45,13 +45,13 @@ const AccordionSection: React.FC<Branch> = props => {
           <InputGroup>
             <Input
               width="15rem"
-              placeholder={props.settings.open}
+              defaultValue={props.settings.open}
               size="sm"
               {...register("settings.open")}
             />
             <Input
               width="15rem"
-              placeholder={props.settings.close}
+              defaultValue={props.settings.close}
               size="sm"
               {...register("settings.close")}
             />

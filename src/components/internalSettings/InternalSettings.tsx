@@ -39,7 +39,7 @@ const InternalSettings: React.FC = () => {
   if (error) console.log(error.message);
   return (
     <Stack>
-      <Accordion>
+      <Accordion allowToggle>
         {branches.map((branch: Branch) => (
           <AccordionSection {...branch} />
         ))}

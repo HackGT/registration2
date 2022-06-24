@@ -6,8 +6,6 @@ import { useParams } from "react-router-dom";
 import { AuthProvider } from "../../contexts/AuthContext";
 import { useLogin } from "../../hooks/useLogin";
 import FormPage from "../formPlayground/FormPage";
-import EssayPage from "../formPlayground/EssayPage";
-import ExtraInfoPage from "../formPlayground/ExtraInfoPage"
 import SubmittedPage from "../formPlayground/SubmittedPage"
 
 axios.defaults.withCredentials = true;
@@ -20,28 +18,19 @@ const Application = ({ applicationId }: props) => {
   const convertToDefaultData = (uiSchema: string) => (Object.assign({}, ...Object.keys(JSON.parse(uiSchema)).map((x) => ({ [x]: "" }))));
   const [loading, loggedIn] = useLogin();
   const { branchId } = useParams();
-  const [formPage, setFormPage] = useState(1);
+  const [formPageNumber, setFormPageNumber] = useState(1);
   const [submit, setSubmit] = useState(false)
 
-  const [formSchema, setFormSchema] = useState("");
-  const [formUISchema, setFormUISchema] = useState("");
-  const [essaySchema, setEssaySchema] = useState("");
-  const [essayUISchema, setEssayUISchema] = useState("");
   const [branch, setBranch] = useState("")
   const [formData, setFormData] = useState("")
-  const [essayData, setEssayData] = useState("")
+  const [formPages, setFormPages] = useState([{jsonSchema:'', uiSchema:''}])
 
 
   useEffect(() => {
     const fetchBranchData = async () => {
       const { data: { formPages: formPages, name: branch } } = await axios.get(`https://registration.api.hexlabs.org/branches/${branchId}`);
       setBranch(branch)
-      setFormSchema(JSON.stringify(formPages[0].jsonSchema, null, 2))
-      setFormUISchema(JSON.stringify(formPages[0].uiSchema, null, 2))
-      setFormData(convertToDefaultData(formPages[0].uiSchema))
-      setEssaySchema(JSON.stringify(formPages[1].jsonSchema, null, 2))
-      setEssayUISchema(JSON.stringify(formPages[1].uiSchema, null, 2))
-      setEssayData(convertToDefaultData(formPages[1].uiSchema))
+      setFormPages(formPages)
     }
 
     fetchBranchData()
@@ -51,7 +40,7 @@ const Application = ({ applicationId }: props) => {
   useEffect(() => {
     const submitApp = async () => {
       const response = await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/submit-application`)
-      setFormPage(4)
+      setFormPageNumber(formPages.length)
     }
     if (submit) {
       submitApp()
@@ -67,8 +56,7 @@ const Application = ({ applicationId }: props) => {
     window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
     return <h1>Loading...</h1>;
   }
-
-
+  
   return (
     <ChakraProvider theme={theme}>
       <AuthProvider>
@@ -78,32 +66,19 @@ const Application = ({ applicationId }: props) => {
           direction="column"
           fontFamily="verdana"
         >
-          {formPage == 1 && <FormPage
+          <FormPage
             formData={formData}
             setFormData={setFormData}
-            setFormPage={setFormPage}
-            schema={formSchema}
-            uiSchema={formUISchema}
+            setFormPageNumber={setFormPageNumber}
+            formPageNumber={formPageNumber}
+            schema={JSON.stringify(formPages[formPageNumber].jsonSchema, null, 2)}
+            uiSchema={JSON.stringify(formPages[formPageNumber].uiSchema, null, 2)}
             applicationId={applicationId}
-          />}
+            lastPage = {formPageNumber==formPages.length-1}
+            setSubmit = {setSubmit}
+          />
 
-          {formPage == 2 && <EssayPage
-            essayData={essayData}
-            setEssayData={setEssayData}
-            setFormPage={setFormPage}
-            schema={essaySchema}
-            uiSchema={essayUISchema}
-            applicationId={applicationId}
-          />}
-
-          {formPage == 3 && <ExtraInfoPage
-            setFormPage={setFormPage}
-            setSubmit={setSubmit}
-            branch={branch}
-            applicationId={applicationId}
-          />}
-
-          {formPage == 4 && <SubmittedPage />}
+          {formPageNumber == formPages.length && <SubmittedPage />}
         </Flex>
       </AuthProvider>
     </ChakraProvider>

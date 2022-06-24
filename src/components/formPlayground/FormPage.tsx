@@ -6,18 +6,22 @@ import { JSONSchema7 } from "json-schema";
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import axios from "axios";
+import internal from "stream";
 
 axios.defaults.withCredentials = true;
 interface props {
-  setFormPage: (value: number | ((prevVar: number) => number)) => void;
   formData: string;
+  formPageNumber: number;
+  setFormPageNumber: React.Dispatch<React.SetStateAction<number>>
   setFormData: React.Dispatch<React.SetStateAction<string>>;
   schema: string;
   uiSchema: string;
   applicationId: string;
+  lastPage: boolean;
+  setSubmit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FormPage = ({ setFormPage, formData, setFormData, schema, uiSchema, applicationId }: props) => {
+const FormPage = ({ formData, formPageNumber, setFormPageNumber, setFormData, schema, uiSchema, applicationId, lastPage, setSubmit }: props) => {
 
   const saveData = async () =>
     await axios.post(`https://registration.api.hexlabs.org/application/${applicationId}/actions/save-application-data`,
@@ -27,16 +31,6 @@ const FormPage = ({ setFormPage, formData, setFormData, schema, uiSchema, applic
       }
     );
   return (
-    <Flex align="center" justify="center" direction="column">
-      <Flex
-        padding="15px"
-        verticalAlign="top"
-        width={{ base: "100%", md: "45%" }}
-        height="100%"
-        align="center"
-        justify="center"
-        direction="column"
-      >
         <Form
           schema={JSON.parse(schema)}
           uiSchema={JSON.parse(uiSchema)}
@@ -49,17 +43,15 @@ const FormPage = ({ setFormPage, formData, setFormData, schema, uiSchema, applic
           onSubmit={async ({ formData }, e) => {
             e.preventDefault();
             await saveData()
-            console.log("saved formpage data")
-            console.log(formData)
-            setFormPage(2);
-
+            if (lastPage) {
+              setSubmit(true)
+            }
+            setFormPageNumber(formPageNumber+1);
           }
           }
         >
           <Button colorScheme='purple' type="submit" width="100%">Next</Button>
         </Form>
-      </Flex>
-    </Flex>
   );
 };
 

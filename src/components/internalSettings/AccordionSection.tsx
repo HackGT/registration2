@@ -5,6 +5,7 @@ import {
   AccordionPanel,
   Box,
   Button,
+  HStack,
   Input,
   InputGroup,
   Modal,
@@ -32,6 +33,7 @@ const AccordionSection: React.FC<Branch> = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const saveBranch = async (values: Partial<Branch>) => {
+    console.log(`enters saveBranch`);
     await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, { ...values });
   };
 
@@ -90,28 +92,28 @@ const AccordionSection: React.FC<Branch> = props => {
                       {...register("settings.close")}
                     />
                   </InputGroup>
+                  <HStack margin={5}>
+                    <Button
+                      colorScheme="green"
+                      size="sm"
+                      width="80px"
+                      isLoading={isSubmitting}
+                      type="submit"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      size="sm"
+                      width="80px"
+                      isLoading={isSubmitting}
+                      onClick={onClose}
+                    >
+                      Close
+                    </Button>
+                  </HStack>
                 </form>
               </ModalBody>
-              <ModalFooter>
-                <Button
-                  colorScheme="green"
-                  size="sm"
-                  width="80px"
-                  isLoading={isSubmitting}
-                  type="submit"
-                >
-                  Save
-                </Button>
-                <Button
-                  colorScheme="red"
-                  size="sm"
-                  width="80px"
-                  isLoading={isSubmitting}
-                  onClick={onClose}
-                >
-                  Close
-                </Button>
-              </ModalFooter>
             </ModalContent>
           </Modal>
         </AccordionPanel>

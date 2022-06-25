@@ -31,14 +31,27 @@ export interface FormModalType {
 const AccordionSection: React.FC<Branch> = props => {
   const toast = useToast();
   const saveBranch = async (values: Partial<Branch>) => {
-    await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, { ...values });
-    toast({
-      title: "Success!",
-      description: "The branch has successfully been edited.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, {
+        ...values,
+      });
+      toast({
+        title: "Success!",
+        description: "The branch has successfully been edited.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      console.log(e.message);
+      toast({
+        title: "Error!",
+        description: "The branch could not be edited due to server issues.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (

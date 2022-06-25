@@ -43,14 +43,25 @@ const InternalSettings: React.FC = () => {
         close: values.settings?.close || "",
       },
     };
-    await axios.post(`https://registration.api.hexlabs.org/branches/`, { ...createdBranch });
-    toast({
-      title: "Success!",
-      description: "The branch has successfully been created.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      await axios.post(`https://registration.api.hexlabs.org/branches/`, { ...createdBranch });
+      toast({
+        title: "Success!",
+        description: "The branch has successfully been created.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      console.log(e.message);
+      toast({
+        title: "Error!",
+        description: "The branch could not be created due to server issues.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
   const newBranch: any = {
     name: "",

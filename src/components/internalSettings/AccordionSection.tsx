@@ -5,6 +5,7 @@ import {
   AccordionPanel,
   Box,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import axios from "axios";
@@ -28,9 +29,16 @@ export interface FormModalType {
 }
 
 const AccordionSection: React.FC<Branch> = props => {
+  const toast = useToast();
   const saveBranch = async (values: Partial<Branch>) => {
-    console.log(`enters saveBranch`);
     await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, { ...values });
+    toast({
+      title: "Success!",
+      description: "The branch has successfully been edited.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   return (

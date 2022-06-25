@@ -11,7 +11,6 @@ import {
   Select,
   Input,
   InputGroup,
-  ModalFooter,
   HStack,
 } from "@chakra-ui/react";
 import React from "react";

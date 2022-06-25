@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React from "react";
-import { Accordion, Box, Stack } from "@chakra-ui/react";
+import { Accordion, Box, Stack, useToast } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
@@ -32,8 +32,8 @@ export interface Branch {
 
 const InternalSettings: React.FC = () => {
   const { hexathonId } = useParams();
+  const toast = useToast();
   const createBranch = async (values: Partial<Branch>) => {
-    console.log(`enters createBranch`);
     const createdBranch: Partial<Branch> = {
       name: values.name,
       hexathon: hexathonId,
@@ -44,6 +44,13 @@ const InternalSettings: React.FC = () => {
       },
     };
     await axios.post(`https://registration.api.hexlabs.org/branches/`, { ...createdBranch });
+    toast({
+      title: "Success!",
+      description: "The branch has successfully been created.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
   const newBranch: any = {
     name: "",
@@ -70,7 +77,7 @@ const InternalSettings: React.FC = () => {
           <AccordionSection {...branch} />
         ))}
       </Accordion>
-      <Box margin={10}>
+      <Box marginBlock={10} style={{ marginLeft: "2.5rem" }}>
         <FormModal {...newBranch} function={createBranch} />
       </Box>
     </Stack>

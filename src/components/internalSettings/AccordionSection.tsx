@@ -4,34 +4,30 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  Button,
-  HStack,
-  Input,
   InputGroup,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
 import React from "react";
 import axios from "axios";
 
-import { Branch } from "./InternalSettings";
+import { Branch, BranchType } from "./InternalSettings";
+import FormModal from "./FormModal";
+
+export interface FormModalType {
+  _id?: string;
+  name: string;
+  hexathon: string;
+  type: BranchType;
+  settings: {
+    open: string;
+    close: string;
+  };
+  functionName: string;
+  buttonName: string;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  function: any;
+}
 
 const AccordionSection: React.FC<Branch> = props => {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const saveBranch = async (values: Partial<Branch>) => {
     console.log(`enters saveBranch`);
     await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, { ...values });
@@ -60,62 +56,12 @@ const AccordionSection: React.FC<Branch> = props => {
               {props.settings.close}
             </Box>
           </InputGroup>
-          <Button colorScheme="purple" size="sm" width="80px" onClick={onOpen}>
-            Edit
-          </Button>
-
-          <Modal onClose={onClose} isOpen={isOpen} isCentered>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Edit</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <form onSubmit={handleSubmit(saveBranch)}>
-                  <Box flex="1" textAlign="left">
-                    <Input defaultValue={props.name} {...register("name")} />
-                  </Box>
-                  <Select defaultValue={props.type} {...register("type")}>
-                    <option value="APPLICATION">Application</option>
-                    <option value="CONFIRMATION">Confirmation</option>
-                  </Select>
-                  <InputGroup>
-                    <Input
-                      width="15rem"
-                      defaultValue={props.settings.open}
-                      size="sm"
-                      {...register("settings.open")}
-                    />
-                    <Input
-                      width="15rem"
-                      defaultValue={props.settings.close}
-                      size="sm"
-                      {...register("settings.close")}
-                    />
-                  </InputGroup>
-                  <HStack margin={5}>
-                    <Button
-                      colorScheme="green"
-                      size="sm"
-                      width="80px"
-                      isLoading={isSubmitting}
-                      type="submit"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      colorScheme="red"
-                      size="sm"
-                      width="80px"
-                      isLoading={isSubmitting}
-                      onClick={onClose}
-                    >
-                      Close
-                    </Button>
-                  </HStack>
-                </form>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
+          <FormModal
+            {...props}
+            functionName="Edit Branch"
+            buttonName="Edit"
+            function={saveBranch}
+          />
         </AccordionPanel>
       </AccordionItem>
     </Box>

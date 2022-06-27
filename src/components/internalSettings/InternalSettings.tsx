@@ -7,7 +7,7 @@ import useAxios from "axios-hooks";
 import AccordionSection from "./AccordionSection";
 import Loading from "../../util/Loading";
 import FormModal from "./FormModal";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export enum BranchType {
   APPLICATION = "APPLICATION",
@@ -56,7 +56,7 @@ const InternalSettings: React.FC = () => {
       console.log(e.message);
       toast({
         title: "Error!",
-        description: "The branch could not be created due to server issues.",
+        description: "One or more entries are invalid. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -66,7 +66,7 @@ const InternalSettings: React.FC = () => {
   const newBranch: any = {
     name: "",
     hexathon: hexathonId!,
-    type: BranchType.APPLICATION,
+    type: null,
     settings: {
       open: "",
       close: "",
@@ -89,7 +89,7 @@ const InternalSettings: React.FC = () => {
         ))}
       </Accordion>
       <Box marginBlock={10} style={{ marginLeft: "2.5rem" }}>
-        <FormModal {...newBranch} function={createBranch} />
+        <FormModal {...newBranch} updateBranch={createBranch} />
       </Box>
     </Stack>
   );

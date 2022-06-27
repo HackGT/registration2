@@ -4,11 +4,13 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  InputGroup,
   useToast,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import React from "react";
 import axios from "axios";
+import { DateTime } from "luxon";
 
 import { Branch, BranchType } from "./InternalSettings";
 import FormModal from "./FormModal";
@@ -22,10 +24,8 @@ export interface FormModalType {
     open: string;
     close: string;
   };
-  functionName: string;
   buttonName: string;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  function: any;
+  updateBranch: (values: Partial<Branch>) => void;
 }
 
 const AccordionSection: React.FC<Branch> = props => {
@@ -46,7 +46,7 @@ const AccordionSection: React.FC<Branch> = props => {
       console.log(e.message);
       toast({
         title: "Error!",
-        description: "The branch could not be edited due to server issues.",
+        description: "One or more entries are invalid. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -66,23 +66,22 @@ const AccordionSection: React.FC<Branch> = props => {
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4}>
-          <Box flex="1" textAlign="left" borderWidth={1} padding={1}>
-            {props.type === "APPLICATION" ? "Application" : "Confirmation"}
-          </Box>
-          <InputGroup>
-            <Box width="15rem" borderWidth={1} padding={1}>
-              {props.settings.open}
-            </Box>
-            <Box width="15rem" borderWidth={1} padding={1}>
-              {props.settings.close}
-            </Box>
-          </InputGroup>
-          <FormModal
-            {...props}
-            functionName="Edit Branch"
-            buttonName="Edit"
-            function={saveBranch}
-          />
+          <VStack align="left">
+            <Text>Type: {props.type === "APPLICATION" ? "Application" : "Confirmation"}</Text>
+            <Text align="left">
+              Open Time:{" "}
+              {DateTime.fromISO(props.settings.open, { zone: "utc" }).toLocaleString(
+                DateTime.DATETIME_SHORT
+              )}
+            </Text>
+            <Text>
+              Close Time:{" "}
+              {DateTime.fromISO(props.settings.close, { zone: "utc" }).toLocaleString(
+                DateTime.DATETIME_SHORT
+              )}
+            </Text>
+          </VStack>
+          <FormModal {...props} buttonName="Edit" updateBranch={saveBranch} />
         </AccordionPanel>
       </AccordionItem>
     </Box>

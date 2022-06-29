@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { HexathonsProvider } from "./contexts/HexathonsContext";
 import { useLogin } from "./hooks/useLogin";
-import FormPlayground from "./components/formPlayground/FormPlayground";
+import Application from "./components/registration/Application";
 import Dashboard from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import Loading from "./util/Loading";
@@ -14,6 +14,7 @@ import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
+import "./App.css";
 
 axios.defaults.withCredentials = true;
 
@@ -36,7 +37,7 @@ export const App = () => {
               <Route path="/:hexathonId" element={<CheckValidHexathon />}>
                 <Route path="" element={<Dashboard />} />
                 <Route path="user/:userId" element={<User />} />
-                <Route path="form-playground" element={<FormPlayground />} />
+                <Route path="application/:applicationId" element={<Application />} />
                 <Route path="email" element={<EmailScreen />} />
                 <Route path="internal-settings" element={<InternalSettings />} />
               </Route>

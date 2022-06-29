@@ -10222,11 +10222,6 @@ react-select@^5.2.2:
     prop-types "^15.6.0"
     react-transition-group "^4.3.0"
 
-react-spacer@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/react-spacer/-/react-spacer-1.3.0.tgz#6ff7d26bf5f809c9cf891760a0a33c69414366cf"
-  integrity sha512-7YYGRZKVVlQea6HQc7rXZem/nQvuVpidQVABEUe27JBvp76i1vPLBVH82RLGmpYx+83beEGEMjFnUxr5T19NVA==
-
 react-style-singleton@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-style-singleton/-/react-style-singleton-2.2.0.tgz#70f45f5fef97fdb9a52eed98d1839fa6b9032b22"

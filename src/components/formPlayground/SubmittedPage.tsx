@@ -8,20 +8,18 @@ import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import axios from "axios";
 
-axios.defaults.withCredentials = true;
-
-const SubmittedPage = () =>
-(<Flex
-  align="center"
-  justify="center"
-  direction="column"
-  fontFamily="verdana"
-  width="100%"
-  height="100vh"
-  bgGradient="linear(to-t, blue.400, purple.500)"
->
-  <Text fontSize='4xl'>Thank you for applying! You’ll hear from us soon! :))</Text>
-</Flex>
+const SubmittedPage = () => (
+  <Flex
+    align="center"
+    justify="center"
+    direction="column"
+    fontFamily="verdana"
+    width="100%"
+    height="100vh"
+    bgGradient="linear(to-t, blue.400, purple.500)"
+  >
+    <Text fontSize="4xl">Thank you for applying! You’ll hear from us soon! :))</Text>
+  </Flex>
 );
 
 export default SubmittedPage;

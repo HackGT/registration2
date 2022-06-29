@@ -10,6 +10,7 @@ import Admin from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
+import "./App.css";
 
 axios.defaults.withCredentials = true;
 
@@ -30,7 +31,7 @@ export const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<SelectEvent />} />
-          <Route path="application/:branchId" element={<Application applicationId="62a39b5012b805a194a42ea3" />} />
+          <Route path="/application/:applicationId" element={<Application />} />
           <Route path="/:hexathonId">
             <Route path="" element={<Admin />} />
             <Route path="user/:userId" element={<User />} />

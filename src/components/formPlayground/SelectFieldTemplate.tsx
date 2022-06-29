@@ -20,7 +20,7 @@ const SelectFieldTemplate = (props: any) => {
 
   return (
     <Box>
-      <Box fontSize="1rem" fontWeight="500" marginBottom="8px" >
+      <Box fontSize="1rem" fontWeight="500" marginBottom="8px">
         {props.schema.title}
       </Box>
       <Select

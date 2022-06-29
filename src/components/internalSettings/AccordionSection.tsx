@@ -4,30 +4,58 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  Button,
-  Input,
-  InputGroup,
-  Select,
+  useToast,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
 import React from "react";
 import axios from "axios";
+import { DateTime } from "luxon";
 
-import { Branch } from "./InternalSettings";
+import { Branch, BranchType } from "./InternalSettings";
+import FormModal from "./FormModal";
+
+export interface FormModalType {
+  _id?: string;
+  name: string;
+  hexathon: string;
+  type: BranchType;
+  settings: {
+    open: string;
+    close: string;
+  };
+  buttonName: string;
+  updateBranch: (values: Partial<Branch>) => void;
+}
 
 const AccordionSection: React.FC<Branch> = props => {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm();
-
+  const toast = useToast();
   const saveBranch = async (values: Partial<Branch>) => {
-    await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, { ...values });
+    try {
+      await axios.patch(`https://registration.api.hexlabs.org/branches/${props._id}`, {
+        ...values,
+      });
+      toast({
+        title: "Success!",
+        description: "The branch has successfully been edited.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      console.log(e.message);
+      toast({
+        title: "Error!",
+        description: "One or more entries are invalid. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(saveBranch)}>
+    <Box borderWidth={1} margin={10}>
       <AccordionItem>
         <h2>
           <AccordionButton>
@@ -38,36 +66,25 @@ const AccordionSection: React.FC<Branch> = props => {
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4}>
-          <Select defaultValue={props.type} {...register("type")}>
-            <option value="APPLICATION">Application</option>
-            <option value="CONFIRMATION">Confirmation</option>
-          </Select>
-          <InputGroup>
-            <Input
-              width="15rem"
-              placeholder={props.settings.open}
-              size="sm"
-              {...register("settings.open")}
-            />
-            <Input
-              width="15rem"
-              placeholder={props.settings.close}
-              size="sm"
-              {...register("settings.close")}
-            />
-          </InputGroup>
-          <Button
-            colorScheme="purple"
-            size="sm"
-            width="80px"
-            isLoading={isSubmitting}
-            type="submit"
-          >
-            Save
-          </Button>
+          <VStack align="left">
+            <Text>Type: {props.type === "APPLICATION" ? "Application" : "Confirmation"}</Text>
+            <Text align="left">
+              Open Time:{" "}
+              {DateTime.fromISO(props.settings.open, { zone: "utc" }).toLocaleString(
+                DateTime.DATETIME_SHORT
+              )}
+            </Text>
+            <Text>
+              Close Time:{" "}
+              {DateTime.fromISO(props.settings.close, { zone: "utc" }).toLocaleString(
+                DateTime.DATETIME_SHORT
+              )}
+            </Text>
+          </VStack>
+          <FormModal {...props} buttonName="Edit" updateBranch={saveBranch} />
         </AccordionPanel>
       </AccordionItem>
-    </form>
+    </Box>
   );
 };
 

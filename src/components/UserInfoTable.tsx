@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useMemo} from 'react'
 import {
   Table,
   Thead,
@@ -24,54 +24,38 @@ import {
 
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import axios from 'axios'
-import { useAxios } from 'use-axios-client'
+import useAxios from 'axios-hooks'
 import {useTable, useSortBy} from 'react-table'
 
 
 const UserInfoTable: React.FC<any> = (props: any) => {
-  const [value, setValue] = React.useState("")
-  const [tableRows, setRows] = React.useState([{
-    Name: "",
-    Email: "",
-    Status: ""
-  }]);
-  /*
-  const [realData, realsetData] = React.useState(null);
+  const [value, setValue] = React.useState('');
+  const [tableValues, setTableValues] = React.useState([[]]);
+  const [{data, loading, error}, refetch] = useAxios(
+    'https://registration.api.hexlabs.org/applications'
+  );
 
-
-
-  const [filters, setFilters] = React.useState(['SETUP', 'LEARN']);
-
-  const [search, setSearch] = React.useState('');
-  const count = 0;
-  /* const fetchData = () => axios.get('/applications')
-      .then((response:any)=> console.log(response.data))
-*/
-  const [headers, setHeaders] = useState([]);
-  const [data, setData] = useState([]);
-  const fetchData = () => {
-        axios.get('https://registration.api.hexlabs.org/applications')
-            .then((res) => {
-                let i;
-                const residualData = res.data as JSON;
-                const tableValues = [[]];
-                for (i = 0; i < Object.keys(residualData).length; i ++) {
-                  tableValues.push([residualData[i].applicationBranch.name, residualData[i].userId, residualData[i].confirmed]);
-                }
-                setRows(tableValues);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    useEffect(() => {
-      fetchData();
-  }, [value]);
+  let i = 0;
+  let tempData: any[] = [[]];
+  const handleClick = (event:any) => {
+    tempData = [[]];
+    console.log(value);
+    for (i = 0; i < data.length; i ++) {
+      if (data[i].applicationBranch.name.toLowerCase().startsWith(value.toLowerCase()) || data[i].userId.toLowerCase().startsWith(value.toLowerCase())) {
+        const stat = data[i].confirmed;
+        tempData.push({name: data[i].applicationBranch.name, email: data[i].userId, status: stat ? "Confirmed" : "Applied"});
+      }
+    }
+    setValue(event.target.value)
+    setTableValues(tempData)
+    console.log(tableValues);
+  };
 
   return (
       <div>
-        <Input id='inputText' placeholder='Filter Participants' isReadOnly={false} onChange={fetchData}/>
+        <InputGroup size='md'>
+          <Input id='inputText' placeholder='Filter Participants' isReadOnly={false} value={value} onChange={handleClick}/>
+        </InputGroup>
           <Table variant='simple' id = 'table'>
             <TableCaption>Participant Registration</TableCaption>
             <Thead>
@@ -82,11 +66,11 @@ const UserInfoTable: React.FC<any> = (props: any) => {
               </Tr>
             </Thead>
             <Tbody>
-              {tableRows.map(row => (
+              {data.map((rowData: any, index : any) => (
                 <Tr>
-                  <Td>row.Name</Td>
-                  <Td>row.Email</Td>
-                  <Td>row.Status</Td>
+                  <Td> rowData.name </Td>
+                  <Td> rowData.email </Td>
+                  <Td> rowData.status </Td>
                 </Tr>
               ))}
             </Tbody>

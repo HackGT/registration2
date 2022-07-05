@@ -3,6 +3,7 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 
 interface Props {
   title: string;
+  description: string;
 }
 
 const Widget: React.FC<Props> = props => (
@@ -17,7 +18,7 @@ const Widget: React.FC<Props> = props => (
       {props.title}
     </Heading>
     <Text color="#858585" fontSize="sm" fontWeight={400}>
-      Short Description of Title
+      {props.description}
     </Text>
   </Box>
 );

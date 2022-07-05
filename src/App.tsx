@@ -14,6 +14,7 @@ import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
+import UserInfoTable from "./components/userInfo/UserInfoTable";
 import "./App.css";
 
 axios.defaults.withCredentials = true;
@@ -40,6 +41,7 @@ export const App = () => {
                 <Route path="application/:applicationId" element={<Application />} />
                 <Route path="email" element={<EmailScreen />} />
                 <Route path="internal-settings" element={<InternalSettings />} />
+                <Route path="users" element={<UserInfoTable />} />
               </Route>
             </Routes>
           )}

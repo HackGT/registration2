@@ -71,7 +71,7 @@ const ParticipantIndividual: React.FC = () => {
               <span style={{color: "Grey"}}>
                 Ethnicity
               </span> 
-              {" "} is {data.applicationDataa.ethnicity}
+              {" "} is {data.applicationData.ethnicity}
             </Text>
           </AccordionPanel>
         </AccordionItem>

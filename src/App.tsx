@@ -14,7 +14,7 @@ import EmailScreen from "./components/emailScreen/EmailScreen";
 import SelectEvent from "./components/SelectEvent";
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
-import UserInfoTable from "./components/UserInfoTable";
+import UserInfoTable from "./components/userInfo/UserInfoTable";
 import "./App.css";
 
 axios.defaults.withCredentials = true;

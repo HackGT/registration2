@@ -1,49 +1,56 @@
+/* eslint-disable no-underscore-dangle */
 import React from "react";
 import { Table, Thead, Tbody, Tr, Th, Td, Input, InputGroup } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 
+import { getApplicationStatusTag } from "../../util/util";
+
 const UserInfoTable: React.FC = () => {
-  const [value, setValue] = React.useState("");
-  const [tableValues, setTableValues] = React.useState([[]]);
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [{ data, loading, error }] = useAxios("https://registration.api.hexlabs.org/applications");
 
   if (loading || error) {
-    console.log(error);
     return <div>Loading...</div>;
   }
 
-  let i = 0;
-  let tempData: any[] = [[]];
-  const handleClick = (event: any) => {
-    tempData = [[]];
-    console.log(value);
-    for (i = 0; i < data.length; i++) {
-      if (
-        data[i].applicationBranch.name.toLowerCase().startsWith(value.toLowerCase()) ||
-        data[i].userId.toLowerCase().startsWith(value.toLowerCase())
-      ) {
-        const stat = data[i].confirmed;
-        tempData.push({
-          name: data[i].applicationBranch.name,
-          email: data[i].userId,
-          status: stat ? "Confirmed" : "Applied",
-        });
-      }
-    }
-    setValue(event.target.value);
-    setTableValues(tempData);
-    console.log(tableValues);
+  const handleSearchChange = (event: any) => {
+    setSearchQuery(event.target.value);
   };
+
+  const tableData = data.filter((application: any) => {
+    // Check if userId or applicationId matches search
+    if (
+      application.userId.toLowerCase().includes(searchQuery) ||
+      application._id.toLowerCase().includes(searchQuery)
+    ) {
+      return true;
+    }
+
+    // If application doesn't have any other userInfo, return false
+    if (Object.keys(application.userInfo).length === 0) {
+      return false;
+    }
+
+    // Check if application name or email matches search
+    const name = `${application.userInfo?.name?.first} ${application.userInfo?.name?.last}`;
+    if (
+      name.toLowerCase().includes(searchQuery) ||
+      application.userInfo?.email.toLowerCase().includes(searchQuery)
+    ) {
+      return true;
+    }
+    return false;
+  });
 
   return (
     <div>
       <InputGroup size="md">
         <Input
           id="inputText"
-          placeholder="Filter Participants"
+          placeholder="Search applications"
           isReadOnly={false}
-          value={value}
-          onChange={handleClick}
+          value={searchQuery}
+          onChange={handleSearchChange}
         />
       </InputGroup>
       <Table variant="simple" id="table">
@@ -55,11 +62,11 @@ const UserInfoTable: React.FC = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {data.map((row: any) => (
+          {tableData.map((row: any) => (
             <Tr>
-              <Td>{row.name}</Td>
-              <Td>{row.email}</Td>
-              <Td>{row.status}</Td>
+              <Td>{`${row.userInfo.name.first} ${row.userInfo.name.last}`}</Td>
+              <Td>{row.userInfo.email}</Td>
+              <Td>{getApplicationStatusTag(row)}</Td>
             </Tr>
           ))}
         </Tbody>

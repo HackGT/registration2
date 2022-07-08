@@ -2,6 +2,7 @@ import React from "react";
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { HexathonsProvider } from "./contexts/HexathonsContext";
 import { useLogin } from "./hooks/useLogin";
@@ -10,7 +11,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import Loading from "./util/Loading";
 import EmailScreen from "./components/emailScreen/EmailScreen";
-import SelectEvent from "./components/SelectEvent";
+import SelectEvent from "./components/selectEvent/SelectEvent";
 import ParticipantIndividual from "./components/dashboard/ParticipantIndividual";
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Divider } from "@chakra-ui/react";
 
 const ObjectFieldTemplate = (props: any) => (
   <Box width="100%">

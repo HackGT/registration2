@@ -2,10 +2,11 @@ import React from "react";
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { HexathonsProvider } from "./contexts/HexathonsContext";
 import { useLogin } from "./hooks/useLogin";
-import Application from "./components/registration/Application";
+import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
 import User from "./components/user/User";
 import Loading from "./util/Loading";
@@ -38,7 +39,7 @@ export const App = () => {
               <Route path="/:hexathonId" element={<CheckValidHexathon />}>
                 <Route path="" element={<Dashboard />} />
                 <Route path="user/:userId" element={<User />} />
-                <Route path="application/:applicationId" element={<Application />} />
+                <Route path="application/:applicationId" element={<ApplicationContainer />} />
                 <Route path="email" element={<EmailScreen />} />
                 <Route path="internal-settings" element={<InternalSettings />} />
                 <Route path="users" element={<UserInfoTable />} />

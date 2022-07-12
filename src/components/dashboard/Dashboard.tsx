@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
 
   const [{ data: profile, loading, error }] = useAxios(
-    `https://users.api.hexlabs.org/users/${user?.uid}`
+    'https://users.api.hexlabs.org/users/${user?.uid}'
   );
 
   if (loading || error) {

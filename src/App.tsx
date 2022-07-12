@@ -15,6 +15,7 @@ import ParticipantIndividual from "./components/dashboard/ParticipantIndividual"
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
 import UserInfoTable from "./components/userInfo/UserInfoTable";
+
 import "./App.css";
 
 axios.defaults.withCredentials = true;

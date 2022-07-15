@@ -3,9 +3,9 @@ import React from "react";
 import { Table, Thead, Tbody, Tr, Th, Td, Input, InputGroup } from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 
-import { getApplicationStatusTag } from "../../util/util";
+import { getApplicationStatusTag } from "../../../util/util";
 
-const UserInfoTable: React.FC = () => {
+const AllApplicationsTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [{ data, loading, error }] = useAxios("https://registration.api.hexlabs.org/applications");
 
@@ -75,4 +75,4 @@ const UserInfoTable: React.FC = () => {
   );
 };
 
-export default UserInfoTable;
+export default AllApplicationsTable;

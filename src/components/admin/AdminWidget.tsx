@@ -6,7 +6,7 @@ interface Props {
   description: string;
 }
 
-const Widget: React.FC<Props> = props => (
+const AdminWidget: React.FC<Props> = props => (
   <Box
     boxShadow={{
       base: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
@@ -23,4 +23,4 @@ const Widget: React.FC<Props> = props => (
   </Box>
 );
 
-export default Widget;
+export default AdminWidget;

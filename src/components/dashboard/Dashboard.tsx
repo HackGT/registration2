@@ -7,34 +7,16 @@ import {
   Text,
   Button,
   HStack,
-  SimpleGrid,
   Divider,
 } from "@chakra-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 
 import { useAuth } from "../../contexts/AuthContext";
-import Tile from "./Tile";
 import Timeline from "./Timeline";
 import useCurrentHexathon from "../../hooks/useCurrentHexathon";
 import Loading from "../../util/Loading";
-import { DateTime } from 'luxon'
-
-function getDescription(branch: any) {
-  const openDate = DateTime.fromISO((new Date(branch.settings.open)).toISOString());
-  const closeDate = DateTime.fromISO((new Date(branch.settings.close)).toISOString());
-  const currDate = DateTime.fromISO((new Date()).toISOString());
-
-  console.log(currDate);
-
-  if (currDate < openDate) {
-    return `Application opens on ${openDate.toLocaleString(DateTime.DATETIME_FULL)}`
-  } 
-  if (currDate > closeDate) {
-    return `Applications closed on ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`
-  }
-  return `Accepting applications until ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`
-}
+import Branches from "./Branches";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -44,10 +26,6 @@ const Dashboard: React.FC = () => {
     `https://users.api.hexlabs.org/users/${user?.uid}`
   );
 
-  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios(
-    `https://registration.api.hexlabs.org/branches/?hexathon=${currentHexathon._id}`
-  );
-
   const [{data: application, loading: applicationLoading, error: applicationError}] = useAxios({
     url: 'https://registration.api.hexlabs.org/applications/',
     method: 'GET',
@@ -55,10 +33,10 @@ const Dashboard: React.FC = () => {
       hexathon: currentHexathon._id,
       userId: user?.uid
     }
-  })
+})
 
   if (profileLoading || profileError 
-    || branchesLoading || branchesError ) {
+    || applicationLoading || applicationError) {
     return <Loading />;
   }
 
@@ -106,59 +84,44 @@ const Dashboard: React.FC = () => {
             </Button>
           </HStack>
         </Box>
-        {application.confirmed ? (
-        <Box
-          border="8px"
-          borderStyle="solid"
-          borderColor="white"
-          borderRadius="3xl"
-          padding="10px"
-          bgColor="#b4c0fa"
-          marginY={{ md: "20px" }}
-          marginBottom={{ base: "40px" }}
-          marginX={{ base: "auto", md: "64px" }}
-        >
-            <QRCodeSVG
-              value={JSON.stringify({
-                uid: user?.uid,
-                name: {
-                  first: profile.name?.first,
-                  last: profile.name?.last,
-                },
-                email: user?.email,
-              })}
-              bgColor="#b4c0fa"
-              size={140}
-            />
-        </Box>
-        ) : (
-          null
-        )
+        {(application.status === "CONFIRMED") ? (
+            <Box
+                border="8px"
+                borderStyle="solid"
+                borderColor="white"
+                borderRadius="3xl"
+                padding="10px"
+                bgColor="#b4c0fa"
+                marginY={{ md: "20px" }}
+                marginBottom={{ base: "40px" }}
+                marginX={{ base: "auto", md: "64px" }}
+            >
+                <QRCodeSVG
+                    value={JSON.stringify({
+                    uid: user?.uid,
+                    name: {
+                        first: profile.name?.first,
+                        last: profile.name?.last,
+                    },
+                    email: user?.email,
+                    })}
+                    bgColor="#b4c0fa"
+                    size={140}
+                />
+            </Box>
+            ) : (
+                null
+            )
         }
       </Flex>
       <Stack margin={{ base: "20px", md: 0 }} marginBottom={{ base: 0, md: "15px" }}>
         <Box margin="35px 25px 15px 25px">
           <Heading fontSize="36px" fontWeight="semibold" marginBottom="10px">
-            Tracks
+            Application Paths
           </Heading>
           <Text>Select one of the tracks from below to apply to {currentHexathon.name}.</Text>
         </Box>
-        <SimpleGrid columns={branches.length === 0 ? 1 : { base: 1, md: 2 }} spacing={4}>
-          {branches.length === 0 ? (
-            <Text textAlign="center" fontStyle="italic" paddingX="40px">
-              We are currently working hard to finalize the tracks for {currentHexathon.name}!
-              Please check back later!
-            </Text>
-          ) : (
-            branches.map((branch: any) => (
-              <Tile
-                key={branch.name}
-                title={branch.name}
-                description={getDescription(branch)}
-              />
-            ))
-          )}
-        </SimpleGrid>
+        <Branches/>
       </Stack>
       <Divider marginY={{ base: "30px", md: "40px" }} alignSelf="center" width="95%" />
       <Stack marginX={{ base: "20px", md: 0 }}>

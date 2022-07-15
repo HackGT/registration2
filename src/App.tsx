@@ -3,6 +3,7 @@ import { ChakraProvider, theme } from "@chakra-ui/react";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 
+import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { HexathonsProvider } from "./contexts/HexathonsContext";
 import { useLogin } from "./hooks/useLogin";
@@ -16,7 +17,7 @@ import ParticipantIndividual from "./components/dashboard/ParticipantIndividual"
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
 import UserInfoTable from "./components/userInfo/UserInfoTable";
-import "./App.css";
+import BranchEditor from "./components/branchEditor/BranchEditor";
 
 axios.defaults.withCredentials = true;
 
@@ -44,6 +45,7 @@ export const App = () => {
                 <Route path="internal-settings" element={<InternalSettings />} />
                 <Route path="users" element={<UserInfoTable />} />
                 <Route path="users/:applicationId" element={<ParticipantIndividual />} />
+                <Route path="branch/:branchId" element={<BranchEditor />} />
               </Route>
             </Routes>
           )}

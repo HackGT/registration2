@@ -1,9 +1,21 @@
 /* eslint-disable no-underscore-dangle */
 import React from "react";
-import { Table, Thead, Tbody, Tr, Th, Td, Input, InputGroup } from "@chakra-ui/react";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Input,
+  InputGroup,
+  LinkBox,
+  LinkOverlay,
+} from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 
 import { getApplicationStatusTag } from "../../../util/util";
+import { Link } from "react-router-dom";
 
 const AllApplicationsTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -63,11 +75,16 @@ const AllApplicationsTable: React.FC = () => {
         </Thead>
         <Tbody>
           {tableData.map((row: any) => (
-            <Tr>
-              <Td>{`${row.userInfo.name.first} ${row.userInfo.name.last}`}</Td>
+            <LinkBox as={Tr} key={row._id}>
+              <Td>
+                <LinkOverlay
+                  as={Link}
+                  to={row._id}
+                >{`${row.userInfo.name.first} ${row.userInfo.name.last}`}</LinkOverlay>
+              </Td>
               <Td>{row.userInfo.email}</Td>
               <Td>{getApplicationStatusTag(row)}</Td>
-            </Tr>
+            </LinkBox>
           ))}
         </Tbody>
       </Table>

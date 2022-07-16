@@ -8,7 +8,10 @@ interface Props {
 }
 
 const Tile: React.FC<Props> = props => (
-  <LinkBox borderRadius="4px" boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px">
+  <LinkBox borderRadius="4px" boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    _hover={{
+      boxShadow: "rgba(0, 0, 0, 0.45) 4px 6px 14px"
+    }}>
     <Box
       bgGradient={props.image ? "" : "linear(to-l, #33c2ff, #7b69ec)"}
       borderTopRadius="4px"

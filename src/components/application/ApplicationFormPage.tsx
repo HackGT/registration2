@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "@chakra-ui/react";
-import Form from "@rjsf/chakra-ui";
 import axios from "axios";
 
-import ObjectFieldTemplate from "./ObjectFieldTemplate";
-import SelectFieldTemplate from "./SelectFieldTemplate";
+import CommonForm from "../commonForm/CommonForm";
 
 interface FormPage {
   title: string;
@@ -55,21 +53,17 @@ const ApplicationFormPage: React.FC<Props> = props => {
   };
 
   return (
-    <Form
+    <CommonForm
       schema={JSON.parse(props.formPage.jsonSchema)}
       uiSchema={JSON.parse(props.formPage.uiSchema)}
       formData={formData}
       onChange={({ formData: updatedFormData }, e) => {
         setFormData(updatedFormData);
       }}
-      ObjectFieldTemplate={ObjectFieldTemplate}
-      fields={{ select: SelectFieldTemplate }}
       onSubmit={({ formData: submittedFormData }, e) => {
         console.log(submittedFormData);
         handleNextClicked();
       }}
-      noHtml5Validate
-      showErrorList={false}
     >
       <Button
         colorScheme="purple"
@@ -85,7 +79,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
       <Button colorScheme="purple" type="submit" width="100%">
         Next
       </Button>
-    </Form>
+    </CommonForm>
   );
 };
 

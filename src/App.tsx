@@ -15,6 +15,8 @@ import ParticipantIndividual from "./components/dashboard/ParticipantIndividual"
 import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
 import UserInfoTable from "./components/userInfo/UserInfoTable";
+import FourZeroFour from "./components/FourZeroFourScreen";
+import Error from "./components/ErrorScreen";
 
 import "./App.css";
 
@@ -44,6 +46,8 @@ export const App = () => {
                 <Route path="internal-settings" element={<InternalSettings />} />
                 <Route path="users" element={<UserInfoTable />} />
                 <Route path="users/:applicationId" element={<ParticipantIndividual />} />
+                <Route path="404" element ={<FourZeroFour/>} />
+                <Route path="Error" element = {<Error />} />
               </Route>
             </Routes>
           )}

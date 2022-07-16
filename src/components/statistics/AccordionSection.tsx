@@ -4,17 +4,26 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  useToast,
-  Text,
-  VStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Tr,
 } from "@chakra-ui/react";
 import React from "react";
-import axios from "axios";
-import { DateTime } from "luxon";
+
+const usersKeyMap: Record<string, string> = {
+  totalUsers: "Total Users",
+  appliedUsers: "Applied Users",
+  acceptedUsers: "Accepted Users",
+  confirmedUsers: "Confirmed Users",
+  nonConfirmedUsers: "Non-Confirmed Accepted Users",
+  deniedUsers: "Denied Users",
+};
 
 interface IProps {
   name: string;
-  data: object;
+  data: Record<string, number>;
 }
 
 const AccordionSection: React.FC<IProps> = props => {
@@ -30,7 +39,27 @@ const AccordionSection: React.FC<IProps> = props => {
             <AccordionIcon />
           </AccordionButton>
         </h2>
-        <AccordionPanel pb={4} />
+        <AccordionPanel pb={4}>
+          <TableContainer>
+            <Table variant="simple">
+              <Tbody>
+                {Object.keys(props.data).map(key =>
+                  props.name === "Users" ? (
+                    <Tr>
+                      <Td>{usersKeyMap[key]}</Td>
+                      <Td float="right">{props.data[key]}</Td>
+                    </Tr>
+                  ) : (
+                    <Tr>
+                      <Td>{key}</Td>
+                      <Td float="right">{props.data[key]}</Td>
+                    </Tr>
+                  )
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </AccordionPanel>
       </AccordionItem>
     </Box>
   );

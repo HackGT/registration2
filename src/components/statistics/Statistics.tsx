@@ -1,19 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 import React from "react";
-import { Accordion, Heading, Stack } from "@chakra-ui/react";
+import { Accordion, Box, Heading, Stack, Text, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import Loading from "../../util/Loading";
 import AccordionSection from "./AccordionSection";
+import GraphAccordionSection from "./GraphAccordionSection";
 
 const Statistics: React.FC = () => {
   const { hexathonId } = useParams();
   const [{ data, loading, error }] = useAxios(
     `https://registration.api.hexlabs.org/statistics/?hexathon=${hexathonId}`
   );
-
-  console.log(data);
+  if (loading) return <Loading />;
   if (error) console.log(error.message);
 
   const {
@@ -21,24 +21,27 @@ const Statistics: React.FC = () => {
     applicationStatistics,
     confirmationStatistics,
     rejectionStatistics,
-    aggregatedApplicationData,
-    branchMap,
+    applicationDataStatistics,
   } = data;
 
-  if (loading) return <Loading />;
-
   return (
-    <Stack>
-      <Heading as="h1">Statistics</Heading>
-      <Heading as="h3" size="xs">
-        All of the data crunched into this page from all of the applications we recieved.
-      </Heading>
-      <Accordion allowToggle>
-        <AccordionSection name="Users" data={userStatistics}/>
-        <AccordionSection name="Applications" data={applicationStatistics}/>
-        <AccordionSection name="Confirmations" data={confirmationStatistics}/>
-      </Accordion>
-    </Stack>
+    <Box w="100%" p={5}>
+      <Stack>
+        <VStack>
+          <Heading as="h1">Statistics</Heading>
+          <Text fontSize="lg" color="grey">
+            All of the data crunched into this page from all of the applications we recieved.
+          </Text>
+        </VStack>
+        <Accordion allowToggle>
+          <AccordionSection name="Users" data={userStatistics} />
+          <AccordionSection name="Applications" data={applicationStatistics} />
+          <AccordionSection name="Confirmations" data={confirmationStatistics} />
+          <AccordionSection name="Rejections" data={rejectionStatistics} />
+          <GraphAccordionSection name="Application Statistics" data={applicationDataStatistics} />
+        </Accordion>
+      </Stack>
+    </Box>
   );
 };
 

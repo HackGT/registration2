@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, SimpleGrid} from "@chakra-ui/react";
 import useAxios from "axios-hooks";
 import { DateTime } from 'luxon'
@@ -6,6 +6,9 @@ import { DateTime } from 'luxon'
 import Loading from "../../util/Loading";
 import Tile from "./Tile";
 import useCurrentHexathon from '../../hooks/useCurrentHexathon';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
+import ApplicationStatus from '../../types/ApplicationStatus';
 
 function getDescription(branch: any) {
   const openDate = DateTime.fromISO((new Date(branch.settings.open)).toISOString());
@@ -22,15 +25,51 @@ function getDescription(branch: any) {
 }
 
 const Branches: React.FC = () => {
-
+  const { user } = useAuth();
+  const [currApp, setCurrApp] = useState<any>({})
+  const [currStatus, setCurrStatus] = useState(ApplicationStatus.NotStarted)
   const currentHexathon = useCurrentHexathon();
 
   const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios(
       `https://registration.api.hexlabs.org/branches/?hexathon=${currentHexathon._id}`
   );
+  const [{ data: applications, loading: app_loading, error: app_error }] = useAxios(
+    `https://registration.api.hexlabs.org/applications/?hexathon=${currentHexathon._id}&userId=${user?.uid}`
+  );
 
-  if (branchesLoading || branchesError) {
-      return <Loading />
+  useEffect(() => {
+    if (applications && applications.length != 0) {
+      setCurrApp(applications[0])
+      if (currApp) {
+        if (currApp.applied) {
+          setCurrStatus(ApplicationStatus.Submitted)
+        } else {
+          setCurrStatus(ApplicationStatus.InProgress)
+        }
+      }
+    } 
+  }, [applications, branches]);
+
+  const chooseBranch = async (appBranchID: any) => {
+
+    try {
+      const response = await axios.post(
+        `https://registration.api.hexlabs.org/applications/actions/choose-application-branch`,
+        {
+          hexathon: currentHexathon._id,
+          applicationBranch: appBranchID,
+        }
+      );
+      return (`/${currentHexathon._id}/application/${response.data._id}`)
+    } catch (error) {
+      console.log(error);
+    }
+    return ("")
+  };
+
+
+  if (branchesLoading || app_loading || branchesError || app_error) {
+    return <Loading />;
   }
 
   return (
@@ -41,13 +80,15 @@ const Branches: React.FC = () => {
           Please check back later!
       </Text>
       ) : (
-      branches.map((branch: any) => (
+        branches.map((branch: any) => (
           <Tile
-          key={branch.name}
-          title={branch.name}
-          description={getDescription(branch)}
+            branch = {branch}
+            status={branch._id == currApp?.applicationBranch?._id ? currStatus : ApplicationStatus.NotStarted}
+            hasApplication = {Object.keys(currApp).length != 0}
+            chooseBranch={chooseBranch}
+            currAppLink={branch._id == currApp?.applicationBranch?._id ? `/${currentHexathon._id}/application/${currApp._id}` : ""}
           />
-      ))
+        ))
       )}
       </SimpleGrid>
   )

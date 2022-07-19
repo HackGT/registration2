@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { ChakraProvider, Flex, Spinner, theme } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
 import { AuthProvider } from "../../contexts/AuthContext";
-import ApplicationFormPage from "../formPlayground/ApplicationFormPage";
-import SubmittedPage from "../formPlayground/SubmittedPage";
+import ApplicationFormPage from "./ApplicationFormPage";
+import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 
 const Application = () => {
   const { applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
 
-  const [{ data, loading, error }, refetch] = useAxios(
+  const [{ data, loading, error }] = useAxios(
     `https://registration.api.hexlabs.org/applications/${applicationId}`
   );
   const [branch, setBranch] = useState<any>(undefined);
@@ -53,27 +53,25 @@ const Application = () => {
   };
 
   return (
-    <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <Flex align="center" justify="center" direction="column" fontFamily="verdana">
-          {formPageNumber < branch.formPages.length ? (
-            <ApplicationFormPage
-              defaultFormData={defaultFormData}
-              formPage={branch.formPages[formPageNumber]}
-              formPageNumber={formPageNumber}
-              applicationId={applicationId}
-              lastPage={formPageNumber === branch.formPages.length - 1}
-              submitApplication={submitApplication}
-              hasPrevPage={formPageNumber > 0}
-              prevPage={prevPage}
-              nextPage={nextPage}
-            />
-          ) : (
-            <SubmittedPage />
-          )}
-        </Flex>
-      </AuthProvider>
-    </ChakraProvider>
+    <AuthProvider>
+      <Flex align="center" justify="center" direction="column" fontFamily="verdana">
+        {formPageNumber < branch.formPages.length ? (
+          <ApplicationFormPage
+            defaultFormData={defaultFormData}
+            formPage={branch.formPages[formPageNumber]}
+            formPageNumber={formPageNumber}
+            applicationId={applicationId}
+            lastPage={formPageNumber === branch.formPages.length - 1}
+            submitApplication={submitApplication}
+            hasPrevPage={formPageNumber > 0}
+            prevPage={prevPage}
+            nextPage={nextPage}
+          />
+        ) : (
+          <ApplicationSubmittedPage />
+        )}
+      </Flex>
+    </AuthProvider>
   );
 };
 

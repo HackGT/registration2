@@ -1,34 +1,35 @@
 import React, { useEffect } from "react";
 import { Select } from "chakra-react-select";
-import { Box } from "@chakra-ui/react";
+import { Box, FormLabel } from "@chakra-ui/react";
+import { FieldProps } from "@rjsf/core";
 
-const SelectFieldTemplate = (props: any) => {
+const SelectFieldTemplate: React.FC<FieldProps> = props => {
   const options: any[] = [];
 
   useEffect(() => {
-    try {
-      props.schema.enum.forEach((element: any) => {
-        options.push({
-          label: element,
-          value: element,
-        });
+    (props.schema.enum ?? []).forEach(element => {
+      options.push({
+        label: element,
+        value: element,
       });
-    } catch (e: any) {
-      console.log(e.message);
-    }
+    });
   });
 
   return (
     <Box>
-      <Box fontSize="1rem" fontWeight="500" marginBottom="8px">
-        {props.schema.title}
-      </Box>
+      <FormLabel>{props.schema.title}</FormLabel>
       <Select
         value={{ label: props.formData, value: props.formData }}
         options={options}
         onChange={(e: any) => {
-          props.onChange(e.value);
+          if (e === null) {
+            props.onChange("");
+          } else {
+            props.onChange(e.value);
+          }
         }}
+        isSearchable
+        isClearable
       />
     </Box>
   );

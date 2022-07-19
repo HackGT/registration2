@@ -24,9 +24,9 @@ const GraphView: React.FC<IProps> = props => {
 
   return (
     <div className="col-12 col-sm-6">
-      <Card>
-        <h5>{props.graphQuestion}</h5>
-        <Pie data={data} />
+      <Card style={{ width: "250px", maxWidth: "250px", display: "inline-block" }}>
+        <h5 style={{ textAlign: "center" }}>{props.graphQuestion}</h5>
+        <Pie style={{ width: "250px" }} data={data} />
       </Card>
     </div>
   );

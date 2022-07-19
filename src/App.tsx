@@ -18,6 +18,7 @@ import InternalSettings from "./components/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
 import UserInfoTable from "./components/userInfo/UserInfoTable";
 import BranchEditor from "./components/branchEditor/BranchEditor";
+import AdminControlsHome from "./components/dashboard/AdminControlsHome";
 
 axios.defaults.withCredentials = true;
 
@@ -37,6 +38,7 @@ export const App = () => {
           ) : (
             <Routes>
               <Route path="/" element={<SelectEvent />} />
+              <Route path="/admin" element={<AdminControlsHome/>} />
               <Route path="/:hexathonId" element={<CheckValidHexathon />}>
                 <Route path="" element={<Dashboard />} />
                 <Route path="user/:userId" element={<User />} />

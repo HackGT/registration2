@@ -15,9 +15,9 @@ import {
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import Loading from "../../util/Loading";
+import Loading from "../../../util/Loading";
 
-const ParticipantIndividual: React.FC = () => {
+const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
   const [{ data, loading, error }] = useAxios(
     `https://registration.api.hexlabs.org/applications/${applicationId}`
@@ -104,4 +104,4 @@ const ParticipantIndividual: React.FC = () => {
   );
 };
 
-export default ParticipantIndividual;
+export default ApplicationDetailPage;

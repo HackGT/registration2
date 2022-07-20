@@ -112,7 +112,13 @@ const Tile: React.FC<Props> = props => {
   return (
     <Box
       borderRadius="4px"
-      boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+      boxShadow={{
+        base: "rgba(0, 0, 0, 0.15) 0px 0px 6px 1px",
+      }}
+      _hover={{
+        boxShadow: "rgba(0, 0, 0, 0.20) 0px 0px 8px 2px",
+      }}
+      transition="box-shadow 0.2s ease-in-out"
       style={{ cursor: "pointer" }}
       onClick={async () => {
         if (

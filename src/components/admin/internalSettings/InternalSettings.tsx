@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
-import Loading from "../../util/Loading";
+import Loading from "../../../util/Loading";
 import FormModal from "./FormModal";
 import axios, { AxiosError } from "axios";
 

@@ -1,9 +1,8 @@
-import React, { MutableRefObject, useEffect } from "react";
+/* eslint-disable no-underscore-dangle */
+import React, { useMemo } from "react";
 import {
   Box,
   Heading,
-  LinkBox,
-  LinkOverlay,
   Text,
   Tag,
   Flex,
@@ -15,82 +14,141 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import ApplicationStatus from "../../types/ApplicationStatus";
+import { DateTime } from "luxon";
+
+enum BranchStatus {
+  NotStarted = "Not Started",
+  InProgress = "In Progress",
+  Submitted = "Submitted",
+  Closed = "Closed",
+  NotOpen = "Not Open",
+}
 
 interface Props {
   branch: any;
+  currApp: any;
   image?: string;
-  status: string;
-  hasApplication: boolean;
-  currAppLink: string;
   chooseBranch: (appBranchID: any) => Promise<string | undefined>;
 }
 
-
 const Tile: React.FC<Props> = props => {
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef(null)
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef(null);
 
-  const onConfirm = async () => {
-    onClose()
+  const chooseBranchAndNavigate = async () => {
     try {
-      const newAppLink = await props.chooseBranch(props.branch._id)
+      const newAppLink = await props.chooseBranch(props.branch._id);
       if (newAppLink) {
-        navigate(newAppLink, { replace: true });
+        navigate(newAppLink);
       } else {
-        console.log("Undefined link form after choosing branch")
+        toast({
+          title: "Error",
+          description: "Unable to select this application. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Unable to select this application. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
+  const onConfirm = async () => {
+    onClose();
+    await chooseBranchAndNavigate();
+  };
+
+  const openDate = DateTime.fromISO(new Date(props.branch.settings.open).toISOString());
+  const closeDate = DateTime.fromISO(new Date(props.branch.settings.close).toISOString());
+  const currDate = DateTime.fromISO(new Date().toISOString());
+
+  const branchStatus = useMemo(() => {
+    const currBranchHasApplication = props.branch._id === props.currApp?.applicationBranch?._id;
+    if (currBranchHasApplication && props.currApp.applied) {
+      return BranchStatus.Submitted;
+    }
+    if (currDate < openDate) {
+      return BranchStatus.NotOpen;
+    }
+    if (currDate > closeDate) {
+      return BranchStatus.Closed;
+    }
+    if (currBranchHasApplication) {
+      return BranchStatus.InProgress;
+    }
+    return BranchStatus.NotStarted;
+  }, [props.branch, props.currApp, openDate, closeDate, currDate]);
+
+  const branchDescription = useMemo(() => {
+    if (currDate < openDate) {
+      return `Application opens on ${openDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+    }
+    if (currDate > closeDate) {
+      return `Applications closed on ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+    }
+    return `Accepting applications until ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+  }, [openDate, closeDate, currDate]);
+
+  const tagColor = useMemo(() => {
+    if (branchStatus === BranchStatus.Closed || branchStatus === BranchStatus.NotOpen) {
+      return "red";
+    }
+    return "teal";
+  }, [branchStatus]);
+
   return (
-    <LinkBox
+    <Box
       borderRadius="4px"
       boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+      style={{ cursor: "pointer" }}
       onClick={async () => {
-        if (props.hasApplication) {
-          if (props.status == ApplicationStatus.NotStarted) {
-            onOpen()
-          } else if (props.status == ApplicationStatus.InProgress) {
-            navigate(props.currAppLink, { replace: true });
-          } else {
-            console.log("submitted!")
+        if (
+          branchStatus === BranchStatus.Closed ||
+          branchStatus === BranchStatus.NotOpen ||
+          branchStatus === BranchStatus.Submitted
+        ) {
+          return;
+        }
+        // If the user has an application, ask if they want to start a new one
+        if (props.currApp && Object.keys(props.currApp).length !== 0) {
+          if (branchStatus === BranchStatus.NotStarted) {
+            onOpen();
+          } else if (branchStatus === BranchStatus.InProgress) {
+            navigate(`application/${props.currApp._id}`);
           }
         } else {
-          const newAppLink = await props.chooseBranch(props.branch._id)
-          if (newAppLink) {
-            navigate(newAppLink, { replace: true });
-          } else {
-            console.log("Issue getting new app link")
-          }
+          await chooseBranchAndNavigate();
         }
       }}
     >
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay >
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Start a new application?
             </AlertDialogHeader>
-
             <AlertDialogBody>
-              Are you sure? You have already started another application. If you start a new one, all previous progress will be lost.
+              Are you sure? You have already started another application. If you start a new one,
+              all previous progress will be lost.
             </AlertDialogBody>
-
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='blue' onClick={onConfirm} ml={3}>
+              <Button colorScheme="blue" onClick={onConfirm} ml={3}>
                 Confirm
               </Button>
             </AlertDialogFooter>
@@ -104,25 +162,21 @@ const Tile: React.FC<Props> = props => {
         justifyContent="flex-end"
         alignItems="flex-start"
       >
-        <Tag size='sm' key='sm' variant='solid' colorScheme='teal' margin="5px">
-          {props.status}
+        <Tag size="sm" key="sm" variant="solid" colorScheme={tagColor} margin="5px">
+          {branchStatus}
         </Tag>
       </Flex>
 
       <Box padding="20px 32px">
         <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
-          <LinkOverlay href="#">
-            {props.branch.name}
-          </LinkOverlay>
+          <Text>{props.branch.name}</Text>
         </Heading>
         <Text fontSize="sm" color="#858585">
-          {`${new Date(props.branch.settings.open).toDateString()} - ${new Date(
-            props.branch.settings.close
-          ).toDateString()}`}
+          {branchDescription}
         </Text>
       </Box>
-    </LinkBox>
-  )
+    </Box>
+  );
 };
 
 export default Tile;

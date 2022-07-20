@@ -2,17 +2,19 @@ import React from "react";
 import { Stack, Box } from "@chakra-ui/react";
 
 import Hex from "./hex";
-import { useHexathons } from "../../contexts/HexathonsContext";
-import useCurrentHexathon from "../../hooks/useCurrentHexathon";
+import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-const Timeline: React.FC = () => {
-  const currentHexathon = useCurrentHexathon();
-  const { hexathons } = useHexathons();
+interface Props {
+  hexathons: any[];
+}
 
-  const currentHexathonIndex = hexathons.findIndex(
+const Timeline: React.FC<Props> = props => {
+  const { currentHexathon } = useCurrentHexathon();
+
+  const currentHexathonIndex = props.hexathons.findIndex(
     (hexathon: any) => hexathon._id === currentHexathon._id
   );
-  const filteredHexathons = hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
+  const filteredHexathons = props.hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
 
   return (
     <Stack

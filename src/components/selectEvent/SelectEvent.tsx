@@ -1,20 +1,18 @@
 import { VStack } from "@chakra-ui/react";
 import React from "react";
-import { Link } from "react-router-dom";
 
-import { useHexathons } from "../../contexts/HexathonsContext";
 import EventCard from "./EventCard";
 
-const SelectEvent: React.FC = () => {
-  const { hexathons } = useHexathons();
+interface Props {
+  hexathons: any[];
+}
 
-  return (
-    <VStack paddingY={{ base: "32px", md: "32px" }}>
-      {hexathons.map((hexathon: any) => (
-        <EventCard name={hexathon.name} id={hexathon._id} />
-      ))}
-    </VStack>
-  );
-};
+const SelectEvent: React.FC<Props> = props => (
+  <VStack paddingY={{ base: "32px", md: "32px" }}>
+    {props.hexathons.map((hexathon: any) => (
+      <EventCard name={hexathon.name} id={hexathon._id} key={hexathon._id} />
+    ))}
+  </VStack>
+);
 
 export default SelectEvent;

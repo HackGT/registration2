@@ -14,6 +14,7 @@ import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
 import InternalSettings from "./components/admin/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
+import Statistics from "./components/statistics/Statistics";
 import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
 import AdminControlsHome from "./components/admin/AdminControlsHome";
 import BranchEditor from "./components/branchEditor/BranchEditor";
@@ -47,6 +48,7 @@ export const App = () => {
           <Route path="admin/applications" element={<AllApplicationsTable />} />
           <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
           <Route path="admin/branch/:branchId" element={<BranchEditor />} />
+          <Route path="admin/statistics" element={<Statistics />} />
         </Route>
       </Routes>
     </AuthProvider>

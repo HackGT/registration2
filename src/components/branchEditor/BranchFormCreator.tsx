@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   AlertDescription,
@@ -6,9 +6,11 @@ import {
   AlertTitle,
   Box,
   Button,
+  Link,
   Stack,
+  useToast,
+  Text,
 } from "@chakra-ui/react";
-import { JSONSchema7 } from "json-schema";
 
 import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
 import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
@@ -31,25 +33,36 @@ const BranchFormCreator: React.FC<Props> = props => {
   );
   const [formData, setFormData] = useState("{}");
   const [loading, setLoading] = useState(false);
+  const [schemaErrors, setSchemaErrors] = useState<any>({});
+  const toast = useToast();
 
   const handleSaveFormPage = async () => {
+    // If JSON schema or UI schema have errors, don't save
+    try {
+      JSON.parse(jsonSchema);
+      JSON.parse(uiSchema);
+      console.log(schemaErrors);
+      if (Object.values(schemaErrors).includes(true)) throw Error();
+    } catch (err) {
+      toast({
+        title: "Error",
+        description:
+          "Unable to save form page. Please check your JSON schema and UI schema for errors.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    setLoading(true);
     const updatedFormPage = {
       title: props.formPage.title,
       jsonSchema,
       uiSchema,
     };
-    setLoading(true);
     await props.handleSaveFormPage(updatedFormPage, props.formPageIndex);
     setLoading(false);
   };
-
-  // Need to use this memo function to include the common definitions schema. These
-  // definitions don't show up in the editor
-  const combinedJsonSchema = useMemo(() => {
-    const schema = JSON.parse(jsonSchema);
-    schema.definitions = JSON.parse(props.commonDefinitionsSchema);
-    return schema as JSONSchema7;
-  }, [jsonSchema, props.commonDefinitionsSchema]);
 
   return (
     <>
@@ -69,8 +82,38 @@ const BranchFormCreator: React.FC<Props> = props => {
               Right click inside the editor for more tools like JSON formatting.
             </AlertDescription>
           </Alert>
-          <SchemaInput title="JSON Schema" schema={jsonSchema} setSchema={setJsonSchema} />
-          <SchemaInput title="UI Schema" schema={uiSchema} setSchema={setUiSchema} />
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>Common Definitions</AlertTitle>
+            <AlertDescription>
+              <Text>
+                You can use common definitions to reuse shared dropdown options between forms (like
+                school, ethnicity, etc.). Click{" "}
+                <Link
+                  href="https://github.com/HackGT/api/blob/main/services/registration/src/common/commonDefinitions.ts"
+                  target="_blank"
+                  rel="noreferrer"
+                  isExternal
+                  textDecorationLine="underline"
+                >
+                  here
+                </Link>{" "}
+                to view the current list.
+              </Text>
+            </AlertDescription>
+          </Alert>
+          <SchemaInput
+            title="JSON Schema"
+            schema={jsonSchema}
+            setSchema={setJsonSchema}
+            setSchemaErrors={setSchemaErrors}
+          />
+          <SchemaInput
+            title="UI Schema"
+            schema={uiSchema}
+            setSchema={setUiSchema}
+            setSchemaErrors={setSchemaErrors}
+          />
           <SchemaInput title="Test Form Data" schema={formData} setSchema={setFormData} />
         </Stack>
         <Box
@@ -81,8 +124,9 @@ const BranchFormCreator: React.FC<Props> = props => {
           display="inline-block"
         >
           <CommonForm
-            schema={combinedJsonSchema}
-            uiSchema={JSON.parse(uiSchema)}
+            schema={jsonSchema}
+            uiSchema={uiSchema}
+            commonDefinitionsSchema={props.commonDefinitionsSchema}
             formData={JSON.parse(formData)}
             onChange={(val: any, event: any) => {
               setFormData(JSON.stringify(val.formData, null, 2));

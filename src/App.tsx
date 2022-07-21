@@ -1,5 +1,4 @@
 import React from "react";
-import { ChakraProvider, theme } from "@chakra-ui/react";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import useAxios from "axios-hooks";
@@ -36,22 +35,20 @@ export const App = () => {
   }
 
   return (
-    <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<SelectEvent hexathons={hexathons} />} />
-          <Route path="/:hexathonId" element={<CheckValidHexathon hexathons={hexathons} />}>
-            <Route path="" element={<Dashboard hexathons={hexathons} />} />
-            <Route path="application/:applicationId" element={<ApplicationContainer />} />
-            <Route path="admin" element={<AdminControlsHome />} />
-            <Route path="admin/email" element={<EmailScreen />} />
-            <Route path="admin/internal-settings" element={<InternalSettings />} />
-            <Route path="admin/applications" element={<AllApplicationsTable />} />
-            <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
-            <Route path="admin/branch/:branchId" element={<BranchEditor />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
-    </ChakraProvider>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<SelectEvent hexathons={hexathons} />} />
+        <Route path="/:hexathonId" element={<CheckValidHexathon hexathons={hexathons} />}>
+          <Route path="" element={<Dashboard hexathons={hexathons} />} />
+          <Route path="application/:applicationId" element={<ApplicationContainer />} />
+          <Route path="admin" element={<AdminControlsHome />} />
+          <Route path="admin/email" element={<EmailScreen />} />
+          <Route path="admin/internal-settings" element={<InternalSettings />} />
+          <Route path="admin/applications" element={<AllApplicationsTable />} />
+          <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
+          <Route path="admin/branch/:branchId" element={<BranchEditor />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 };

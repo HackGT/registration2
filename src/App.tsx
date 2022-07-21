@@ -15,6 +15,7 @@ import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
 import InternalSettings from "./components/admin/internalSettings/InternalSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
+import Statistics from "./components/statistics/Statistics";
 import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
 import AdminControlsHome from "./components/admin/AdminControlsHome";
 import BranchEditor from "./components/branchEditor/BranchEditor";
@@ -43,6 +44,7 @@ export const App = () => {
           <Route path="/:hexathonId" element={<CheckValidHexathon hexathons={hexathons} />}>
             <Route path="" element={<Dashboard hexathons={hexathons} />} />
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
+            <Route path="statistics" element={<Statistics />} />
             <Route path="admin" element={<AdminControlsHome />} />
             <Route path="admin/email" element={<EmailScreen />} />
             <Route path="admin/internal-settings" element={<InternalSettings />} />

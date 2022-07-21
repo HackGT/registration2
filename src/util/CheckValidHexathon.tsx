@@ -1,15 +1,24 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useParams } from "react-router-dom";
 
-import useCurrentHexathon from "../hooks/useCurrentHexathon";
+import { CurrentHexathonProvider } from "../contexts/CurrentHexathonContext";
 
-const CheckValidHexathon: React.FC = () => {
-  const currentHexathon = useCurrentHexathon();
+interface Props {
+  hexathons: any[];
+}
+
+const CheckValidHexathon: React.FC<Props> = props => {
+  const { hexathonId } = useParams();
+  const currentHexathon = props.hexathons.find((hexathon: any) => hexathon._id === hexathonId);
 
   if (!currentHexathon) {
     return <Navigate to="/" />;
   }
-  return <Outlet />;
+  return (
+    <CurrentHexathonProvider hexathons={props.hexathons}>
+      <Outlet />
+    </CurrentHexathonProvider>
+  );
 };
 
 export default CheckValidHexathon;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack, useMediaQuery, useToast, Text } from "@chakra-ui/react";
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
@@ -14,6 +15,7 @@ interface Props {
   defaultFormData: any;
   formPage: FormPage;
   formPageNumber: number;
+  commonDefinitionsSchema: string;
   applicationId?: string;
   lastPage: boolean;
   hasPrevPage: boolean;
@@ -23,8 +25,9 @@ interface Props {
 }
 
 const ApplicationFormPage: React.FC<Props> = props => {
-  console.log(props.defaultFormData);
   const [formData, setFormData] = useState(props.defaultFormData);
+  const toast = useToast();
+  const [isDesktop] = useMediaQuery("(min-width: 600px)");
 
   const handleSaveData = async () => {
     try {
@@ -37,8 +40,22 @@ const ApplicationFormPage: React.FC<Props> = props => {
         }
       );
       setFormData(response.data.applicationData);
-    } catch (error) {
-      console.log(error);
+      toast({
+        title: "Success",
+        description: "Application data successfully saved.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error: any) {
+      console.log(error.message);
+      toast({
+        title: "Error",
+        description: "Application data was unable to be saved. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -54,8 +71,9 @@ const ApplicationFormPage: React.FC<Props> = props => {
 
   return (
     <CommonForm
-      schema={JSON.parse(props.formPage.jsonSchema)}
-      uiSchema={JSON.parse(props.formPage.uiSchema)}
+      schema={props.formPage.jsonSchema}
+      uiSchema={props.formPage.uiSchema}
+      commonDefinitionsSchema={props.commonDefinitionsSchema}
       formData={formData}
       onChange={({ formData: updatedFormData }, e) => {
         setFormData(updatedFormData);
@@ -65,20 +83,24 @@ const ApplicationFormPage: React.FC<Props> = props => {
         handleNextClicked();
       }}
     >
-      <Button
-        colorScheme="purple"
-        onClick={handlePreviousClicked}
-        width="100%"
-        disabled={!props.hasPrevPage}
-      >
-        Previous
-      </Button>
-      <Button colorScheme="purple" onClick={handleSaveData} width="100%">
-        Save
-      </Button>
-      <Button colorScheme="purple" type="submit" width="100%">
-        Next
-      </Button>
+      <HStack justify="space-evenly">
+        <Button
+          colorScheme="purple"
+          onClick={handlePreviousClicked}
+          disabled={!props.hasPrevPage}
+          variant="outline"
+        >
+          <ArrowBackIcon />
+          {isDesktop && <Text marginLeft="2">Back</Text>}
+        </Button>
+        <Button colorScheme="purple" onClick={handleSaveData}>
+          Save
+        </Button>
+        <Button colorScheme="purple" type="submit" variant="outline">
+          {isDesktop && <Text marginRight="2">Next</Text>}
+          <ArrowForwardIcon />
+        </Button>
+      </HStack>
     </CommonForm>
   );
 };

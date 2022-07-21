@@ -1,13 +1,15 @@
-import Form from "@rjsf/chakra-ui";
 import { FormProps } from "@rjsf/core";
 import React from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { Text, VStack } from "@chakra-ui/react";
 
-import ObjectFieldTemplate from "./ObjectFieldTemplate";
-import SelectFieldTemplate from "./SelectFieldTemplate";
+import CommonFormRenderer from "./CommonFormRenderer";
 
-interface Props extends FormProps<any> {}
+export interface CommonFormProps extends Omit<FormProps<any>, "schema" | "uiSchema"> {
+  schema: string;
+  uiSchema: string;
+  commonDefinitionsSchema: string;
+}
 
 const ErrorFallback: React.FC<FallbackProps> = props => (
   <VStack spacing={4} width="100%">
@@ -16,17 +18,9 @@ const ErrorFallback: React.FC<FallbackProps> = props => (
   </VStack>
 );
 
-const CommonForm: React.FC<Props> = props => (
+const CommonForm: React.FC<CommonFormProps> = props => (
   <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>
-    <Form
-      {...props}
-      ObjectFieldTemplate={ObjectFieldTemplate}
-      fields={{ select: SelectFieldTemplate }}
-      noHtml5Validate
-      showErrorList={false}
-    >
-      {props.children}
-    </Form>
+    <CommonFormRenderer {...props} />
   </ErrorBoundary>
 );
 

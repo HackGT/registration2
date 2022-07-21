@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, StyleProps } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
@@ -6,18 +6,24 @@ interface Props extends StyleProps {
   title: string;
   schema: string;
   setSchema: (val: string) => void;
+  setSchemaErrors?: React.Dispatch<any>;
 }
 
 const SchemaInput: React.FC<Props> = (props: Props) => {
-  const { title, schema, setSchema, ...style } = props;
+  const { title, schema, setSchema, setSchemaErrors, ...style } = props;
+  // The input text state is kept separate as the schema is only changed
+  // once it's validated
+  const [inputText, setInputText] = useState(schema);
 
-  const checkJSON = (str: string) => {
+  const handleChange = (value: any, e: any) => {
+    setInputText(value);
     try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
+      JSON.parse(value);
+      setSchemaErrors && setSchemaErrors((prev: any) => ({ ...prev, [title]: false }));
+      setSchema(value);
+    } catch (err) {
+      setSchemaErrors && setSchemaErrors((prev: any) => ({ ...prev, [title]: true }));
     }
-    return true;
   };
 
   return (
@@ -35,7 +41,7 @@ const SchemaInput: React.FC<Props> = (props: Props) => {
       <Editor
         width="100%"
         height="453px"
-        value={schema}
+        value={inputText}
         language="json"
         options={{
           minimap: {
@@ -44,11 +50,7 @@ const SchemaInput: React.FC<Props> = (props: Props) => {
           selectOnLineNumbers: true,
           wordWrap: "on",
         }}
-        onChange={(value: any, e: any) => {
-          if (checkJSON(value)) {
-            setSchema(value);
-          }
-        }}
+        onChange={handleChange}
       />
     </Box>
   );

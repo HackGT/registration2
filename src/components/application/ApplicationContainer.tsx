@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import { AuthProvider } from "../../contexts/AuthContext";
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 
@@ -53,25 +52,24 @@ const Application = () => {
   };
 
   return (
-    <AuthProvider>
-      <Flex align="center" justify="center" direction="column" fontFamily="verdana">
-        {formPageNumber < branch.formPages.length ? (
-          <ApplicationFormPage
-            defaultFormData={defaultFormData}
-            formPage={branch.formPages[formPageNumber]}
-            formPageNumber={formPageNumber}
-            applicationId={applicationId}
-            lastPage={formPageNumber === branch.formPages.length - 1}
-            submitApplication={submitApplication}
-            hasPrevPage={formPageNumber > 0}
-            prevPage={prevPage}
-            nextPage={nextPage}
-          />
-        ) : (
-          <ApplicationSubmittedPage />
-        )}
-      </Flex>
-    </AuthProvider>
+    <Box maxWidth="700px" margin="auto">
+      {formPageNumber < branch.formPages.length ? (
+        <ApplicationFormPage
+          defaultFormData={defaultFormData}
+          formPage={branch.formPages[formPageNumber]}
+          formPageNumber={formPageNumber}
+          commonDefinitionsSchema={branch.commonDefinitionsSchema}
+          applicationId={applicationId}
+          lastPage={formPageNumber === branch.formPages.length - 1}
+          submitApplication={submitApplication}
+          hasPrevPage={formPageNumber > 0}
+          prevPage={prevPage}
+          nextPage={nextPage}
+        />
+      ) : (
+        <ApplicationSubmittedPage />
+      )}
+    </Box>
   );
 };
 

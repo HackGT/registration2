@@ -1,7 +1,7 @@
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import { Card } from "react-bootstrap";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Box } from "@chakra-ui/react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,10 +24,10 @@ const GraphView: React.FC<IProps> = props => {
 
   return (
     <div className="col-12 col-sm-6">
-      <Card style={{ width: "250px", maxWidth: "250px", display: "inline-block" }}>
+      <Box style={{ width: "250px", maxWidth: "250px", display: "inline-block" }}>
         <h5 style={{ textAlign: "center" }}>{props.graphQuestion}</h5>
         <Pie style={{ width: "250px" }} data={data} />
-      </Card>
+      </Box>
     </div>
   );
 };

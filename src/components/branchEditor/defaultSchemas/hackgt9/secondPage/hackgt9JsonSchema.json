@@ -1,0 +1,38 @@
+{
+  "title": "Welcome",
+  "type": "object",
+  "properties": {
+    "resume": {
+      "title": "Resume / Skillsheet",
+      "type": "object",
+      "required": ["resumeFile"],
+      "properties": {
+        "resumeFile": {
+          "type": "string",
+          "format": "data-url"
+        }
+      }
+    },
+    "essayQuestions": {
+      "title": "Short Essay Questions",
+      "type": "object",
+      "required": ["question1", "question2", "question3"],
+      "properties": {
+        "question1": {
+          "type": "string",
+          "title": "What was your favorite technical/non-technical team project that you worked on? How did you work with your team to overcome the challenges you faced?"
+        },
+        "question2": {
+          "type": "string",
+          "title": "What are you passionate about? (Can be about anything!) (Max 150 words)",
+          "maxLength": "150"
+        },
+        "question3": {
+          "type": "string",
+          "title": "What do you hope to gain from participating in HackGT 9? (Max 150 words)",
+          "maxLength": "150"
+        }
+      }
+    }
+  }
+}

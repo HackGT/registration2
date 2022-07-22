@@ -45,9 +45,9 @@ const AdminControlsHome: React.FC = () => (
       />
       <AdminWidget title="Emailing" description="Email participants" href="email" />
       <AdminWidget
-        title="Internal Settings"
+        title="Branch Settings"
         description="Update application settings"
-        href="internal-settings"
+        href="branch-settings"
       />
     </Stack>
   </Flex>

@@ -12,7 +12,7 @@ import Loading from "./util/Loading";
 import EmailScreen from "./components/admin/emailScreen/EmailScreen";
 import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
-import InternalSettings from "./components/admin/internalSettings/InternalSettings";
+import BranchSettings from "./components/admin/branchSettings/BranchSettings";
 import CheckValidHexathon from "./util/CheckValidHexathon";
 import Statistics from "./components/statistics/Statistics";
 import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
@@ -44,10 +44,10 @@ export const App = () => {
           <Route path="application/:applicationId" element={<ApplicationContainer />} />
           <Route path="admin" element={<AdminControlsHome />} />
           <Route path="admin/email" element={<EmailScreen />} />
-          <Route path="admin/internal-settings" element={<InternalSettings />} />
+          <Route path="admin/branch-settings" element={<BranchSettings />} />
+          <Route path="admin/branch-settings/:branchId" element={<BranchEditor />} />
           <Route path="admin/applications" element={<AllApplicationsTable />} />
           <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
-          <Route path="admin/branch/:branchId" element={<BranchEditor />} />
           <Route path="admin/statistics" element={<Statistics />} />
         </Route>
       </Routes>

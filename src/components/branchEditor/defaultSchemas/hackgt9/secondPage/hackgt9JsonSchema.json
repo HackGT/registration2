@@ -25,12 +25,12 @@
         "question2": {
           "type": "string",
           "title": "What are you passionate about? (Can be about anything!) (Max 150 words)",
-          "maxLength": "150"
+          "maxLength": 150
         },
         "question3": {
           "type": "string",
           "title": "What do you hope to gain from participating in HackGT 9? (Max 150 words)",
-          "maxLength": "150"
+          "maxLength": 150
         }
       }
     }

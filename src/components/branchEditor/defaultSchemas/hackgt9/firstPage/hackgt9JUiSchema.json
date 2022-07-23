@@ -1,12 +1,12 @@
 {
-  "age": { "ui:field": "select" },
-  "university": { "ui:field": "select" },
-  "year": { "ui:field": "select" },
+  "adult": { "ui:field": "select" },
+  "school": { "ui:field": "select" },
+  "schoolYear": { "ui:field": "select" },
   "major": { "ui:field": "select" },
   "gender": { "ui:field": "select" },
   "race": { "ui:field": "select" },
   "marketing": { "ui:field": "select" },
-  "telephone": {
+  "phoneNumber": {
     "ui:options": {
       "inputType": "tel"
     }

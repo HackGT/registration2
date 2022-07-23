@@ -2,38 +2,38 @@
   "title": "Welcome",
   "type": "object",
   "required": [
-    "age",
-    "telephone",
-    "university",
-    "email",
-    "year",
+    "adult",
+    "phoneNumber",
+    "school",
+    "schoolEmail",
+    "schoolYear",
     "major",
     "gender",
-    "race",
+    "ethnicity",
     "marketing"
   ],
   "properties": {
-    "age": {
+    "adult": {
       "type": "string",
       "title": "Are you over 18?",
-      "$ref": "#/definitions/age"
+      "enum": ["true", "false"]
     },
-    "telephone": {
+    "phoneNumber": {
       "type": "string",
       "title": "Phone Number",
       "minLength": 10
     },
-    "university": {
+    "school": {
       "type": "string",
       "title": "University",
       "default": "",
       "$ref": "#/definitions/university"
     },
-    "email": {
+    "schoolEmail": {
       "type": "string",
       "title": "School Email"
     },
-    "year": {
+    "schoolYear": {
       "type": "string",
       "title": "Year in School",
       "default": "",
@@ -51,16 +51,11 @@
       "default": "",
       "$ref": "#/definitions/gender"
     },
-    "race": {
+    "ethnicity": {
       "type": "string",
       "title": "Race",
       "default": "",
       "$ref": "#/definitions/ethnicity"
-    },
-    "referral": {
-      "type": "string",
-      "title": "Referral",
-      "default": ""
     },
     "marketing": {
       "type": "string",

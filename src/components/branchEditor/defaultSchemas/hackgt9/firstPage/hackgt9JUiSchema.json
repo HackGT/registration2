@@ -1,5 +1,10 @@
 {
-  "adult": { "ui:field": "select" },
+  "adult": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  },
   "school": { "ui:field": "select" },
   "schoolYear": { "ui:field": "select" },
   "major": { "ui:field": "select" },

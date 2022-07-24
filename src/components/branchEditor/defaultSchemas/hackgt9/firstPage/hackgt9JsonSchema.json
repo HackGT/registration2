@@ -14,9 +14,12 @@
   ],
   "properties": {
     "adult": {
-      "type": "string",
+      "type": "number",
       "title": "Are you over 18?",
-      "enum": ["true", "false"]
+      "oneOf": [
+        {"const": 1, "title": "Yes"},
+        {"const": 0, "title": "No"}
+      ]
     },
     "phoneNumber": {
       "type": "string",

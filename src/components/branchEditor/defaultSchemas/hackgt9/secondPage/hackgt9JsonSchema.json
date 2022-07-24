@@ -2,16 +2,6 @@
   "title": "Welcome",
   "type": "object",
   "properties": {
-    "resume": {
-      "title": "Resume / Skillsheet",
-      "type": "object",
-      "properties": {
-        "resumeFile": {
-          "type": "string",
-          "format": "data-url"
-        }
-      }
-    },
     "essays": {
       "title": "Short Essay Questions",
       "type": "object",

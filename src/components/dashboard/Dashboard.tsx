@@ -109,11 +109,20 @@ const Dashboard: React.FC<Props> = props => {
       <Stack margin={{ base: "20px", md: 0 }} marginBottom={{ base: 0, md: "15px" }}>
         <Box margin="35px 25px 15px 25px">
           <Heading fontSize="36px" fontWeight="semibold" marginBottom="10px">
+            Current Application
+          </Heading>
+          <Text>Finish your application for {currentHexathon.name} below.</Text>
+        </Box>
+        <Branches currentApplication />
+      </Stack>
+      <Stack margin={{ base: "20px", md: 0 }} marginBottom={{ base: 0, md: "15px" }}>
+        <Box margin="35px 25px 15px 25px">
+          <Heading fontSize="36px" fontWeight="semibold" marginBottom="10px">
             Application Paths
           </Heading>
           <Text>Select one of the tracks from below to apply to {currentHexathon.name}.</Text>
         </Box>
-        <Branches />
+        <Branches currentApplication={false} />
       </Stack>
       <Divider marginY={{ base: "30px", md: "40px" }} alignSelf="center" width="95%" />
       <Stack marginX={{ base: "20px", md: 0 }}>

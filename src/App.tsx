@@ -1,4 +1,5 @@
 import React from "react";
+import { Footer } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import useAxios from "axios-hooks";
@@ -18,6 +19,7 @@ import Statistics from "./components/statistics/Statistics";
 import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
 import AdminControlsHome from "./components/admin/AdminControlsHome";
 import BranchEditor from "./components/branchEditor/BranchEditor";
+import Navigation from "./components/Navigation";
 
 axios.defaults.withCredentials = true;
 
@@ -37,6 +39,7 @@ export const App = () => {
 
   return (
     <AuthProvider>
+      <Navigation/>
       <Routes>
         <Route path="/" element={<SelectEvent hexathons={hexathons} />} />
         <Route path="/:hexathonId" element={<CheckValidHexathon hexathons={hexathons} />}>
@@ -51,6 +54,7 @@ export const App = () => {
           <Route path="admin/statistics" element={<Statistics />} />
         </Route>
       </Routes>
+      <Footer/>
     </AuthProvider>
   );
 };

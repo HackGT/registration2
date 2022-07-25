@@ -2271,6 +2271,11 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
+"@hex-labs/core@^1.0.25":
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/@hex-labs/core/-/core-1.0.25.tgz#205e53ebf459cb88256d7e5f6c69957e68475aca"
+  integrity sha512-0Dz3RTVHtLaRSq+A0TwbGF340iFBVnHwVEp9mwsfSVccikOxgdC0kLbiPH0OD2LRl5oFnWmz70fMP+yiq6VDUw==
+
 "@hex-labs/eslint-config-react@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@hex-labs/eslint-config-react/-/eslint-config-react-1.2.3.tgz#5c34b0349283d2136aa48c00cdd2d7d9e470fd66"
@@ -3289,10 +3294,10 @@
   resolved "https://registry.npmjs.org/@types/long/-/long-4.0.1.tgz"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
-"@types/luxon@^2.3.2":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-2.3.2.tgz#8a3f2cdd4858ce698b56cd8597d9243b8e9d3c65"
-  integrity sha512-WOehptuhKIXukSUUkRgGbj2c997Uv/iUgYgII8U7XLJqq9W2oF0kQ6frEznRQbdurioz+L/cdaIm4GutTQfgmA==
+"@types/luxon@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-2.4.0.tgz#897d3abc23b68d78b69d76a12c21e01eb5adab95"
+  integrity sha512-oCavjEjRXuR6URJEtQm0eBdfsBiEcGBZbq21of8iGkeKxU1+1xgKuFPClaBZl2KB8ZZBSWlgk61tH6Mf+nvZVw==
 
 "@types/mime@^1":
   version "1.3.2"
@@ -8697,10 +8702,10 @@ lru-cache@6.0.0, lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-luxon@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.4.0.tgz#9435806545bb32d4234dab766ab8a3d54847a765"
-  integrity sha512-w+NAwWOUL5hO0SgwOHsMBAmZ15SoknmQXhSO0hIbJCAmPKSsGeK8MlmhYh2w6Iib38IxN2M+/ooXWLbeis7GuA==
+luxon@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.1.tgz#6901111d10ad06fd267ad4e4128a84bef8a77299"
+  integrity sha512-hF3kv0e5gwHQZKz4wtm4c+inDtyc7elkanAsBq+fundaCdUBNJB1dHEGUZIM6SfSBUlbVFduPwEtNjFK8wLtcw==
 
 lz-string@^1.4.4:
   version "1.4.4"
@@ -10497,10 +10502,10 @@ react-focus-lock@2.5.2:
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
 
-react-hook-form@^7.32.2:
-  version "7.32.2"
-  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.32.2.tgz#58ec2ab0239ce97969baa2faa03ced13fae913ac"
-  integrity sha512-F1A6n762xaRhvtQH5SkQQhMr19cCkHZYesTcKJJeNmrphiZp/cYFTIzC05FnQry0SspM54oPJ9tXFXlzya8VNQ==
+react-hook-form@^7.33.1:
+  version "7.33.1"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.33.1.tgz#8c4410e3420788d3b804d62cc4c142915c2e46d0"
+  integrity sha512-ydTfTxEJdvgjCZBj5DDXRc58oTEfnFupEwwTAQ9FSKzykEJkX+3CiAkGtAMiZG7IPWHuzgT6AOBfogiKhUvKgg==
 
 react-icons@^3.0.0:
   version "3.11.0"

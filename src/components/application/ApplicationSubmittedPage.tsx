@@ -1,17 +1,35 @@
 import React from "react";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Box, Text, Image, Heading, Center } from "@chakra-ui/react";
+import Logo from "../../assets/hexlabs.svg";
 
 const ApplicationSubmittedPage = () => (
   <Flex
     align="center"
     justify="center"
-    direction="column"
+    direction={{ lg: "row", md: "column", base: "column" }}
     fontFamily="verdana"
-    width="100%"
+    width="100vw"
     height="100vh"
-    bgGradient="linear(to-t, blue.400, purple.500)"
+    bgGradient="linear(90deg, #33C2FF, #7B69EC)"
   >
-    <Text fontSize="4xl">Thank you for applying! You’ll hear from us soon! :))</Text>
+    <Box padding={{ md: "50px", base: "10px" }}>
+      <Center>
+        <Heading
+          fontSize={{ md: "6xl", base: "4xl" }}
+          color="white"
+          padding={1}
+          marginBottom={{ base: "30px" }}
+          width={{ md: "600px", base: "90%" }}
+          textAlign={{ lg: "left", md: "center", base: "center" }}
+        >
+          Thank you for applying! You’ll hear from us soon! :))
+        </Heading>
+      </Center>
+    </Box>
+
+    <Box boxSize={{ base: "200px", md: "300px" }}>
+      <Image src={Logo} />
+    </Box>
   </Flex>
 );
 

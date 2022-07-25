@@ -52,20 +52,22 @@ const Application = () => {
   };
 
   return (
-    <Box maxWidth="700px" margin="auto">
+    <Box>
       {formPageNumber < branch.formPages.length ? (
-        <ApplicationFormPage
-          defaultFormData={defaultFormData}
-          formPage={branch.formPages[formPageNumber]}
-          formPageNumber={formPageNumber}
-          commonDefinitionsSchema={branch.commonDefinitionsSchema}
-          applicationId={applicationId}
-          lastPage={formPageNumber === branch.formPages.length - 1}
-          submitApplication={submitApplication}
-          hasPrevPage={formPageNumber > 0}
-          prevPage={prevPage}
-          nextPage={nextPage}
-        />
+        <Box maxWidth="700px" margin="auto">
+          <ApplicationFormPage
+            defaultFormData={defaultFormData}
+            formPage={branch.formPages[formPageNumber]}
+            formPageNumber={formPageNumber}
+            commonDefinitionsSchema={branch.commonDefinitionsSchema}
+            applicationId={applicationId}
+            lastPage={formPageNumber === branch.formPages.length - 1}
+            submitApplication={submitApplication}
+            hasPrevPage={formPageNumber > 0}
+            prevPage={prevPage}
+            nextPage={nextPage}
+          />
+        </Box>
       ) : (
         <ApplicationSubmittedPage />
       )}

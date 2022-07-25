@@ -9,7 +9,10 @@ import Loading from "../../util/Loading";
 import Tile from "./Tile";
 import { useAuth } from "../../contexts/AuthContext";
 
-const Branches: React.FC = () => {
+interface Props {
+  currentApplication: boolean;
+}
+const Branches: React.FC<Props> = props => {
   const { user } = useAuth();
   const { hexathonId } = useParams();
 
@@ -39,17 +42,27 @@ const Branches: React.FC = () => {
   if (branchesLoading || applicationsLoading || branchesError || applicationsError) {
     return <Loading />;
   }
-
   const currApp = applications?.length > 0 ? applications[0] : undefined;
+
+  let branchesToRender = currApp === undefined && !props.currentApplication ? branches : [];
+  if (currApp) {
+    branchesToRender = props.currentApplication
+      ? branches.filter((branch: any) => branch.id === currApp.applicationBranch.id)
+      : branches.filter((branch: any) => branch.id !== currApp.applicationBranch.id);
+  }
+
+  const emptyBranchesText = props.currentApplication
+    ? "You have not started any applications. Select a branch below!"
+    : "We are currently working hard to finalize the tracks. Please check back later!";
 
   return (
     <SimpleGrid columns={branches.length === 0 ? 1 : { base: 1, md: 2 }} spacing={4}>
-      {branches.length === 0 ? (
+      {branchesToRender.length === 0 ? (
         <Text textAlign="center" fontStyle="italic" paddingX="40px">
-          We are currently working hard to finalize the tracks. Please check back later!
+          {emptyBranchesText}
         </Text>
       ) : (
-        branches.map((branch: any) => (
+        branchesToRender.map((branch: any) => (
           <Tile branch={branch} currApp={currApp} chooseBranch={chooseBranch} key={branch._id} />
         ))
       )}

@@ -21,7 +21,7 @@ const Timeline: React.FC<Props> = props => {
       margin="auto"
       direction={{ base: "column", md: "row" }}
       width={{ base: "300px", md: `${(filteredHexathons.length + 1) * 25}%` }}
-      height={{ base: `${filteredHexathons.length * 200 + 120}px`, md: "220px" }}
+      height={{ base: `${filteredHexathons.length * 150 + 120}px`, md: "220px" }}
       spacing="0"
       paddingY={{ base: "30px", md: 0 }}
     >

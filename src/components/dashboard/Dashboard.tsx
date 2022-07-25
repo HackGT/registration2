@@ -40,7 +40,7 @@ const Dashboard: React.FC<Props> = props => {
       flexDir="column"
       padding={{ base: "0 0 16px", md: "32px 48px" }}
       margin="auto"
-      maxWidth="1000px"
+      maxWidth="1200px"
     >
       <Flex
         flexDir={{ base: "column", md: "row" }}

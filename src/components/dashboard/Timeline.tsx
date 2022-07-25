@@ -30,14 +30,15 @@ const Timeline: React.FC<Props> = props => {
           <Box
             display="flex"
             flexDirection={{ base: "row", md: "column" }}
-            maxWidth={{ base: "100%", md: "69.28px" }}
+            maxWidth={{ base: "100%", md: "55px" }}
             maxHeight={76}
             paddingTop={{ base: 0, md: "60px" }}
+            paddingLeft={{ base: "8.5px", md: "0px" }}
           >
             <Hex
               rotation={90}
               className="hex"
-              size={40}
+              size={30}
               borderSize={6}
               borderColor={hexathon === currentHexathon ? "#7B69EC" : "#E0E0E0"}
               color={hexathon === currentHexathon ? "#7B69EC" : "white"}
@@ -59,7 +60,7 @@ const Timeline: React.FC<Props> = props => {
           <Box
             width="100%"
             height="100%"
-            paddingTop={{ base: 0, md: "97px" }}
+            paddingTop={{ base: 0, md: "88px" }}
             paddingLeft={{ base: "31.641", md: 0 }}
           >
             <Box
@@ -82,12 +83,13 @@ const Timeline: React.FC<Props> = props => {
       <Box
         display="flex"
         flexDirection={{ base: "row", md: "column" }}
-        maxWidth={{ base: "100%", md: "69.28px" }}
+        maxWidth={{ base: "100%", md: "55px" }}
         maxHeight={76}
         paddingTop={{ base: 0, md: "60px" }}
         marginX={filteredHexathons.length === 0 ? "auto" : "0px"}
+        paddingLeft={{ base: "8.5px", md: "0px" }}
       >
-        <Hex rotation={90} size={40} borderSize={6} borderColor="#E0E0E0" color="white" />
+        <Hex rotation={90} size={30} borderSize={6} borderColor="#E0E0E0" color="white" />
         <Box
           width={{ base: "100%", md: "200%" }}
           margin="auto"

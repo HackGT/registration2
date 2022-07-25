@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Icon } from "@chakra-ui/react";
+import { Box, Center, Icon } from "@chakra-ui/react";
 
 function deg2rad(deg: number) {
   return deg * (Math.PI / 180);
@@ -37,7 +37,7 @@ function boundingBox(coords: number[][]) {
 
   const [x, y] = [minX, minY];
   const [width, height] = [maxX - minX, maxY - minY];
-  
+
   return {
     x,
     y,
@@ -46,13 +46,7 @@ function boundingBox(coords: number[][]) {
   };
 }
 
-export default function Hex({
-  size,
-  rotation,
-  color,
-  borderSize,
-  borderColor
-}: any) {
+export default function Hex({ size, rotation, color, borderSize, borderColor }: any) {
   const dx = size / 2;
   const dy = Math.sqrt(3) * dx;
 
@@ -68,35 +62,35 @@ export default function Hex({
     ];
     return points;
   };
-  
+
   // rotate helper
   const rotateH = (coord: number[]) => rotate(rotation, coord);
 
   let coords = getCoords().map(rotateH);
   const { x: ox, y: oy, width, height } = boundingBox(coords);
-  
+
   // translate helper
   const translateH = (coord: number[]) => translate(-ox, -oy, coord);
   coords = coords.map(translateH);
 
   return (
-    <Box
-      position="relative"
-    >
-      <Icon
-        viewBox={`0 0 ${width} ${height}`}
-        width={`${width}px`}
-        height={`${height}px`}
-        overflow="visible"
-        margin="auto"
-      >
-        <path
-          d={pathStr(coords)}
-          stroke={borderColor}
-          strokeWidth={borderSize}
-          style={{ fill: color }}
-        />
-      </Icon>
+    <Box position="relative">
+      <Center>
+        <Icon
+          viewBox={`0 0 ${width} ${height}`}
+          width={`${width}px`}
+          height={`${height}px`}
+          overflow="visible"
+          margin="auto"
+        >
+          <path
+            d={pathStr(coords)}
+            stroke={borderColor}
+            strokeWidth={borderSize}
+            style={{ fill: color }}
+          />
+        </Icon>
+      </Center>
     </Box>
   );
 }
@@ -106,5 +100,5 @@ Hex.defaultProps = {
   rotation: 0,
   color: "var(--color-purple)",
   borderColor: "transparent",
-  borderSize: 0
+  borderSize: 0,
 };

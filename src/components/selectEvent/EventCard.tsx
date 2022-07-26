@@ -14,6 +14,7 @@ const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
   return (
     <Box
+      marginBottom={3}
       bg="white"
       w="90%"
       p={4}
@@ -23,8 +24,8 @@ const EventCard: React.FC<Props> = props => {
       borderRadius="md"
       shadow="sm"
       h="150px"
+      cursor="pointer"
       transition=".5s"
-      marginBottom="10px"
       _hover={{
         shadow: "md",
       }}

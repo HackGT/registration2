@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Text, Heading, useToast } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import Loading from "../../util/Loading";
 import BranchFormCreator from "./BranchFormCreator";
 
 const BranchEditor: React.FC = () => {
@@ -16,9 +16,9 @@ const BranchEditor: React.FC = () => {
     `https://registration.api.hexlabs.org/branches/${branchId}`
   );
 
-  if (loading || error) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
+
+  if (error) return <ErrorScreen error={error}/>;
 
   const handleSaveFormPage = async (updatedFormPage: any, formPageIndex: number) => {
     const updatedFormPages: any[] = [...data.formPages];

@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState } from "react";
 import { Alert, AlertIcon, Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import BranchCard from "./BranchCard";
-import Loading from "../../../util/Loading";
 import BranchFormModal from "./BranchFormModal";
 
 export enum BranchType {
@@ -50,7 +50,7 @@ const BranchSettings: React.FC = () => {
   };
 
   if (loading) return <Loading />;
-  if (error) console.log(error.message);
+  if (error) return <ErrorScreen error={error} />;
 
   return (
     <>

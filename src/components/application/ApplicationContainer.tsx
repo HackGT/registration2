@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
@@ -22,13 +23,9 @@ const Application = () => {
     }
   }, [data]);
 
-  if (loading || !branch) {
-    return <Spinner />;
-  }
+  if (loading || !branch) return <Loading />;
 
-  if (error) {
-    return <Spinner />;
-  }
+  if (error) return <ErrorScreen error={error} />;
 
   const defaultFormData = data.applicationData;
 

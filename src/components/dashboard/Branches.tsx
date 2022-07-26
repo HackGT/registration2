@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import React from "react";
 import { Text, SimpleGrid } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-import Loading from "../../util/Loading";
 import Tile from "./Tile";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -36,9 +36,12 @@ const Branches: React.FC = () => {
     return "";
   };
 
-  if (branchesLoading || applicationsLoading || branchesError || applicationsError) {
+  if (branchesLoading || applicationsLoading) {
     return <Loading />;
   }
+
+  if (branchesError) return <ErrorScreen error={branchesError} />;
+  if (applicationsError) return <ErrorScreen error={applicationsError} />;
 
   const currApp = applications?.length > 0 ? applications[0] : undefined;
 

@@ -16,6 +16,7 @@ import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
 import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
 import CommonForm from "../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
+import SchemaOutput from "./SchemaOutput";
 
 interface Props {
   formPage: any;
@@ -114,7 +115,7 @@ const BranchFormCreator: React.FC<Props> = props => {
             setSchema={setUiSchema}
             setSchemaErrors={setSchemaErrors}
           />
-          <SchemaInput title="Test Form Data" schema={formData} setSchema={setFormData} />
+          <SchemaOutput title="Test Form Data" schema={formData} />
         </Stack>
         <Box
           padding="15px"

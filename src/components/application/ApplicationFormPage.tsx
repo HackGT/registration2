@@ -70,7 +70,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
   };
 
   return (
-    <Box marginLeft="10px" marginRight="10px">
+    <Box marginX="10px">
       <CommonForm
         schema={props.formPage.jsonSchema}
         uiSchema={props.formPage.uiSchema}

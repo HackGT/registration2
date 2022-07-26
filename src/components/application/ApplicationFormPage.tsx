@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, HStack, useMediaQuery, useToast, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, useMediaQuery, useToast, Text } from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
@@ -70,38 +70,40 @@ const ApplicationFormPage: React.FC<Props> = props => {
   };
 
   return (
-    <CommonForm
-      schema={props.formPage.jsonSchema}
-      uiSchema={props.formPage.uiSchema}
-      commonDefinitionsSchema={props.commonDefinitionsSchema}
-      formData={formData}
-      onChange={({ formData: updatedFormData }, e) => {
-        setFormData(updatedFormData);
-      }}
-      onSubmit={({ formData: submittedFormData }, e) => {
-        console.log(submittedFormData);
-        handleNextClicked();
-      }}
-    >
-      <HStack justify="space-evenly">
-        <Button
-          colorScheme="purple"
-          onClick={handlePreviousClicked}
-          disabled={!props.hasPrevPage}
-          variant="outline"
-        >
-          <ArrowBackIcon />
-          {isDesktop && <Text marginLeft="2">Back</Text>}
-        </Button>
-        <Button colorScheme="purple" onClick={handleSaveData}>
-          Save
-        </Button>
-        <Button colorScheme="purple" type="submit" variant="outline">
-          {isDesktop && <Text marginRight="2">Next</Text>}
-          <ArrowForwardIcon />
-        </Button>
-      </HStack>
-    </CommonForm>
+    <Box marginX="10px">
+      <CommonForm
+        schema={props.formPage.jsonSchema}
+        uiSchema={props.formPage.uiSchema}
+        commonDefinitionsSchema={props.commonDefinitionsSchema}
+        formData={formData}
+        onChange={({ formData: updatedFormData }, e) => {
+          setFormData(updatedFormData);
+        }}
+        onSubmit={({ formData: submittedFormData }, e) => {
+          console.log(submittedFormData);
+          handleNextClicked();
+        }}
+      >
+        <HStack justify="space-evenly">
+          <Button
+            colorScheme="purple"
+            onClick={handlePreviousClicked}
+            disabled={!props.hasPrevPage}
+            variant="outline"
+          >
+            <ArrowBackIcon />
+            {isDesktop && <Text marginLeft="2">Back</Text>}
+          </Button>
+          <Button colorScheme="purple" onClick={handleSaveData}>
+            Save
+          </Button>
+          <Button colorScheme="purple" type="submit" variant="outline">
+            {isDesktop && <Text marginRight="2">Next</Text>}
+            <ArrowForwardIcon />
+          </Button>
+        </HStack>
+      </CommonForm>
+    </Box>
   );
 };
 

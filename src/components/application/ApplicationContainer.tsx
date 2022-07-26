@@ -8,7 +8,20 @@ import { useParams } from "react-router-dom";
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 
-const Application = () => {
+/** Manually modify essays to fit frontend data display */
+export const getFrontendFormattedFormData = (data: any) => {
+  const defaultFormDataEssays: any = {};
+  data.applicationData.essays.forEach((essay: any) => {
+    defaultFormDataEssays[essay.criteria] = essay.answer;
+  });
+
+  return {
+    ...data.applicationData,
+    essays: defaultFormDataEssays,
+  };
+};
+
+const ApplicationContainer = () => {
   const { applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
 
@@ -26,8 +39,6 @@ const Application = () => {
   if (loading || !branch) return <Loading />;
 
   if (error) return <ErrorScreen error={error} />;
-
-  const defaultFormData = data.applicationData;
 
   const submitApplication = async () => {
     const response = await axios.post(
@@ -47,6 +58,8 @@ const Application = () => {
       setFormPageNumber(formPageNumber + 1);
     }
   };
+
+  const defaultFormData = getFrontendFormattedFormData(data);
 
   return (
     <Box>
@@ -72,4 +85,4 @@ const Application = () => {
   );
 };
 
-export default Application;
+export default ApplicationContainer;

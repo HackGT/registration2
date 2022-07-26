@@ -4,6 +4,7 @@ import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
+import { getFrontendFormattedFormData } from "./ApplicationContainer";
 
 interface FormPage {
   title: string;
@@ -31,15 +32,36 @@ const ApplicationFormPage: React.FC<Props> = props => {
 
   const handleSaveData = async () => {
     try {
-      console.log(formData);
+      const combinedFormData = { ...formData };
+
+      // Add special handling for files
+      for (const [key, value] of Object.entries(formData)) {
+        if (value instanceof File) {
+          const multipartFormData = new FormData();
+          multipartFormData.append("type", key);
+          multipartFormData.append("file", value, value.name);
+          // eslint-disable-next-line no-await-in-loop
+          const response = await axios.post(
+            "https://files.api.hexlabs.org/files/upload",
+            multipartFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          combinedFormData[key] = response.data.id;
+        }
+      }
+
       const response = await axios.post(
         `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/save-application-data`,
         {
-          applicationData: formData,
+          applicationData: combinedFormData,
           branchFormPage: props.formPageNumber,
         }
       );
-      setFormData(response.data.applicationData);
+      setFormData(getFrontendFormattedFormData(response.data));
       toast({
         title: "Success",
         description: "Application data successfully saved.",

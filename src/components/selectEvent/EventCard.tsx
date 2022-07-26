@@ -30,6 +30,7 @@ const EventCard: React.FC<Props> = props => {
         shadow: "md",
       }}
       onClick={() => {
+        window.sessionStorage.setItem("hexathonId", props.id);
         navigate(`/${props.id}`);
       }}
     >

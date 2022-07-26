@@ -56,7 +56,7 @@ const Dashboard: React.FC<Props> = props => {
           color="white"
           paddingY="32px"
           paddingLeft={{ base: "16px", md: "32px" }}
-          paddingRight={{ base: "16px", md: "0px" }}
+          paddingRight={{ base: "16px", md: (application.status === "CONFIRMED") ? "0px" : "32px" }}
         >
           <Heading size="xl" marginBottom="15px">
             Welcome Back {profile.name?.first}!

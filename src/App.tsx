@@ -1,5 +1,5 @@
 import React from "react";
-import { Footer } from "@hex-labs/core";
+import { ErrorScreen, Loading, Footer } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import useAxios from "axios-hooks";
@@ -9,7 +9,6 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { useLogin } from "./hooks/useLogin";
 import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
-import Loading from "./util/Loading";
 import EmailScreen from "./components/admin/emailScreen/EmailScreen";
 import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
@@ -33,8 +32,12 @@ export const App = () => {
     window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
   }
 
-  if (loading || hexathonsLoading || hexathonsError) {
+  if (loading || hexathonsLoading) {
     return <Loading />;
+  }
+
+  if (hexathonsError) {
+    return <ErrorScreen error={hexathonsError}/>
   }
 
   return (

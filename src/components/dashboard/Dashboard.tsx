@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Flex, Stack, Heading, Text, Button, HStack, Divider } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext";
 import Timeline from "./Timeline";
-import Loading from "../../util/Loading";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
@@ -31,9 +31,12 @@ const Dashboard: React.FC<Props> = props => {
     },
   });
 
-  if (profileLoading || profileError || applicationLoading || applicationError) {
+  if (profileLoading || applicationLoading) {
     return <Loading />;
   }
+
+  if (profileError) return <ErrorScreen error={profileError}/>;
+  if (applicationError) return <ErrorScreen error={applicationError}/>;
 
   return (
     <Flex

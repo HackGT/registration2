@@ -12,10 +12,9 @@ import {
   VStack,
   HStack,
 } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
-
-import Loading from "../../../util/Loading";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -23,9 +22,9 @@ const ApplicationDetailPage: React.FC = () => {
     `https://registration.api.hexlabs.org/applications/${applicationId}`
   );
 
-  if (loading || error) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
+
+  if (error) return <ErrorScreen error={error} />;
 
   return (
     <Box paddingX="50px">

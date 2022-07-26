@@ -12,18 +12,19 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
+import { Link } from "react-router-dom";
 
 import { getApplicationStatusTag } from "../../../util/util";
-import { Link } from "react-router-dom";
 
 const AllApplicationsTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [{ data, loading, error }] = useAxios("https://registration.api.hexlabs.org/applications");
 
-  if (loading || error) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <Loading/>;
+
+  if (error) return <ErrorScreen error={error} />;
 
   const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);

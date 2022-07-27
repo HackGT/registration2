@@ -9,6 +9,7 @@ import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import FileUploadFieldTemplate from "./FileUploadFieldTemplate";
 import CheckboxWidget from "./CheckboxWidget";
+import EssayWidget from "./EssayWidget";
 
 function transformErrors(errors: any[]) {
   const updatedErrors = [...errors];
@@ -68,6 +69,7 @@ const CommonForm: React.FC<Props> = props => {
         fields={{ select: SelectFieldTemplate, file: FileUploadFieldTemplate }}
         widgets={{
           checkbox: CheckboxWidget,
+          essay: EssayWidget,
         }}
         noHtml5Validate
         showErrorList={false}

@@ -12,7 +12,7 @@ interface Props {
 
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
-  const imageURL = `/events/${props.id}.png`; // this is relative to public
+  const imageURL = `/events/${props.id}.jpeg`; // this is relative to public
   return (
     <Box
       position="relative"

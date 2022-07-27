@@ -50,6 +50,28 @@ const CommonForm: React.FC<Props> = props => {
   }, [props.schema, props.commonDefinitionsSchema]);
   const uiSchema: JSONSchema7 = useMemo(() => JSON.parse(props.uiSchema), [props.uiSchema]);
 
+  const validateEssayWordCount = (formData: any, errors: any) => {
+    if (formData.essays.length !== 0) {
+      const schema = JSON.parse(props.schema);
+      const { essays } = formData;
+      // eslint-disable-next-line guard-for-in
+      for (const topic in essays) {
+        let s = essays[topic] !== undefined ? essays[topic] : "";
+
+        // Credit: https://stackoverflow.com/questions/18679576/counting-words-in-string
+        s = s.replace(/(^\s*)|(\s*$)/gi, ""); // exclude  start and end white-space
+        s = s.replace(/[ ]{2,}/gi, " "); // 2 or more space to 1
+        s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
+        const curWordCount = s.split(" ").filter((str: string) => str !== "").length;
+
+        const topicWordCount = schema.properties.essays.properties[topic].wordCount;
+        if (curWordCount > topicWordCount) {
+          errors.essays[topic].addError(`Essay cannot be over ${topicWordCount} words`);
+        }
+      }
+    }
+    return errors;
+  };
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>
@@ -62,6 +84,7 @@ const CommonForm: React.FC<Props> = props => {
         noHtml5Validate
         showErrorList={false}
         transformErrors={transformErrors}
+        validate={validateEssayWordCount}
       >
         {props.children}
       </Form>

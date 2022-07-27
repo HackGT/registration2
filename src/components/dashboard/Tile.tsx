@@ -41,28 +41,9 @@ const Tile: React.FC<Props> = props => {
   const cancelRef = React.useRef(null);
 
   const chooseBranchAndNavigate = async () => {
-    try {
-      const newAppLink = await props.chooseBranch(props.branch._id);
-      if (newAppLink) {
-        navigate(newAppLink);
-      } else {
-        toast({
-          title: "Error",
-          description: "Unable to select this application. Please try again.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "Unable to select this application. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+    const newAppLink = await props.chooseBranch(props.branch._id);
+    if (newAppLink) {
+      navigate(newAppLink);
     }
   };
 

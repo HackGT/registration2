@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 
 import Tile from "./Tile";
 import { useAuth } from "../../contexts/AuthContext";
+import { handleAxiosError } from "../../util/util";
 
 interface Props {
   currentApplication: boolean;
@@ -33,8 +34,8 @@ const Branches: React.FC<Props> = props => {
         }
       );
       return `/${hexathonId}/application/${response.data._id}`;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      handleAxiosError(error);
     }
     return "";
   };

@@ -11,6 +11,7 @@ import {
   Tag,
   VStack,
   HStack,
+  Stack,
 } from "@chakra-ui/react";
 import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
@@ -28,15 +29,15 @@ const ApplicationDetailPage: React.FC = () => {
   if (error) return <ErrorScreen error={error} />;
 
   return (
-    <Box paddingX="50px">
+    <Box paddingX="30px" paddingTop="20px">
       <VStack spacing="6px" align="left" paddingBottom="10px">
+        <Box>{getApplicationStatusTag(data)}</Box>
         <Heading as="h1" size="xl" fontWeight={700}>
           {data.userInfo.name.first} {data.userInfo.name.last}
         </Heading>
-        <Heading as="h2" size="s" fontWeight={500} color="grey">
+        <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Track: {data.applicationBranch.name}
         </Heading>
-        <HStack>{getApplicationStatusTag(data)}</HStack>
       </VStack>
       <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
         <AccordionItem>
@@ -49,9 +50,26 @@ const ApplicationDetailPage: React.FC = () => {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={3}>
-            <Text>{data.email}</Text>
-            <Text>{data.phoneNumber}</Text>
-            <Text>{data.applicationData.linkedin}</Text>
+            <Stack>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Email
+                </Text>
+                {data.userInfo.email}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Phone Number
+                </Text>
+                {data.applicationData.phoneNumber}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  School Email
+                </Text>
+                {data.applicationData.schoolEmail}
+              </Text>
+            </Stack>
           </AccordionPanel>
         </AccordionItem>
 
@@ -59,25 +77,44 @@ const ApplicationDetailPage: React.FC = () => {
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Text style={{ fontWeight: "bold" }}>Application Statistics</Text>
+                <Text style={{ fontWeight: "bold" }}>General Information</Text>
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <Text>{data.applicationData.adult ? "Older" : "Younger"} than 18 years old</Text>
-            <Text>
-              <span style={{ color: "Grey" }}>Attends</span> {data.applicationData.school}
-            </Text>
-            <Text>
-              <span style={{ color: "Grey" }}>Studies</span> {data.applicationData.major}
-            </Text>
-            <Text>
-              <span style={{ color: "Grey" }}>Identifies</span> as a {data.applicationData.gender}
-            </Text>
-            <Text>
-              <span style={{ color: "Grey" }}>Ethnicity</span> is {data.applicationData.ethnicity}
-            </Text>
+            <Stack>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  University
+                </Text>
+                {data.applicationData.school}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Major
+                </Text>
+                {data.applicationData.major}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Is 18 years old?
+                </Text>
+                {data.applicationData.adult ? "Yes" : "No"}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Gender
+                </Text>
+                {data.applicationData.gender}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Ethnicity
+                </Text>
+                {data.applicationData.ethnicity}
+              </Text>
+            </Stack>
           </AccordionPanel>
         </AccordionItem>
 

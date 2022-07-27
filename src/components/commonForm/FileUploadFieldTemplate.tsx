@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { FieldProps } from "@rjsf/core";
-import { Input, FormLabel, InputGroup, InputLeftElement, Icon } from "@chakra-ui/react";
+import { Input, FormLabel, InputGroup, InputLeftElement, Icon, Box } from "@chakra-ui/react";
 import { FiFile } from "react-icons/fi";
 
 const FileUploadFieldTemplate: React.FC<FieldProps> = props => {
@@ -15,7 +15,7 @@ const FileUploadFieldTemplate: React.FC<FieldProps> = props => {
   };
 
   return (
-    <>
+    <Box>
       <FormLabel aria-disabled={props.disabled}>{props.schema.title}</FormLabel>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
@@ -29,14 +29,15 @@ const FileUploadFieldTemplate: React.FC<FieldProps> = props => {
           disabled={props.disabled}
         />
         <Input
-          placeholder="Click or drag to upload resume"
+          placeholder="Click to upload resume"
           onClick={() => inputRef.current.click()}
           value={fileName}
           readOnly
           disabled={props.disabled}
+          cursor="pointer"
         />
       </InputGroup>
-    </>
+    </Box>
   );
 };
 

@@ -14,7 +14,8 @@ function transformErrors(errors: any[]) {
   return errors.map((error: any) => {
     if (
       error.message === "should be equal to constant" ||
-      error.message === "should match exactly one schema in oneOf"
+      error.message === "should match exactly one schema in oneOf" ||
+      error.message === "should match some schema in anyOf"
     ) {
       error.message = "";
     } else if (

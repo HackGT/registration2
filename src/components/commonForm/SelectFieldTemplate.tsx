@@ -17,7 +17,7 @@ const SelectFieldTemplate: React.FC<FieldProps> = props => {
 
   return (
     <Box>
-      <FormLabel>{props.schema.title}</FormLabel>
+      <FormLabel aria-disabled={props.disabled}>{props.schema.title}</FormLabel>
       <Select
         value={{ label: props.formData, value: props.formData }}
         options={options}
@@ -30,6 +30,7 @@ const SelectFieldTemplate: React.FC<FieldProps> = props => {
         }}
         isSearchable
         isClearable
+        isDisabled={props.disabled}
       />
     </Box>
   );

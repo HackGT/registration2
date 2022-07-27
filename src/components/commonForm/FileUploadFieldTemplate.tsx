@@ -16,17 +16,24 @@ const FileUploadFieldTemplate: React.FC<FieldProps> = props => {
 
   return (
     <>
-      <FormLabel>{props.schema.title}</FormLabel>
+      <FormLabel aria-disabled={props.disabled}>{props.schema.title}</FormLabel>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
           <Icon as={FiFile} />
         </InputLeftElement>
-        <Input type="file" onChange={handleChange} ref={inputRef} style={{ display: "none" }} />
+        <Input
+          type="file"
+          onChange={handleChange}
+          ref={inputRef}
+          style={{ display: "none" }}
+          disabled={props.disabled}
+        />
         <Input
           placeholder="Click or drag to upload resume"
           onClick={() => inputRef.current.click()}
           value={fileName}
           readOnly
+          disabled={props.disabled}
         />
       </InputGroup>
     </>

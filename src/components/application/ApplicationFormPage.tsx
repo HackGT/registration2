@@ -18,11 +18,9 @@ interface Props {
   formPageNumber: number;
   commonDefinitionsSchema: string;
   applicationId?: string;
-  lastPage: boolean;
   hasPrevPage: boolean;
   prevPage: () => void;
   nextPage: () => void;
-  submitApplication: () => void;
 }
 
 const ApplicationFormPage: React.FC<Props> = props => {
@@ -92,7 +90,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
   };
 
   return (
-    <Box marginX="10px">
+    <Box marginX="15px">
       <CommonForm
         schema={props.formPage.jsonSchema}
         uiSchema={props.formPage.uiSchema}

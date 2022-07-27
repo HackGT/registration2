@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Header, HeaderItem } from '@hex-labs/core';
-import axios from 'axios';
-import { signOut, getAuth } from 'firebase/auth';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Header, HeaderItem } from "@hex-labs/core";
+import axios from "axios";
+import { signOut, getAuth } from "firebase/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
 import { app } from "../util/firebase";
 
 const auth = getAuth(app);
@@ -28,14 +28,8 @@ const Navigation: React.FC = () => {
 
   useEffect(() => {
     const getRoles = async () => {
-      const res = await axios.get(
-        `https://users.api.hexlabs.org/users/${user?.uid}`
-      );
-      setRoles({
-        member: res.data.member,
-        exec: res.data.exec,
-        admin: res.data.admin,
-      });
+      const response = await axios.get(`https://users.api.hexlabs.org/users/${user?.uid}`);
+      setRoles({ ...response.data.roles });
     };
 
     if (hexathonId === undefined) {
@@ -47,31 +41,21 @@ const Navigation: React.FC = () => {
 
   return (
     <Header>
-      {
-        (location.pathname !== "/") ? (
-          <>
-            {
-              (role.admin || role.exec) ? (
-                <HeaderItem>
-                  <Link to={`/${hexathonId}/admin`}>
-                    Admin Home
-                  </Link>
-                </HeaderItem>
-              ) : null
-            }
+      {location.pathname !== "/" ? (
+        <>
+          {role.admin || role.exec ? (
             <HeaderItem>
-              <Link to={`/${hexathonId}`}>
-                Dashboard
-              </Link>
+              <Link to={`/${hexathonId}/admin`}>Admin Home</Link>
             </HeaderItem>
-          </>
-        ) : null
-      } 
-      <HeaderItem>
-        <Link to="/">
-          Select Event
-        </Link>
-      </HeaderItem>
+          ) : null}
+          <HeaderItem>
+            <Link to={`/${hexathonId}`}>Dashboard</Link>
+          </HeaderItem>
+          <HeaderItem>
+            <Link to="/">Change Event</Link>
+          </HeaderItem>
+        </>
+      ) : null}
       <HeaderItem show>
         <Link to="/" onClick={logOut}>
           Sign Out
@@ -79,6 +63,6 @@ const Navigation: React.FC = () => {
       </HeaderItem>
     </Header>
   );
-}
+};
 
 export default Navigation;

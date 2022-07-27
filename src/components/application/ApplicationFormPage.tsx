@@ -27,9 +27,11 @@ const ApplicationFormPage: React.FC<Props> = props => {
   const [formData, setFormData] = useState(props.defaultFormData);
   const toast = useToast();
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
+  const [saveDataLoading, setSaveDataLoading] = useState(false);
 
   const handleSaveData = async () => {
     try {
+      setSaveDataLoading(true);
       const combinedFormData = { ...formData };
 
       // Add special handling for files
@@ -67,6 +69,8 @@ const ApplicationFormPage: React.FC<Props> = props => {
         duration: 5000,
         isClosable: true,
       });
+      setSaveDataLoading(false);
+      return true;
     } catch (error: any) {
       console.log(error.message);
       toast({
@@ -76,17 +80,21 @@ const ApplicationFormPage: React.FC<Props> = props => {
         duration: 5000,
         isClosable: true,
       });
+      setSaveDataLoading(false);
+      return false;
     }
   };
 
   const handlePreviousClicked = async () => {
-    await handleSaveData();
-    props.prevPage();
+    if (await handleSaveData()) {
+      props.prevPage();
+    }
   };
 
   const handleNextClicked = async () => {
-    await handleSaveData();
-    props.nextPage();
+    if (await handleSaveData()) {
+      props.nextPage();
+    }
   };
 
   return (
@@ -114,7 +122,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
             <ArrowBackIcon />
             {isDesktop && <Text marginLeft="2">Back</Text>}
           </Button>
-          <Button colorScheme="purple" onClick={handleSaveData}>
+          <Button colorScheme="purple" onClick={handleSaveData} isLoading={saveDataLoading}>
             Save
           </Button>
           <Button colorScheme="purple" type="submit" variant="outline">

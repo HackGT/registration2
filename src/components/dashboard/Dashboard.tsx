@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Stack, Heading, Text, Button, HStack, Divider } from "@chakra-ui/react";
+import { Box, Flex, Stack, Heading, Text, Divider } from "@chakra-ui/react";
 import { ErrorScreen, Loading } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
@@ -10,11 +10,7 @@ import Timeline from "./Timeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-interface Props {
-  hexathons: any[];
-}
-
-const Dashboard: React.FC<Props> = props => {
+const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { currentHexathon } = useCurrentHexathon();
   const { hexathonId } = useParams();
@@ -125,7 +121,7 @@ const Dashboard: React.FC<Props> = props => {
           loop!
         </Text>
         <Box paddingX="30px">
-          <Timeline hexathons={props.hexathons} />
+          <Timeline />
         </Box>
       </Stack>
     </Flex>

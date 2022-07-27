@@ -24,29 +24,22 @@ axios.defaults.withCredentials = true;
 
 export const App = () => {
   const [loading, loggedIn] = useLogin();
-  const [{ data: hexathons, loading: hexathonsLoading, error: hexathonsError }] = useAxios(
-    "https://hexathons.api.hexlabs.org/hexathons"
-  );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (!loading && !loggedIn) {
     window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
   }
 
-  if (loading || hexathonsLoading) {
-    return <Loading />;
-  }
-
-  if (hexathonsError) {
-    return <ErrorScreen error={hexathonsError}/>
-  }
-
   return (
     <AuthProvider>
-      <Navigation/>
+      <Navigation />
       <Routes>
-        <Route path="/" element={<SelectEvent hexathons={hexathons} />} />
-        <Route path="/:hexathonId" element={<CheckValidHexathon hexathons={hexathons} />}>
-          <Route path="" element={<Dashboard hexathons={hexathons} />} />
+        <Route path="/" element={<SelectEvent />} />
+        <Route path="/:hexathonId" element={<CheckValidHexathon />}>
+          <Route path="" element={<Dashboard />} />
           <Route path="application/:applicationId" element={<ApplicationContainer />} />
           <Route path="admin" element={<AdminControlsHome />} />
           <Route path="admin/email" element={<EmailScreen />} />
@@ -57,7 +50,7 @@ export const App = () => {
           <Route path="admin/statistics" element={<Statistics />} />
         </Route>
       </Routes>
-      <Footer/>
+      <Footer />
     </AuthProvider>
   );
 };

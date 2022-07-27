@@ -1,20 +1,24 @@
 import React from "react";
 import { Stack, Box } from "@chakra-ui/react";
+import { ErrorScreen, Loading } from "@hex-labs/core";
+import useAxios from "axios-hooks";
 
 import Hex from "./hex";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-interface Props {
-  hexathons: any[];
-}
-
-const Timeline: React.FC<Props> = props => {
+const Timeline: React.FC = () => {
+  const [{ data: hexathons, loading, error }] = useAxios(
+    "https://hexathons.api.hexlabs.org/hexathons"
+  );
   const { currentHexathon } = useCurrentHexathon();
 
-  const currentHexathonIndex = props.hexathons.findIndex(
+  if (loading) return <Loading />;
+  if (error) return <ErrorScreen error={error} />;
+
+  const currentHexathonIndex = hexathons.findIndex(
     (hexathon: any) => hexathon._id === currentHexathon._id
   );
-  const filteredHexathons = props.hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
+  const filteredHexathons = hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
 
   return (
     <Stack

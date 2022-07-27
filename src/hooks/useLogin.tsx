@@ -40,7 +40,6 @@ export const useLogin = () => {
         searchParams.delete("idToken");
         navigate(`${location.pathname}?${searchParams.toString()}`);
       } catch (err: any) {
-        console.log(err.message);
         setLoading(false);
       }
     };

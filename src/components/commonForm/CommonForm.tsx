@@ -26,6 +26,8 @@ function transformErrors(errors: any[]) {
       error.message = "This field must be at least 10 characters long";
     } else if (error.message === `should match format "email"`) {
       error.message = "Please enter a valid email address";
+    } else if (error.message === `should match format "uri"`) {
+      error.message = "Please enter a valid URL";
     }
     return error;
   });

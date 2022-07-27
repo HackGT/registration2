@@ -44,7 +44,7 @@ const BranchFormModal: React.FC<Props> = props => {
   } = useForm();
 
   const type = useMemo(
-    () => (props.defaultValues === undefined ? FormModalType.Create : FormModalType.Edit),
+    () => (props.defaultValues ? FormModalType.Edit : FormModalType.Create),
     [props.defaultValues]
   );
 
@@ -80,7 +80,7 @@ const BranchFormModal: React.FC<Props> = props => {
 
     try {
       if (type === FormModalType.Create) {
-        await axios.post(`https://registration.api.hexlabs.org/branches/`, FormData);
+        await axios.post(`https://registration.api.hexlabs.org/branches/`, formData);
         toast({
           title: "Success!",
           description: "The branch has successfully been created.",

@@ -35,8 +35,8 @@ const Dashboard: React.FC<Props> = props => {
     return <Loading />;
   }
 
-  if (profileError) return <ErrorScreen error={profileError}/>;
-  if (applicationError) return <ErrorScreen error={applicationError}/>;
+  if (profileError) return <ErrorScreen error={profileError} />;
+  if (applicationError) return <ErrorScreen error={applicationError} />;
 
   return (
     <Flex
@@ -55,33 +55,6 @@ const Dashboard: React.FC<Props> = props => {
         alignItems="center"
         justifyContent="space-around"
       >
-        <Box
-          color="white"
-          paddingY="32px"
-          paddingLeft={{ base: "16px", md: "32px" }}
-          paddingRight={{ base: "16px", md: (application.status === "CONFIRMED") ? "0px" : "32px" }}
-        >
-          <Heading size="xl" marginBottom="15px">
-            Welcome Back {profile.name?.first}!
-          </Heading>
-          <Text>
-            We're happy to see you here! We're currently running our {currentHexathon.name} and we'd
-            love to see you there!
-          </Text>
-          <HStack
-            maxWidth={{ base: "500px", md: "400px" }}
-            justifyContent="space-around"
-            marginTop={{ base: 4, md: 8 }}
-            spacing={4}
-          >
-            <Button width="45%" color="#7B69EC" borderWidth="1px" borderColor="#7B69EC">
-              Apply
-            </Button>
-            <Button width="45%" bgColor="#7B69EC">
-              Details
-            </Button>
-          </HStack>
-        </Box>
         {application.status === "CONFIRMED" ? (
           <Box
             border="8px"

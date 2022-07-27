@@ -21,7 +21,8 @@ const Branches: React.FC<Props> = props => {
     `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
   );
   const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
-    `https://registration.api.hexlabs.org/applications/?hexathon=${hexathonId}&userId=${user?.uid}`
+    `https://registration.api.hexlabs.org/applications/?hexathon=${hexathonId}&userId=${user?.uid}`,
+    { useCache: false }
   );
 
   const chooseBranch = async (appBranchID: any) => {

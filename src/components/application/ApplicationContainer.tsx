@@ -26,7 +26,7 @@ const ApplicationContainer = () => {
   const [formPageNumber, setFormPageNumber] = useState(0);
 
   const [{ data, loading, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/applications/${applicationId}`, 
+    `https://registration.api.hexlabs.org/applications/${applicationId}`,
     { useCache: false }
   );
   const [branch, setBranch] = useState<any>(undefined);

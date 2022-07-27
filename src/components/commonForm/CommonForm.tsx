@@ -18,10 +18,14 @@ function transformErrors(errors: any[]) {
     ) {
       error.message = "";
     } else if (
-      error.message === "should be number" ||
-      error.message === "should be equal to one of the allowed values"
+      error.message === "should be equal to one of the allowed values" ||
+      error.message === "is a required property"
     ) {
-      error.message = "This is a required field";
+      error.message = "Please fill out this field";
+    } else if (error.message === "should NOT be shorter than 10 characters") {
+      error.message = "This field must be at least 10 characters long";
+    } else if (error.message === `should match format "email"`) {
+      error.message = "Please enter a valid email address";
     }
     return error;
   });
@@ -49,7 +53,6 @@ const CommonForm: React.FC<Props> = props => {
     return schema as JSONSchema7;
   }, [props.schema, props.commonDefinitionsSchema]);
   const uiSchema: JSONSchema7 = useMemo(() => JSON.parse(props.uiSchema), [props.uiSchema]);
-
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>

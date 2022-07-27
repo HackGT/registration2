@@ -34,26 +34,6 @@ const ApplicationFormPage: React.FC<Props> = props => {
       setSaveDataLoading(true);
       const combinedFormData = { ...formData };
 
-      // Add special handling for files
-      for (const [key, value] of Object.entries(formData)) {
-        if (value instanceof File) {
-          const multipartFormData = new FormData();
-          multipartFormData.append("type", key);
-          multipartFormData.append("file", value, value.name);
-          // eslint-disable-next-line no-await-in-loop
-          const response = await axios.post(
-            "https://files.api.hexlabs.org/files/upload",
-            multipartFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          combinedFormData[key] = response.data.id;
-        }
-      }
-
       const response = await axios.post(
         `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/save-application-data`,
         {

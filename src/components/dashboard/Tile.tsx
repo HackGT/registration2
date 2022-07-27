@@ -67,7 +67,7 @@ const Tile: React.FC<Props> = props => {
     if (currBranchHasApplication) {
       return BranchStatus.Submitted;
     }
-    if (props.currApp != undefined && props.currApp.status === "DRAFT") {
+    if (props.currApp?.status === "DRAFT") {
       return BranchStatus.InProgress;
     }
     return BranchStatus.NotStarted;

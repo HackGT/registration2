@@ -48,14 +48,14 @@ const BranchEditor: React.FC = () => {
   const handleDeleteFormPage = async (formPageIndex: number) => {
     const updatedFormPages: any[] = [...data.formPages];
     updatedFormPages.splice(formPageIndex, 1);
-    
+
     try {
       await axios.patch(`https://registration.api.hexlabs.org/branches/${branchId}`, {
         formPages: updatedFormPages,
       });
       toast({
         title: "Success",
-        description: "Form page updated successfully",
+        description: "Form page deleted successfully",
         status: "success",
         duration: 3000,
       });
@@ -63,7 +63,7 @@ const BranchEditor: React.FC = () => {
       console.error(err);
       toast({
         title: "Error",
-        description: "Error updating form page",
+        description: "Error deleting form page",
         status: "error",
         duration: 3000,
       });

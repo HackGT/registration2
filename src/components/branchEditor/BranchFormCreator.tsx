@@ -79,11 +79,6 @@ const BranchFormCreator: React.FC<Props> = props => {
   
   const handleDeleteFormPage = async () => {
     onClose();
-    // const updatedFormPage = {
-    //   title: props.formPage.title,
-    //   jsonSchema,
-    //   uiSchema,
-    // };
     setLoading(true);
     await props.handleDeleteFormPage(props.formPageIndex);
     setLoading(false);

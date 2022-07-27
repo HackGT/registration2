@@ -77,8 +77,8 @@ const Tile: React.FC<Props> = props => {
 
   const branchStatus = useMemo(() => {
     const currBranchHasApplication = props.branch._id === props.currApp?.applicationBranch?._id;
-    if (currBranchHasApplication && props.currApp.applied) {
-      return BranchStatus.Submitted;
+    if (props.currApp.status === "DRAFT") {
+      return BranchStatus.InProgress;
     }
     if (currDate < openDate) {
       return BranchStatus.NotOpen;
@@ -87,7 +87,7 @@ const Tile: React.FC<Props> = props => {
       return BranchStatus.Closed;
     }
     if (currBranchHasApplication) {
-      return BranchStatus.InProgress;
+      return BranchStatus.Submitted;
     }
     return BranchStatus.NotStarted;
   }, [props.branch, props.currApp, openDate, closeDate, currDate]);

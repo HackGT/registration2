@@ -2,33 +2,19 @@ import React from "react";
 import { Tag } from "@chakra-ui/react";
 import { DateTime } from "luxon";
 
-export enum ApplicationStatus {
-  DRAFT = "DRAFT",
-  APPLIED = "APPLIED",
-  CONFIRMED = "CONFIRMED",
-}
-
-export const getApplicationStatus = (application: any) => {
-  if (application.confirmed) {
-    return ApplicationStatus.CONFIRMED;
-  }
-  if (application.applied) {
-    return ApplicationStatus.APPLIED;
-  }
-  return ApplicationStatus.DRAFT;
-};
-
 // eslint-disable-next-line consistent-return
 export const getApplicationStatusTag = (application: any) => {
-  const status = getApplicationStatus(application);
-
-  switch (status) {
-    case ApplicationStatus.DRAFT:
+  switch (application.status) {
+    case "DRAFT":
       return <Tag>Draft</Tag>;
-    case ApplicationStatus.APPLIED:
+    case "APPLIED":
       return <Tag colorScheme="orange">Applied</Tag>;
-    case ApplicationStatus.CONFIRMED:
+    case "ACCEPTED":
+      return <Tag colorScheme="purple">Applied</Tag>;
+    case "CONFIRMED":
       return <Tag colorScheme="green">Confirmed</Tag>;
+    case "REJECTED":
+      return <Tag colorScheme="red">Confirmed</Tag>;
   }
 };
 

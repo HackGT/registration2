@@ -15,6 +15,7 @@ import {
 import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
+import { getApplicationStatusTag } from "../../../util/util";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -35,10 +36,7 @@ const ApplicationDetailPage: React.FC = () => {
         <Heading as="h2" size="s" fontWeight={500} color="grey">
           Application Track: {data.applicationBranch.name}
         </Heading>
-        <HStack>
-          <Tag colorScheme="blue">{data.applied ? "Applied" : "Not Applied"}</Tag>
-          <Tag colorScheme="green">{data.confirmed ? "Confirmed" : "Not Confirmed"}</Tag>
-        </HStack>
+        <HStack>{getApplicationStatusTag(data)}</HStack>
       </VStack>
       <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
         <AccordionItem>

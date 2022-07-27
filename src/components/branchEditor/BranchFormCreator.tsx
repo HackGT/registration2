@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
   AlertDescription,
   AlertIcon,
   AlertTitle,
@@ -10,6 +16,7 @@ import {
   Stack,
   useToast,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
@@ -17,11 +24,13 @@ import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
 import CommonForm from "../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
+import { JSONSchema7 } from "json-schema";
 
 interface Props {
   formPage: any;
   formPageIndex: number;
   handleSaveFormPage: (updatedFormPage: any, formPageIndex: number) => Promise<void>;
+  handleDeleteFormPage: (formPageIndex: number) => Promise<void>;
   commonDefinitionsSchema: string;
 }
 
@@ -65,11 +74,63 @@ const BranchFormCreator: React.FC<Props> = props => {
     setLoading(false);
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const btnRef = React.useRef<HTMLButtonElement>(null);
+  
+  const handleDeleteFormPage = async () => {
+    onClose();
+    // const updatedFormPage = {
+    //   title: props.formPage.title,
+    //   jsonSchema,
+    //   uiSchema,
+    // };
+    setLoading(true);
+    await props.handleDeleteFormPage(props.formPageIndex);
+    setLoading(false);
+  };
+
+  // Need to use this memo function to include the common definitions schema. These
+  // definitions don't show up in the editor
+  const combinedJsonSchema = useMemo(() => {
+    const schema = JSON.parse(jsonSchema);
+    schema.definitions = JSON.parse(props.commonDefinitionsSchema);
+    return schema as JSONSchema7;
+  }, [jsonSchema, props.commonDefinitionsSchema]);
+
   return (
     <>
       <Button onClick={handleSaveFormPage} colorScheme="purple" isLoading={loading}>
         Save Form Page
       </Button>
+      <Button colorScheme="red" isLoading={loading} onClick={onOpen}>
+        Delete Form Page
+      </Button>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={btnRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Form Page
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? This will affect all applications and is unrecoverable
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={btnRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleDeleteFormPage} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
       <Box marginTop="20px">
         <Stack
           width={{ base: "100%", md: "55%" }}

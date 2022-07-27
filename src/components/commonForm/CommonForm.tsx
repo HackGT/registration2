@@ -8,6 +8,7 @@ import Form from "@rjsf/chakra-ui";
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import FileUploadFieldTemplate from "./FileUploadFieldTemplate";
+import CheckboxWidget from "./CheckboxWidget";
 
 function transformErrors(errors: any[]) {
   const updatedErrors = [...errors];
@@ -65,6 +66,9 @@ const CommonForm: React.FC<Props> = props => {
         uiSchema={uiSchema}
         ObjectFieldTemplate={ObjectFieldTemplate}
         fields={{ select: SelectFieldTemplate, file: FileUploadFieldTemplate }}
+        widgets={{
+          checkbox: CheckboxWidget,
+        }}
         noHtml5Validate
         showErrorList={false}
         transformErrors={transformErrors}

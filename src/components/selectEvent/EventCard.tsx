@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Heading, LinkBox, LinkOverlay } from "@chakra-ui/react";
+import { Box, Heading, HStack, LinkBox, LinkOverlay, Image } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 
 interface Props {
@@ -12,8 +12,10 @@ interface Props {
 
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
+  const imageURL = `/events/${props.id}.png`; // this is relative to public
   return (
     <Box
+      position="relative"
       marginBottom={3}
       bg="white"
       w="90%"
@@ -34,7 +36,17 @@ const EventCard: React.FC<Props> = props => {
         navigate(`/${props.id}`);
       }}
     >
-      <Heading>{props.name}</Heading>
+      <HStack>
+        <Heading>{props.name}</Heading>
+        <Image
+          position="absolute"
+          right="0px"
+          top="0px"
+          height="148px"
+          src={imageURL}
+          alt="event image"
+        />
+      </HStack>
     </Box>
   );
 };

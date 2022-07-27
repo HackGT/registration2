@@ -55,6 +55,20 @@ const Dashboard: React.FC<Props> = props => {
         alignItems="center"
         justifyContent="space-around"
       >
+        <Box
+          color="white"
+          paddingY="32px"
+          paddingLeft={{ base: "16px", md: "32px" }}
+          paddingRight={{ base: "16px", md: application.status === "CONFIRMED" ? "0px" : "32px" }}
+        >
+          <Heading size="xl" marginBottom="15px">
+            Welcome {profile.name?.first}!
+          </Heading>
+          <Text>
+            We're happy to see you here! We're currently running {currentHexathon.name} and we'd
+            love to see you there!
+          </Text>
+        </Box>
         {application.status === "CONFIRMED" ? (
           <Box
             border="8px"

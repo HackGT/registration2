@@ -1,42 +1,21 @@
-/* eslint-disable no-underscore-dangle */
 import React from "react";
 import { Text, SimpleGrid } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
-import useAxios from "axios-hooks";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import Tile from "./Tile";
-import { useAuth } from "../../contexts/AuthContext";
 import { handleAxiosError } from "../../util/util";
 
 interface Props {
   currentApplication: boolean;
+  application: any;
+  branches: any;
 }
 const Branches: React.FC<Props> = props => {
-  const { user } = useAuth();
   const { hexathonId } = useParams();
 
-  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
-    method: "GET",
-    url: "https://registration.api.hexlabs.org/branches",
-    params: {
-      hexathon: hexathonId,
-    },
-  });
-  const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
-    {
-      method: "GET",
-      url: "https://registration.api.hexlabs.org/applications",
-      params: {
-        hexathon: hexathonId,
-        userId: user?.uid,
-      },
-    },
-    {
-      useCache: false,
-    }
-  );
+  console.log(props.currentApplication);
+  console.log(props.application);
 
   const chooseBranch = async (appBranchID: any) => {
     try {
@@ -54,20 +33,14 @@ const Branches: React.FC<Props> = props => {
     return "";
   };
 
-  if (branchesLoading || applicationsLoading) {
-    return <Loading />;
-  }
-
-  if (branchesError) return <ErrorScreen error={branchesError} />;
-  if (applicationsError) return <ErrorScreen error={applicationsError} />;
-
-  const currApp = applications?.length > 0 ? applications[0] : undefined;
-
-  let branchesToRender = currApp === undefined && !props.currentApplication ? branches : [];
-  if (currApp) {
+  let branchesToRender =
+    props.application === undefined && !props.currentApplication ? props.branches : [];
+  if (props.application) {
     branchesToRender = props.currentApplication
-      ? branches.filter((branch: any) => branch.id === currApp.applicationBranch.id)
-      : branches.filter((branch: any) => branch.id !== currApp.applicationBranch.id);
+      ? props.branches.filter((branch: any) => branch.id === props.application.applicationBranch.id)
+      : props.branches.filter(
+          (branch: any) => branch.id !== props.application.applicationBranch.id
+        );
   }
 
   const emptyBranchesText = props.currentApplication
@@ -75,14 +48,19 @@ const Branches: React.FC<Props> = props => {
     : "We are currently working hard to finalize the tracks. Please check back later!";
 
   return (
-    <SimpleGrid columns={branches.length === 0 ? 1 : { base: 1, md: 2 }} spacing={4}>
+    <SimpleGrid columns={props.branches.length === 0 ? 1 : { base: 1, md: 2 }} spacing={4}>
       {branchesToRender.length === 0 ? (
         <Text textAlign="center" fontStyle="italic" paddingX="40px">
           {emptyBranchesText}
         </Text>
       ) : (
         branchesToRender.map((branch: any) => (
-          <Tile branch={branch} currApp={currApp} chooseBranch={chooseBranch} key={branch._id} />
+          <Tile
+            branch={branch}
+            currApp={props.application}
+            chooseBranch={chooseBranch}
+            key={branch._id}
+          />
         ))
       )}
     </SimpleGrid>

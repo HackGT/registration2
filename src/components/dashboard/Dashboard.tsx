@@ -18,21 +18,35 @@ const Dashboard: React.FC = () => {
   const [{ data: profile, loading: profileLoading, error: profileError }] = useAxios(
     `https://users.api.hexlabs.org/users/${user?.uid}`
   );
-  const [{ data: application, loading: applicationLoading, error: applicationError }] = useAxios({
-    url: "https://registration.api.hexlabs.org/applications/",
+  const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
+    {
+      url: "https://registration.api.hexlabs.org/applications/",
+      method: "GET",
+      params: {
+        hexathon: hexathonId,
+        userId: user?.uid,
+      },
+    }
+  );
+
+  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
     method: "GET",
+    url: "https://registration.api.hexlabs.org/branches",
     params: {
       hexathon: hexathonId,
-      userId: user?.uid,
     },
   });
 
-  if (profileLoading || applicationLoading) {
+  if (profileLoading || applicationsLoading || branchesLoading) {
     return <Loading />;
   }
 
   if (profileError) return <ErrorScreen error={profileError} />;
-  if (applicationError) return <ErrorScreen error={applicationError} />;
+  if (applicationsError) return <ErrorScreen error={applicationsError} />;
+  if (branchesError) return <ErrorScreen error={branchesError} />;
+
+  const application =
+    applications.applications?.length > 0 ? applications.applications[0] : undefined;
 
   return (
     <Flex
@@ -55,7 +69,10 @@ const Dashboard: React.FC = () => {
           color="white"
           paddingY="32px"
           paddingLeft={{ base: "16px", md: "32px" }}
-          paddingRight={{ base: "16px", md: application.status === "CONFIRMED" ? "0px" : "32px" }}
+          paddingRight={{
+            base: "16px",
+            md: application?.status === "CONFIRMED" ? "0px" : "32px",
+          }}
         >
           <Heading size="xl" marginBottom="15px">
             Welcome {profile.name?.first}!
@@ -65,7 +82,7 @@ const Dashboard: React.FC = () => {
             love to see you there!
           </Text>
         </Box>
-        {application.status === "CONFIRMED" ? (
+        {application?.status === "CONFIRMED" ? (
           <Box
             border="8px"
             borderStyle="solid"
@@ -99,7 +116,7 @@ const Dashboard: React.FC = () => {
           </Heading>
           <Text>Finish your application for {currentHexathon.name} below.</Text>
         </Box>
-        <Branches currentApplication />
+        <Branches currentApplication application={application} branches={branches} />
       </Stack>
       <Stack margin={{ base: "20px", md: 0 }} marginBottom={{ base: 0, md: "15px" }}>
         <Box margin="35px 25px 15px 25px">
@@ -108,7 +125,7 @@ const Dashboard: React.FC = () => {
           </Heading>
           <Text>Select one of the tracks from below to apply to {currentHexathon.name}.</Text>
         </Box>
-        <Branches currentApplication={false} />
+        <Branches currentApplication={false} application={application} branches={branches} />
       </Stack>
       <Divider marginY={{ base: "30px", md: "40px" }} alignSelf="center" width="95%" />
       <Stack marginX={{ base: "20px", md: 0 }}>

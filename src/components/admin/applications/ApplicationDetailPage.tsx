@@ -34,7 +34,7 @@ const ApplicationDetailPage: React.FC = () => {
       <VStack spacing="6px" align="left" paddingBottom="10px">
         <Box>{getApplicationStatusTag(data)}</Box>
         <Heading as="h1" size="xl" fontWeight={700}>
-          {data.userInfo.name.first} {data.userInfo.name.last}
+          {data.name}
         </Heading>
         <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Track: {data.applicationBranch.name}
@@ -56,7 +56,7 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Email
                 </Text>
-                {data.userInfo.email}
+                {data.email}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">

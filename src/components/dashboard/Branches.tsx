@@ -17,12 +17,25 @@ const Branches: React.FC<Props> = props => {
   const { user } = useAuth();
   const { hexathonId } = useParams();
 
-  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios(
-    `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
-  );
+  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
+    method: "GET",
+    url: "https://registration.api.hexlabs.org/branches",
+    params: {
+      hexathon: hexathonId,
+    },
+  });
   const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
-    `https://registration.api.hexlabs.org/applications/?hexathon=${hexathonId}&userId=${user?.uid}`,
-    { useCache: false }
+    {
+      method: "GET",
+      url: "https://registration.api.hexlabs.org/applications",
+      params: {
+        hexathon: hexathonId,
+        userId: user?.uid,
+      },
+    },
+    {
+      useCache: false,
+    }
   );
 
   const chooseBranch = async (appBranchID: any) => {

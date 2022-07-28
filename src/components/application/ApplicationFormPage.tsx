@@ -29,7 +29,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
   const [saveDataLoading, setSaveDataLoading] = useState(false);
 
-  const handleSaveData = async () => {
+  const handleSaveData = async (validateData: boolean) => {
     try {
       setSaveDataLoading(true);
       const combinedFormData = { ...formData };
@@ -39,6 +39,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
         {
           applicationData: combinedFormData,
           branchFormPage: props.formPageNumber,
+          validateData,
         }
       );
       setFormData(getFrontendFormattedFormData(response.data));
@@ -66,13 +67,13 @@ const ApplicationFormPage: React.FC<Props> = props => {
   };
 
   const handlePreviousClicked = async () => {
-    if (await handleSaveData()) {
+    if (await handleSaveData(false)) {
       props.prevPage();
     }
   };
 
   const handleNextClicked = async () => {
-    if (await handleSaveData()) {
+    if (await handleSaveData(true)) {
       props.nextPage();
     }
   };
@@ -102,7 +103,11 @@ const ApplicationFormPage: React.FC<Props> = props => {
             <ArrowBackIcon />
             {isDesktop && <Text marginLeft="2">Back</Text>}
           </Button>
-          <Button colorScheme="purple" onClick={handleSaveData} isLoading={saveDataLoading}>
+          <Button
+            colorScheme="purple"
+            onClick={() => handleSaveData(false)}
+            isLoading={saveDataLoading}
+          >
             Save
           </Button>
           <Button colorScheme="purple" type="submit" variant="outline">

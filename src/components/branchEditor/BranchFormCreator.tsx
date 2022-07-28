@@ -25,8 +25,33 @@ import CommonForm from "../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
 import { JSONSchema7 } from "json-schema";
+import FormPageModal from "../admin/branchSettings/FormPageModal";
+import useAxios from "axios-hooks";
+
+export enum BranchType {
+  APPLICATION = "APPLICATION",
+  CONFIRMATION = "CONFIRMATION",
+}
+
+export interface Branch {
+  _id: string;
+  name: string;
+  hexathon: string;
+  type: BranchType;
+  settings: {
+    open: string;
+    close: string;
+  };
+  formPages: {
+    _id: string;
+    title: string;
+    jsonSchema: string;
+    uiSchema: string;
+  }[];
+}
 
 interface Props {
+  branchId: any;
   formPage: any;
   formPageIndex: number;
   handleSaveFormPage: (updatedFormPage: any, formPageIndex: number) => Promise<void>;
@@ -44,7 +69,13 @@ const BranchFormCreator: React.FC<Props> = props => {
   const [formData, setFormData] = useState("{}");
   const [loading, setLoading] = useState(false);
   const [schemaErrors, setSchemaErrors] = useState<any>({});
+  const [currentBranchData, setCurrentBranchData] = useState<any>({});
+  const [modalType, setModalType] = useState("");
   const toast = useToast();
+
+  const [{ data: branchData, loading: load, error }, refetch] = useAxios(
+    `https://registration.api.hexlabs.org/branches/${props.branchId}`
+  );
 
   const handleSaveFormPage = async () => {
     // If JSON schema or UI schema have errors, don't save
@@ -75,6 +106,8 @@ const BranchFormCreator: React.FC<Props> = props => {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
+
   const btnRef = React.useRef<HTMLButtonElement>(null);
   
   const handleDeleteFormPage = async () => {
@@ -82,6 +115,23 @@ const BranchFormCreator: React.FC<Props> = props => {
     setLoading(true);
     await props.handleDeleteFormPage(props.formPageIndex);
     setLoading(false);
+  };
+
+  const handleModalOpen = (defaultValues: any) => {
+    console.log(defaultValues);
+    if (defaultValues) {
+      setModalType("EDIT");
+      // setCurrentBranchData(branchData.formPages[props.formPageIndex]);
+    } else {
+      setModalType("ADD");
+      // setCurrentBranchData(branchData.formPages);
+    }
+    onOpen2();
+  };
+
+  const handleModalClose = () => {
+    setCurrentBranchData({});
+    onClose2();
   };
 
   // Need to use this memo function to include the common definitions schema. These
@@ -100,6 +150,21 @@ const BranchFormCreator: React.FC<Props> = props => {
       <Button colorScheme="red" isLoading={loading} onClick={onOpen}>
         Delete Form Page
       </Button>
+      <Button colorScheme="orange" isLoading={loading} onClick={() => handleModalOpen(branchData)}>
+        Edit Form Page
+      </Button>
+      <Button colorScheme="green" isLoading={loading} onClick={() => handleModalOpen(null)}>
+        Add Form Page
+      </Button>
+      <FormPageModal
+        defaultValues={branchData}
+        type={modalType}
+        branchId={props.branchId}
+        formPageIndex={props.formPageIndex}
+        isOpen={isOpen2}
+        onClose={handleModalClose}
+        refetch={refetch}
+      />
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={btnRef}

@@ -85,6 +85,7 @@ const BranchEditor: React.FC = () => {
             {data.formPages.map((formPage: any, index: number) => (
               <TabPanel key={formPage._id}>
                 <BranchFormCreator
+                  branchId = {branchId}
                   formPage={formPage}
                   formPageIndex={index}
                   handleSaveFormPage={handleSaveFormPage}

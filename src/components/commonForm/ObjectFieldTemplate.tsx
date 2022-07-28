@@ -1,12 +1,17 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Text, Heading } from "@chakra-ui/react";
 import { ObjectFieldTemplateProps } from "@rjsf/core";
+
+import RenderMarkdown from "./RenderMarkdown";
 
 const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = props => (
   <Box width="100%">
-    <Box fontSize="30px" marginBottom="20px">
-      <b>{props.title}</b>
-    </Box>
+    <Heading fontSize="30px" marginBottom="5px">
+      {props.title}
+    </Heading>
+    <Text marginBottom="20px">
+      <RenderMarkdown>{props.description}</RenderMarkdown>
+    </Text>
     {props.properties.map((element: any) => (
       <Box key={element.content.key} marginBottom="15px">
         {element.content}

@@ -33,19 +33,19 @@ export interface Branch {
 const BranchSettings: React.FC = () => {
   const { hexathonId } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentBranchData, setCurrentBranchData] = useState<any>({});
+  const [currentBranchData, setCurrentBranchData] = useState<any>(null);
 
   const [{ data: branches, loading, error }, refetch] = useAxios(
     `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
   );
 
-  const handleModalOpen = (defaultValues: Partial<Branch>) => {
+  const handleModalOpen = (defaultValues: Partial<Branch> | null) => {
     setCurrentBranchData(defaultValues);
     onOpen();
   };
 
   const handleModalClose = () => {
-    setCurrentBranchData({});
+    setCurrentBranchData(null);
     onClose();
   };
 
@@ -59,7 +59,7 @@ const BranchSettings: React.FC = () => {
           <AlertIcon />
           All times are shown in America/New_York time zone
         </Alert>
-        <Button onClick={() => handleModalOpen({})} marginBottom="20px">
+        <Button onClick={() => handleModalOpen(null)} marginBottom="20px">
           Create Branch
         </Button>
         <Stack>

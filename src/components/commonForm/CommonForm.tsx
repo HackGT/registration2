@@ -8,20 +8,29 @@ import Form from "@rjsf/chakra-ui";
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectFieldTemplate from "./SelectFieldTemplate";
 import FileUploadFieldTemplate from "./FileUploadFieldTemplate";
+import CheckboxWidget from "./CheckboxWidget";
+import EssayWidget from "./EssayWidget";
 
 function transformErrors(errors: any[]) {
   const updatedErrors = [...errors];
   return errors.map((error: any) => {
     if (
       error.message === "should be equal to constant" ||
-      error.message === "should match exactly one schema in oneOf"
+      error.message === "should match exactly one schema in oneOf" ||
+      error.message === "should match some schema in anyOf"
     ) {
       error.message = "";
     } else if (
-      error.message === "should be number" ||
-      error.message === "should be equal to one of the allowed values"
+      error.message === "should be equal to one of the allowed values" ||
+      error.message === "is a required property"
     ) {
-      error.message = "This is a required field";
+      error.message = "Please fill out this field";
+    } else if (error.message === "should NOT be shorter than 10 characters") {
+      error.message = "This field must be at least 10 characters long";
+    } else if (error.message === `should match format "email"`) {
+      error.message = "Please enter a valid email address";
+    } else if (error.message === `should match format "uri"`) {
+      error.message = "Please enter a valid URL";
     }
     return error;
   });
@@ -50,7 +59,6 @@ const CommonForm: React.FC<Props> = props => {
   }, [props.schema, props.commonDefinitionsSchema]);
   const uiSchema: JSONSchema7 = useMemo(() => JSON.parse(props.uiSchema), [props.uiSchema]);
 
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>
       <Form
@@ -59,6 +67,10 @@ const CommonForm: React.FC<Props> = props => {
         uiSchema={uiSchema}
         ObjectFieldTemplate={ObjectFieldTemplate}
         fields={{ select: SelectFieldTemplate, file: FileUploadFieldTemplate }}
+        widgets={{
+          checkbox: CheckboxWidget,
+          essay: EssayWidget,
+        }}
         noHtml5Validate
         showErrorList={false}
         transformErrors={transformErrors}

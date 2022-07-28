@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Stack, Heading, Text, Button, HStack, Divider } from "@chakra-ui/react";
+import { Box, Flex, Stack, Heading, Text, Divider } from "@chakra-ui/react";
 import { ErrorScreen, Loading } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
@@ -10,11 +10,7 @@ import Timeline from "./Timeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-interface Props {
-  hexathons: any[];
-}
-
-const Dashboard: React.FC<Props> = props => {
+const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { currentHexathon } = useCurrentHexathon();
   const { hexathonId } = useParams();
@@ -22,21 +18,35 @@ const Dashboard: React.FC<Props> = props => {
   const [{ data: profile, loading: profileLoading, error: profileError }] = useAxios(
     `https://users.api.hexlabs.org/users/${user?.uid}`
   );
-  const [{ data: application, loading: applicationLoading, error: applicationError }] = useAxios({
-    url: "https://registration.api.hexlabs.org/applications/",
+  const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
+    {
+      url: "https://registration.api.hexlabs.org/applications/",
+      method: "GET",
+      params: {
+        hexathon: hexathonId,
+        userId: user?.uid,
+      },
+    }
+  );
+
+  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
     method: "GET",
+    url: "https://registration.api.hexlabs.org/branches",
     params: {
       hexathon: hexathonId,
-      userId: user?.uid,
     },
   });
 
-  if (profileLoading || applicationLoading) {
+  if (profileLoading || applicationsLoading || branchesLoading) {
     return <Loading />;
   }
 
-  if (profileError) return <ErrorScreen error={profileError}/>;
-  if (applicationError) return <ErrorScreen error={applicationError}/>;
+  if (profileError) return <ErrorScreen error={profileError} />;
+  if (applicationsError) return <ErrorScreen error={applicationsError} />;
+  if (branchesError) return <ErrorScreen error={branchesError} />;
+
+  const application =
+    applications.applications?.length > 0 ? applications.applications[0] : undefined;
 
   return (
     <Flex
@@ -59,30 +69,20 @@ const Dashboard: React.FC<Props> = props => {
           color="white"
           paddingY="32px"
           paddingLeft={{ base: "16px", md: "32px" }}
-          paddingRight={{ base: "16px", md: (application.status === "CONFIRMED") ? "0px" : "32px" }}
+          paddingRight={{
+            base: "16px",
+            md: application?.status === "CONFIRMED" ? "0px" : "32px",
+          }}
         >
           <Heading size="xl" marginBottom="15px">
-            Welcome Back {profile.name?.first}!
+            Welcome {profile.name?.first}!
           </Heading>
           <Text>
-            We're happy to see you here! We're currently running our {currentHexathon.name} and we'd
+            We're happy to see you here! We're currently running {currentHexathon.name} and we'd
             love to see you there!
           </Text>
-          <HStack
-            maxWidth={{ base: "500px", md: "400px" }}
-            justifyContent="space-around"
-            marginTop={{ base: 4, md: 8 }}
-            spacing={4}
-          >
-            <Button width="45%" color="#7B69EC" borderWidth="1px" borderColor="#7B69EC">
-              Apply
-            </Button>
-            <Button width="45%" bgColor="#7B69EC">
-              Details
-            </Button>
-          </HStack>
         </Box>
-        {application.status === "CONFIRMED" ? (
+        {application?.status === "CONFIRMED" ? (
           <Box
             border="8px"
             borderStyle="solid"
@@ -116,7 +116,7 @@ const Dashboard: React.FC<Props> = props => {
           </Heading>
           <Text>Finish your application for {currentHexathon.name} below.</Text>
         </Box>
-        <Branches currentApplication />
+        <Branches currentApplication application={application} branches={branches} />
       </Stack>
       <Stack margin={{ base: "20px", md: 0 }} marginBottom={{ base: 0, md: "15px" }}>
         <Box margin="35px 25px 15px 25px">
@@ -125,7 +125,7 @@ const Dashboard: React.FC<Props> = props => {
           </Heading>
           <Text>Select one of the tracks from below to apply to {currentHexathon.name}.</Text>
         </Box>
-        <Branches currentApplication={false} />
+        <Branches currentApplication={false} application={application} branches={branches} />
       </Stack>
       <Divider marginY={{ base: "30px", md: "40px" }} alignSelf="center" width="95%" />
       <Stack marginX={{ base: "20px", md: 0 }}>
@@ -138,7 +138,7 @@ const Dashboard: React.FC<Props> = props => {
           loop!
         </Text>
         <Box paddingX="30px">
-          <Timeline hexathons={props.hexathons} />
+          <Timeline />
         </Box>
       </Stack>
     </Flex>

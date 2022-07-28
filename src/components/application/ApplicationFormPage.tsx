@@ -18,47 +18,28 @@ interface Props {
   formPageNumber: number;
   commonDefinitionsSchema: string;
   applicationId?: string;
-  lastPage: boolean;
   hasPrevPage: boolean;
   prevPage: () => void;
   nextPage: () => void;
-  submitApplication: () => void;
 }
 
 const ApplicationFormPage: React.FC<Props> = props => {
   const [formData, setFormData] = useState(props.defaultFormData);
   const toast = useToast();
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
+  const [saveDataLoading, setSaveDataLoading] = useState(false);
 
-  const handleSaveData = async () => {
+  const handleSaveData = async (validateData: boolean) => {
     try {
+      setSaveDataLoading(true);
       const combinedFormData = { ...formData };
-
-      // Add special handling for files
-      for (const [key, value] of Object.entries(formData)) {
-        if (value instanceof File) {
-          const multipartFormData = new FormData();
-          multipartFormData.append("type", key);
-          multipartFormData.append("file", value, value.name);
-          // eslint-disable-next-line no-await-in-loop
-          const response = await axios.post(
-            "https://files.api.hexlabs.org/files/upload",
-            multipartFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          combinedFormData[key] = response.data.id;
-        }
-      }
 
       const response = await axios.post(
         `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/save-application-data`,
         {
           applicationData: combinedFormData,
           branchFormPage: props.formPageNumber,
+          validateData,
         }
       );
       setFormData(getFrontendFormattedFormData(response.data));
@@ -69,6 +50,8 @@ const ApplicationFormPage: React.FC<Props> = props => {
         duration: 5000,
         isClosable: true,
       });
+      setSaveDataLoading(false);
+      return true;
     } catch (error: any) {
       console.log(error.message);
       toast({
@@ -78,21 +61,25 @@ const ApplicationFormPage: React.FC<Props> = props => {
         duration: 5000,
         isClosable: true,
       });
+      setSaveDataLoading(false);
+      return false;
     }
   };
 
   const handlePreviousClicked = async () => {
-    await handleSaveData();
-    props.prevPage();
+    if (await handleSaveData(false)) {
+      props.prevPage();
+    }
   };
 
   const handleNextClicked = async () => {
-    await handleSaveData();
-    props.nextPage();
+    if (await handleSaveData(true)) {
+      props.nextPage();
+    }
   };
 
   return (
-    <Box marginX="10px">
+    <Box marginX="15px">
       <CommonForm
         schema={props.formPage.jsonSchema}
         uiSchema={props.formPage.uiSchema}
@@ -116,7 +103,11 @@ const ApplicationFormPage: React.FC<Props> = props => {
             <ArrowBackIcon />
             {isDesktop && <Text marginLeft="2">Back</Text>}
           </Button>
-          <Button colorScheme="purple" onClick={handleSaveData}>
+          <Button
+            colorScheme="purple"
+            onClick={() => handleSaveData(false)}
+            isLoading={saveDataLoading}
+          >
             Save
           </Button>
           <Button colorScheme="purple" type="submit" variant="outline">

@@ -1,21 +1,27 @@
+import { Loading, ErrorScreen } from "@hex-labs/core";
+import useAxios from "axios-hooks";
 import React from "react";
 import { Navigate, Outlet, useParams } from "react-router-dom";
 
 import { CurrentHexathonProvider } from "../contexts/CurrentHexathonContext";
 
-interface Props {
-  hexathons: any[];
-}
-
-const CheckValidHexathon: React.FC<Props> = props => {
+const CheckValidHexathon: React.FC = () => {
+  const [{ data: hexathons, loading, error }] = useAxios(
+    "https://hexathons.api.hexlabs.org/hexathons"
+  );
   const { hexathonId } = useParams();
-  const currentHexathon = props.hexathons.find((hexathon: any) => hexathon._id === hexathonId);
+
+  if (loading) return <Loading />;
+
+  if (error) return <ErrorScreen error={error} />;
+
+  const currentHexathon = hexathons.find((hexathon: any) => hexathon._id === hexathonId);
 
   if (!currentHexathon) {
     return <Navigate to="/" />;
   }
   return (
-    <CurrentHexathonProvider hexathons={props.hexathons}>
+    <CurrentHexathonProvider hexathons={hexathons}>
       <Outlet />
     </CurrentHexathonProvider>
   );

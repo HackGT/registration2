@@ -166,13 +166,17 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Resume
                 </Text>
-                <Link
-                  href={`https://files.api.hexlabs.org/files/${data.applicationData.resume._id}/view`}
-                  target="_blank"
-                  color="teal.500"
-                >
-                  Click to View
-                </Link>
+                {data.applicationData.resume?._id ? (
+                  <Link
+                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?._id}/view`}
+                    target="_blank"
+                    color="teal.500"
+                  >
+                    Click to View
+                  </Link>
+                ) : (
+                  <Text>No Resume Uploaded</Text>
+                )}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">

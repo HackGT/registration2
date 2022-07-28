@@ -12,6 +12,7 @@ import {
   VStack,
   HStack,
   Stack,
+  Link,
 } from "@chakra-ui/react";
 import { ErrorScreen, Loading } from "@hex-labs/core";
 import useAxios from "axios-hooks";
@@ -39,7 +40,7 @@ const ApplicationDetailPage: React.FC = () => {
           Application Track: {data.applicationBranch.name}
         </Heading>
       </VStack>
-      <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
+      <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>
         <AccordionItem>
           <h2>
             <AccordionButton>
@@ -92,6 +93,12 @@ const ApplicationDetailPage: React.FC = () => {
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
+                  School Year
+                </Text>
+                {data.applicationData.schoolYear}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
                   Major
                 </Text>
                 {data.applicationData.major}
@@ -104,7 +111,7 @@ const ApplicationDetailPage: React.FC = () => {
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
-                  Gender
+                  Identifies as
                 </Text>
                 {data.applicationData.gender}
               </Text>
@@ -113,6 +120,81 @@ const ApplicationDetailPage: React.FC = () => {
                   Ethnicity
                 </Text>
                 {data.applicationData.ethnicity}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Dietary Restrictions
+                </Text>
+                {data.applicationData.dietaryRestrictions
+                  ? "None"
+                  : data.applicationData.dietaryRestrictions.join(", ")}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Allergies
+                </Text>
+                {data.applicationData.allergies || "None"}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  T-Shirt Size
+                </Text>
+                {data.applicationData.shirtSize}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Found us through
+                </Text>
+                {data.applicationData.marketing}
+              </Text>
+            </Stack>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text style={{ fontWeight: "bold" }}>Personal Information</Text>
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Stack>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Resume
+                </Text>
+                <Link
+                  href={`https://files.api.hexlabs.org/files/${data.applicationData.resume._id}/view`}
+                  target="_blank"
+                  color="teal.500"
+                >
+                  Click to View
+                </Link>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  LinkedIn
+                </Text>
+                <Link href={data.applicationData.linkedin} target="_blank">
+                  {data.applicationData.linkedin}
+                </Link>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Personal Website/GitHub
+                </Text>
+                <Link href={data.applicationData.website} target="_blank">
+                  {data.applicationData.website}
+                </Link>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Travel Assistance
+                </Text>
+                <Text>{data.applicationData.travelReimbursement}</Text>
               </Text>
             </Stack>
           </AccordionPanel>
@@ -128,9 +210,16 @@ const ApplicationDetailPage: React.FC = () => {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <Stack>
+              {data.applicationData.essays.map((essay: any) => (
+                <Text key={essay._id}>
+                  <Text color="gray" fontSize="sm">
+                    {essay.criteria}
+                  </Text>
+                  {essay.answer}
+                </Text>
+              ))}
+            </Stack>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

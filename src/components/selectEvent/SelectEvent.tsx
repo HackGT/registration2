@@ -1,5 +1,5 @@
 import { Center, Flex } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import React from "react";
 
@@ -9,7 +9,7 @@ const SelectEvent: React.FC = () => {
   const [{ data, loading, error }] = useAxios("https://hexathons.api.hexlabs.org/hexathons");
 
   if (loading) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   if (error) {

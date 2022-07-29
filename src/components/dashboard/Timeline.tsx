@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, Box } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 
 import Hex from "./hex";
@@ -12,7 +12,7 @@ const Timeline: React.FC = () => {
   );
   const { currentHexathon } = useCurrentHexathon();
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
   const currentHexathonIndex = hexathons.findIndex(

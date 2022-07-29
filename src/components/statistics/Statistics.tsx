@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React from "react";
 import { Accordion, Box, Heading, Stack, Text, VStack } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
@@ -13,7 +13,7 @@ const Statistics: React.FC = () => {
   const [{ data, loading, error }] = useAxios(
     `https://registration.api.hexlabs.org/statistics/?hexathon=${hexathonId}`
   );
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
   const {

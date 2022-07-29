@@ -43,14 +43,16 @@ const Navigation: React.FC = () => {
     <Header>
       {location.pathname !== "/" ? (
         <>
+          {location.pathname !== `/${hexathonId}` ? (
+            <HeaderItem>
+              <Link to={`/${hexathonId}`}>Dashboard</Link>
+            </HeaderItem>
+          ) : null}
           {role.admin || role.exec ? (
             <HeaderItem>
               <Link to={`/${hexathonId}/admin`}>Admin Home</Link>
             </HeaderItem>
           ) : null}
-          <HeaderItem>
-            <Link to={`/${hexathonId}`}>Dashboard</Link>
-          </HeaderItem>
           <HeaderItem>
             <Link to="/">Change Event</Link>
           </HeaderItem>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
@@ -37,7 +37,7 @@ const ApplicationContainer = () => {
     }
   }, [data]);
 
-  if (loading || !branch) return <Loading />;
+  if (loading || !branch) return <LoadingScreen />;
 
   if (error) return <ErrorScreen error={error} />;
 

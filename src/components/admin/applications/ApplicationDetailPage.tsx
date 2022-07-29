@@ -14,7 +14,7 @@ import {
   Stack,
   Link,
 } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 import { getApplicationStatusTag } from "../../../util/util";
@@ -25,7 +25,7 @@ const ApplicationDetailPage: React.FC = () => {
     `https://registration.api.hexlabs.org/applications/${applicationId}`
   );
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
 
   if (error) return <ErrorScreen error={error} />;
 

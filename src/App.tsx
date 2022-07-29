@@ -1,8 +1,7 @@
 import React from "react";
-import { ErrorScreen, Loading, Footer } from "@hex-labs/core";
+import { LoadingScreen, Footer } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
-import useAxios from "axios-hooks";
 
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -26,7 +25,7 @@ export const App = () => {
   const [loading, loggedIn] = useLogin();
 
   if (loading) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   if (!loading && !loggedIn) {

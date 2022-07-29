@@ -47,6 +47,7 @@ const ApplicationContainer = () => {
 
   const prevPage = async () => {
     if (formPageNumber > 0) {
+      window.scrollTo(0, 0);
       setFormPageNumber(formPageNumber - 1);
     }
   };
@@ -57,6 +58,7 @@ const ApplicationContainer = () => {
       await refetch();
     }
     if (formPageNumber < branch.formPages.length) {
+      window.scrollTo(0, 0);
       setFormPageNumber(formPageNumber + 1);
     }
   };

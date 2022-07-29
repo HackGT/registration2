@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Flex, Stack, Heading, Text, Divider } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
   });
 
   if (profileLoading || applicationsLoading || branchesLoading) {
-    return <Loading />;
+    return <LoadingScreen />;
   }
 
   if (profileError) return <ErrorScreen error={profileError} />;

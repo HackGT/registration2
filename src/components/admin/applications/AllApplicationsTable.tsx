@@ -12,7 +12,7 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 
@@ -30,7 +30,7 @@ const AllApplicationsTable: React.FC = () => {
     },
   });
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
 
   if (error) return <ErrorScreen error={error} />;
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Text, Heading, useToast } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import React from "react";
@@ -16,7 +16,7 @@ const BranchEditor: React.FC = () => {
     `https://registration.api.hexlabs.org/branches/${branchId}`
   );
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
 
   if (error) return <ErrorScreen error={error}/>;
 

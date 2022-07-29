@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Stack, Heading, Text, Button, HStack, Divider } from "@chakra-ui/react";
+import { Box, Flex, Stack, Heading, Text, Divider } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";

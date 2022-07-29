@@ -7,19 +7,15 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  Select,
   Input,
   VStack,
   useToast,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
-import { Branch } from "./BranchSettings";
-import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 import { AxiosRefetch } from "../../../types/helper";
 
 
@@ -46,23 +42,15 @@ const FormPageModal: React.FC<Props> = props => {
     reset,
   } = useForm();
 
-  const { currentHexathon } = useCurrentHexathon();
   const toast = useToast();
 
   const handleFormSubmit = async (values: any) => {
-    console.log(values);
-    console.log(props.type);
     try {
+      let pageData = "";
       if (props.type === FormModalType.Add) {
-        let pageData = "";
-        // console.log(values.name);
-        props.defaultValues.formPages.append({});
-        props.defaultValues.formPages[props.defaultValues.formPages.length-1].title = values.name;
+        props.defaultValues.formPages.push({"title": values.name, "jsonSchema": "{}", "uiSchema": "{}"});
         pageData = props.defaultValues.formPages;
-        // console.log(props.defaultValues.formPages);
-        // console.log(props.defaultValues.formPages[props.formPageIndex]);
-        // console.log(pageData);
-        await axios.patch(`https://registration.api.hexlabs.org/branches/`, {
+        await axios.patch(`https://registration.api.hexlabs.org/branches/${props.branchId}`, {
             formPages: pageData,
           });
         toast({
@@ -73,28 +61,24 @@ const FormPageModal: React.FC<Props> = props => {
           isClosable: true,
         });
       } else {
-        let pageData = "";
-        // console.log(values.name);
         props.defaultValues.formPages[props.formPageIndex].title = values.name;
         pageData = props.defaultValues.formPages;
-        // console.log(props.defaultValues.formPages);
-        // console.log(props.defaultValues.formPages[props.formPageIndex]);
-        // console.log(pageData);
         await axios.patch(
           `https://registration.api.hexlabs.org/branches/${props.branchId}`, {
             formPages: pageData,
           }
         );
+        await props.refetch();
+        toast({
+          title: "Success!",
+          description: "The form page has successfully been edited.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       }
-      await props.refetch();
-      toast({
-        title: "Success!",
-        description: "The form page has successfully been edited.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
     } catch (e: any) {
+      console.log(e);
       toast({
         title: "Error!",
         description: "One or more entries are invalid. Please try again.",

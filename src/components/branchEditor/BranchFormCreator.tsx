@@ -69,7 +69,6 @@ const BranchFormCreator: React.FC<Props> = props => {
   const [formData, setFormData] = useState("{}");
   const [loading, setLoading] = useState(false);
   const [schemaErrors, setSchemaErrors] = useState<any>({});
-  const [currentBranchData, setCurrentBranchData] = useState<any>({});
   const [modalType, setModalType] = useState("");
   const toast = useToast();
 
@@ -118,19 +117,15 @@ const BranchFormCreator: React.FC<Props> = props => {
   };
 
   const handleModalOpen = (defaultValues: any) => {
-    console.log(defaultValues);
     if (defaultValues) {
       setModalType("EDIT");
-      // setCurrentBranchData(branchData.formPages[props.formPageIndex]);
     } else {
       setModalType("ADD");
-      // setCurrentBranchData(branchData.formPages);
     }
     onOpen2();
   };
 
   const handleModalClose = () => {
-    setCurrentBranchData({});
     onClose2();
   };
 

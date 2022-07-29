@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState } from "react";
 import { Alert, AlertIcon, Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
@@ -49,7 +49,7 @@ const BranchSettings: React.FC = () => {
     onClose();
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
   return (

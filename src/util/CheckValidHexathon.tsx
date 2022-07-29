@@ -1,4 +1,4 @@
-import { Loading, ErrorScreen } from "@hex-labs/core";
+import { LoadingScreen, ErrorScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import React from "react";
 import { Navigate, Outlet, useParams } from "react-router-dom";
@@ -11,7 +11,7 @@ const CheckValidHexathon: React.FC = () => {
   );
   const { hexathonId } = useParams();
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
 
   if (error) return <ErrorScreen error={error} />;
 

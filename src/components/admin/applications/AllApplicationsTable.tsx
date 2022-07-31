@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LinkOverlay, Link as ChakraLink } from "@chakra-ui/react";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { ErrorScreen, SearchableTable } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
@@ -13,10 +13,8 @@ const columns = [
     key: 0,
     header: "Name",
     accessor: (row: any) => (
-      <ChakraLink>
-        <LinkOverlay as={Link} to={row.id}>
-          {row.name}
-        </LinkOverlay>
+      <ChakraLink as={Link} to={row.id}>
+        {row.name}
       </ChakraLink>
     ),
   },

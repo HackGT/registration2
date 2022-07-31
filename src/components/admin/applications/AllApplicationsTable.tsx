@@ -1,76 +1,80 @@
-import React from "react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Input,
-  InputGroup,
-  LinkBox,
-  LinkOverlay,
-} from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import React, { useState } from "react";
+import { LinkOverlay, Link as ChakraLink } from "@chakra-ui/react";
+import { ErrorScreen, SearchableTable } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 
 import { getApplicationStatusTag } from "../../../util/util";
 
+const limit = 50;
+
+const columns = [
+  {
+    key: 0,
+    header: "Name",
+    accessor: (row: any) => (
+      <ChakraLink>
+        <LinkOverlay as={Link} to={row.id}>
+          {row.name}
+        </LinkOverlay>
+      </ChakraLink>
+    ),
+  },
+  {
+    key: 1,
+    header: "Email",
+    accessor: (row: any) => row.email,
+  },
+  {
+    key: 2,
+    header: "Status",
+    accessor: (row: any) => getApplicationStatusTag(row),
+  },
+];
+
 const AllApplicationsTable: React.FC = () => {
-  const [searchQuery, setSearchQuery] = React.useState("");
   const { hexathonId } = useParams();
-  const [{ data, loading, error }] = useAxios({
+  const [offset, setOffset] = useState(0);
+  const [searchText, setSearchText] = useState("");
+  const [{ data, error }] = useAxios({
     method: "GET",
     url: "https://registration.api.hexlabs.org/applications",
     params: {
       hexathon: hexathonId,
-      search: searchQuery,
+      search: searchText,
+      offset,
     },
   });
 
-  if (loading) return <LoadingScreen />;
-
-  if (error) return <ErrorScreen error={error} />;
-
-  const handleSearchChange = (event: any) => {
-    setSearchQuery(event.target.value);
+  const onPreviousClicked = () => {
+    setOffset(offset - limit);
   };
 
+  const onNextClicked = () => {
+    setOffset(offset + limit);
+  };
+
+  const onSearchTextChange = (event: any) => {
+    setSearchText(event.target.value);
+    setOffset(0);
+  };
+
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
+
   return (
-    <div>
-      <InputGroup size="md">
-        <Input
-          id="inputText"
-          placeholder="Search applications"
-          isReadOnly={false}
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-      </InputGroup>
-      <Table variant="simple" id="table">
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Email</Th>
-            <Th>Status</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.applications.map((row: any) => (
-            <LinkBox as={Tr} key={row.id}>
-              <Td>
-                <LinkOverlay as={Link} to={row.id}>
-                  {row.name}
-                </LinkOverlay>
-              </Td>
-              <Td>{row.email}</Td>
-              <Td>{getApplicationStatusTag(row)}</Td>
-            </LinkBox>
-          ))}
-        </Tbody>
-      </Table>
-    </div>
+    <SearchableTable
+      title="Applications"
+      data={data?.applications}
+      columns={columns}
+      searchText={searchText}
+      onSearchTextChange={onSearchTextChange}
+      onPreviousClicked={onPreviousClicked}
+      onNextClicked={onNextClicked}
+      offset={offset}
+      total={data?.total}
+    />
   );
 };
 

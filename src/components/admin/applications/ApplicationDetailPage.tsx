@@ -166,9 +166,9 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Resume
                 </Text>
-                {data.applicationData.resume?._id ? (
+                {data.applicationData.resume?.id ? (
                   <Link
-                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?._id}/view`}
+                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?.id}/view`}
                     target="_blank"
                     color="teal.500"
                   >
@@ -216,7 +216,7 @@ const ApplicationDetailPage: React.FC = () => {
           <AccordionPanel pb={4}>
             <Stack>
               {data.applicationData.essays.map((essay: any) => (
-                <Text key={essay._id}>
+                <Text key={essay.id}>
                   <Text color="gray" fontSize="sm">
                     {essay.criteria}
                   </Text>

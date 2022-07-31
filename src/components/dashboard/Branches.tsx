@@ -26,7 +26,7 @@ const Branches: React.FC<Props> = props => {
           applicationBranch: appBranchID,
         }
       );
-      return `/${hexathonId}/application/${response.data._id}`;
+      return `/${hexathonId}/application/${response.data.id}`;
     } catch (error: any) {
       handleAxiosError(error);
     }
@@ -59,7 +59,7 @@ const Branches: React.FC<Props> = props => {
             branch={branch}
             currApp={props.application}
             chooseBranch={chooseBranch}
-            key={branch._id}
+            key={branch.id}
           />
         ))
       )}

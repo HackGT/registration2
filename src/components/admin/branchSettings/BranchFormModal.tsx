@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import {
   Button,
   Modal,
@@ -73,7 +72,7 @@ const BranchFormModal: React.FC<Props> = props => {
         open: dateToServerFormat(values.settings.open),
         close: dateToServerFormat(values.settings.close),
       },
-      ...(type === FormModalType.Create && { hexathon: currentHexathon._id }),
+      ...(type === FormModalType.Create && { hexathon: currentHexathon.id }),
     };
 
     console.log(formData);
@@ -90,7 +89,7 @@ const BranchFormModal: React.FC<Props> = props => {
         });
       } else {
         await axios.patch(
-          `https://registration.api.hexlabs.org/branches/${props.defaultValues._id}`,
+          `https://registration.api.hexlabs.org/branches/${props.defaultValues.id}`,
           formData
         );
       }

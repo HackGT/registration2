@@ -64,7 +64,7 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           uiSchema={formPage.uiSchema}
           commonDefinitionsSchema={props.branch.commonDefinitionsSchema}
           formData={props.defaultFormData}
-          key={formPage._id}
+          key={formPage.id}
           disabled
           readonly
         >

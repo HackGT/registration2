@@ -37,7 +37,7 @@ const BranchCard: React.FC<Props> = props => {
             <Button size="sm" onClick={() => props.openModal(props.branch)}>
               Edit
             </Button>
-            <Button size="sm" onClick={() => navigate(props.branch._id)}>
+            <Button size="sm" onClick={() => navigate(props.branch.id)}>
               Modify Form
             </Button>
           </Stack>

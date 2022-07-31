@@ -19,8 +19,8 @@ const SelectEvent: React.FC = () => {
   return (
     <Flex paddingY={{ base: "32px", md: "32px" }} direction="column" justify="center">
       {data.map((hexathon: any) => (
-        <Center key={hexathon._id}>
-          <EventCard name={hexathon.name} id={hexathon._id} />
+        <Center key={hexathon.id}>
+          <EventCard name={hexathon.name} id={hexathon.id} />
         </Center>
       ))}
     </Flex>

@@ -37,7 +37,7 @@
 //     // Check if userId or applicationId matches search
 //     if (
 //       application.userId.toLowerCase().includes(searchQuery) ||
-//       application._id.toLowerCase().includes(searchQuery)
+//       application.id.toLowerCase().includes(searchQuery)
 //     ) {
 //       return true;
 //     }

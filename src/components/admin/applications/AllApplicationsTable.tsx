@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React from "react";
 import {
   Table,
@@ -59,9 +58,9 @@ const AllApplicationsTable: React.FC = () => {
         </Thead>
         <Tbody>
           {data.applications.map((row: any) => (
-            <LinkBox as={Tr} key={row._id}>
+            <LinkBox as={Tr} key={row.id}>
               <Td>
-                <LinkOverlay as={Link} to={row._id}>
+                <LinkOverlay as={Link} to={row.id}>
                   {row.name}
                 </LinkOverlay>
               </Td>

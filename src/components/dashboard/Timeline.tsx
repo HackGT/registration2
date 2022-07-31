@@ -16,7 +16,7 @@ const Timeline: React.FC = () => {
   if (error) return <ErrorScreen error={error} />;
 
   const currentHexathonIndex = hexathons.findIndex(
-    (hexathon: any) => hexathon._id === currentHexathon._id
+    (hexathon: any) => hexathon.id === currentHexathon.id
   );
   const filteredHexathons = hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Text, Heading, useToast } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import axios from "axios";
@@ -18,7 +17,7 @@ const BranchEditor: React.FC = () => {
 
   if (loading) return <LoadingScreen />;
 
-  if (error) return <ErrorScreen error={error}/>;
+  if (error) return <ErrorScreen error={error} />;
 
   const handleSaveFormPage = async (updatedFormPage: any, formPageIndex: number) => {
     const updatedFormPages: any[] = [...data.formPages];
@@ -52,13 +51,13 @@ const BranchEditor: React.FC = () => {
         <Tabs>
           <TabList>
             {data.formPages.map((formPage: any) => (
-              <Tab key={formPage._id}>{formPage.title}</Tab>
+              <Tab key={formPage.id}>{formPage.title}</Tab>
             ))}
           </TabList>
 
           <TabPanels>
             {data.formPages.map((formPage: any, index: number) => (
-              <TabPanel key={formPage._id}>
+              <TabPanel key={formPage.id}>
                 <BranchFormCreator
                   formPage={formPage}
                   formPageIndex={index}

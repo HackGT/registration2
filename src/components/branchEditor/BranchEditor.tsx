@@ -44,6 +44,31 @@ const BranchEditor: React.FC = () => {
     }
   };
 
+  const handleDeleteFormPage = async (formPageIndex: number) => {
+    const updatedFormPages: any[] = [...data.formPages];
+    updatedFormPages.splice(formPageIndex, 1);
+
+    try {
+      await axios.patch(`https://registration.api.hexlabs.org/branches/${branchId}`, {
+        formPages: updatedFormPages,
+      });
+      toast({
+        title: "Success",
+        description: "Form page deleted successfully",
+        status: "success",
+        duration: 3000,
+      });
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Error",
+        description: "Error deleting form page",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  };
+
   return (
     <>
       <Heading>{data.name}</Heading>
@@ -59,9 +84,11 @@ const BranchEditor: React.FC = () => {
             {data.formPages.map((formPage: any, index: number) => (
               <TabPanel key={formPage.id}>
                 <BranchFormCreator
+                  branchId = {branchId}
                   formPage={formPage}
                   formPageIndex={index}
                   handleSaveFormPage={handleSaveFormPage}
+                  handleDeleteFormPage={handleDeleteFormPage}
                   commonDefinitionsSchema={data.commonDefinitionsSchema}
                 />
               </TabPanel>

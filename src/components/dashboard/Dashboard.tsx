@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Stack, Heading, Text, Divider } from "@chakra-ui/react";
+import { Box, Flex, Stack, Heading, Text, Divider, Link } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
@@ -79,7 +79,11 @@ const Dashboard: React.FC = () => {
           </Heading>
           <Text>
             We're happy to see you here! We're currently running {currentHexathon.name} and we'd
-            love to see you there!
+            love to see you there! Please reach out to{" "}
+            <Link href="mailto:hello@hexlabs.org" target="_blank">
+              hello@hexlabs.org
+            </Link>{" "}
+            if you have any questions.
           </Text>
         </Box>
         {application?.status === "CONFIRMED" ? (

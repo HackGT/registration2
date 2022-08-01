@@ -3,7 +3,7 @@ import { Select } from "chakra-react-select";
 import { Box, FormLabel } from "@chakra-ui/react";
 import { FieldProps } from "@rjsf/core";
 
-const SelectFieldTemplate: React.FC<FieldProps> = props => {
+const SelectField: React.FC<FieldProps> = props => {
   const options: any[] = [];
 
   useEffect(() => {
@@ -36,4 +36,4 @@ const SelectFieldTemplate: React.FC<FieldProps> = props => {
   );
 };
 
-export default SelectFieldTemplate;
+export default SelectField;

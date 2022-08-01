@@ -6,13 +6,12 @@ import { JSONSchema7 } from "json-schema";
 import Form from "@rjsf/chakra-ui";
 
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
-import SelectFieldTemplate from "./SelectFieldTemplate";
-import FileUploadFieldTemplate from "./FileUploadFieldTemplate";
+import SelectField from "./SelectField";
+import FileUploadField from "./FileUploadField";
 import CheckboxWidget from "./CheckboxWidget";
 import EssayWidget from "./EssayWidget";
 
 function transformErrors(errors: any[]) {
-  const updatedErrors = [...errors];
   return errors.map((error: any) => {
     if (
       error.message === "should be equal to constant" ||
@@ -66,7 +65,7 @@ const CommonForm: React.FC<Props> = props => {
         schema={combinedSchema}
         uiSchema={uiSchema}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        fields={{ select: SelectFieldTemplate, file: FileUploadFieldTemplate }}
+        fields={{ select: SelectField, file: FileUploadField }}
         widgets={{
           checkbox: CheckboxWidget,
           essay: EssayWidget,

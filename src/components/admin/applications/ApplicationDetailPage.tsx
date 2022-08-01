@@ -8,15 +8,14 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Tag,
   VStack,
-  HStack,
   Stack,
   Link,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
+
 import { getApplicationStatusTag } from "../../../util/util";
 
 const ApplicationDetailPage: React.FC = () => {
@@ -26,7 +25,6 @@ const ApplicationDetailPage: React.FC = () => {
   );
 
   if (loading) return <LoadingScreen />;
-
   if (error) return <ErrorScreen error={error} />;
 
   return (
@@ -166,9 +164,9 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Resume
                 </Text>
-                {data.applicationData.resume?._id ? (
+                {data.applicationData.resume?.id ? (
                   <Link
-                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?._id}/view`}
+                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?.id}/view`}
                     target="_blank"
                     color="teal.500"
                   >
@@ -216,7 +214,7 @@ const ApplicationDetailPage: React.FC = () => {
           <AccordionPanel pb={4}>
             <Stack>
               {data.applicationData.essays.map((essay: any) => (
-                <Text key={essay._id}>
+                <Text key={essay.id}>
                   <Text color="gray" fontSize="sm">
                     {essay.criteria}
                   </Text>

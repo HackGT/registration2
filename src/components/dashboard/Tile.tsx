@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useMemo } from "react";
 import {
   Box,
@@ -14,7 +13,6 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -36,12 +34,11 @@ interface Props {
 
 const Tile: React.FC<Props> = props => {
   const navigate = useNavigate();
-  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
 
   const chooseBranchAndNavigate = async () => {
-    const newAppLink = await props.chooseBranch(props.branch._id);
+    const newAppLink = await props.chooseBranch(props.branch.id);
     if (newAppLink) {
       navigate(newAppLink);
     }
@@ -57,7 +54,7 @@ const Tile: React.FC<Props> = props => {
   const currDate = DateTime.fromISO(new Date().toISOString());
 
   const branchStatus = useMemo(() => {
-    const currBranchHasApplication = props.branch._id === props.currApp?.applicationBranch?._id;
+    const currBranchHasApplication = props.branch.id === props.currApp?.applicationBranch?.id;
     if (currBranchHasApplication && props.currApp?.status === "APPLIED") {
       return BranchStatus.Submitted;
     }
@@ -114,7 +111,7 @@ const Tile: React.FC<Props> = props => {
           if (branchStatus === BranchStatus.NotStarted) {
             onOpen();
           } else if (branchStatus === BranchStatus.InProgress) {
-            navigate(`application/${props.currApp._id}`);
+            navigate(`application/${props.currApp.id}`);
           }
         } else {
           await chooseBranchAndNavigate();

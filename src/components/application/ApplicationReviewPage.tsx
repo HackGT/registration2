@@ -1,5 +1,15 @@
 import React from "react";
-import { Box, Button, HStack, useMediaQuery, useToast, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  useMediaQuery,
+  useToast,
+  Text,
+  Heading,
+  AlertIcon,
+  Alert,
+} from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
@@ -42,13 +52,19 @@ const ApplicationReviewPage: React.FC<Props> = props => {
 
   return (
     <Box marginX="15px">
+      <Heading mb="10px">Review Your Submission</Heading>
+      <Alert status="warning" mb="10px">
+        <AlertIcon />
+        Please review your application data before submission. After you submit, you will not be
+        able to change any information.
+      </Alert>
       {props.branch.formPages.map((formPage: any) => (
         <CommonForm
           schema={formPage.jsonSchema}
           uiSchema={formPage.uiSchema}
           commonDefinitionsSchema={props.branch.commonDefinitionsSchema}
           formData={props.defaultFormData}
-          key={formPage._id}
+          key={formPage.id}
           disabled
           readonly
         >

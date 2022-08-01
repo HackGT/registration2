@@ -15,7 +15,7 @@ const CheckValidHexathon: React.FC = () => {
 
   if (error) return <ErrorScreen error={error} />;
 
-  const currentHexathon = hexathons.find((hexathon: any) => hexathon._id === hexathonId);
+  const currentHexathon = hexathons.find((hexathon: any) => hexathon.id === hexathonId);
 
   if (!currentHexathon) {
     return <Navigate to="/" />;

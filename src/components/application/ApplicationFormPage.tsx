@@ -47,7 +47,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
         title: "Success",
         description: "Application data successfully saved.",
         status: "success",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setSaveDataLoading(false);
@@ -58,7 +58,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
         title: "Error",
         description: "Application data was unable to be saved. Please try again.",
         status: "error",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setSaveDataLoading(false);

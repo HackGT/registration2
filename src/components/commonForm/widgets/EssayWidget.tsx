@@ -1,8 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 import React from "react";
 import { FormControl, FormLabel, Textarea, Text } from "@chakra-ui/react";
-import { WidgetProps, utils } from "@rjsf/core";
-
-const { getDisplayLabel } = utils;
+import { WidgetProps } from "@rjsf/core";
 
 /**
  * Gets the number of words in a string.
@@ -25,49 +24,33 @@ const getWordCount = (value?: string) => {
 // TODO: Make this a dynamic value
 const WORD_COUNT_LIMIT = 100;
 
-const EssayWidget = ({
-  id,
-  placeholder,
-  value,
-  label,
-  disabled,
-  autofocus,
-  readonly,
-  onBlur,
-  onFocus,
-  onChange,
-  options,
-  schema,
-  uiSchema,
-  required,
-  rawErrors,
-}: WidgetProps) => {
-  const displayLabel = getDisplayLabel(schema, uiSchema) && (!!label || !!schema.title);
-
+const EssayWidget: React.FC<WidgetProps> = props => {
   const _onChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) =>
-    onChange(value === "" ? options.emptyValue : value);
+    props.onChange(value === "" ? props.options.emptyValue : value);
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLTextAreaElement>) =>
-    onBlur(id, value);
+    props.onBlur(props.id, value);
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLTextAreaElement>) =>
-    onFocus(id, value);
+    props.onFocus(props.id, value);
 
-  const wordCount = getWordCount(value);
+  const wordCount = getWordCount(props.value);
 
   return (
     <FormControl
       mb={1}
-      isDisabled={disabled || readonly}
-      isRequired={required}
-      isReadOnly={readonly}
-      isInvalid={rawErrors && rawErrors.length > 0}
+      isDisabled={props.disabled || props.readonly}
+      isRequired={props.required}
+      isReadOnly={props.readonly}
+      isInvalid={props.rawErrors && props.rawErrors.length > 0}
     >
-      {displayLabel ? <FormLabel htmlFor={id}>{label || schema.title}</FormLabel> : null}
+      {(props.label || props.schema.title) && (
+        <FormLabel htmlFor={props.id}>{props.label || props.schema.title}</FormLabel>
+      )}
       <Textarea
-        id={id}
-        name={id}
-        value={value ?? ""}
-        placeholder={placeholder}
-        autoFocus={autofocus}
+        id={props.id}
+        name={props.id}
+        value={props.value ?? ""}
+        placeholder={props.placeholder}
+        autoFocus={props.autofocus}
         onChange={_onChange}
         onBlur={_onBlur}
         onFocus={_onFocus}

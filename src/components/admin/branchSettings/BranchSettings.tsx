@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState } from "react";
 import { Alert, AlertIcon, Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
@@ -14,7 +13,7 @@ export enum BranchType {
 }
 
 export interface Branch {
-  _id: string;
+  id: string;
   name: string;
   hexathon: string;
   type: BranchType;
@@ -23,7 +22,7 @@ export interface Branch {
     close: string;
   };
   formPages: {
-    _id: string;
+    id: string;
     title: string;
     jsonSchema: string;
     uiSchema: string;

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React from "react";
 import { Accordion, Box, Heading, Stack, Text, VStack } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";

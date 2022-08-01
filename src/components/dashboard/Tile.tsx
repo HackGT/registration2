@@ -13,7 +13,6 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -35,7 +34,6 @@ interface Props {
 
 const Tile: React.FC<Props> = props => {
   const navigate = useNavigate();
-  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
 

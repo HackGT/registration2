@@ -16,7 +16,7 @@ import { FiFile } from "react-icons/fi";
 import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
 
-import { handleAxiosError } from "../../util/util";
+import { handleAxiosError } from "../../../util/util";
 
 const FileUploadField: React.FC<FieldProps> = props => {
   const inputRef = useRef<any>();

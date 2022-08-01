@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { FormProps } from "@rjsf/core";
 import React, { useMemo } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -6,10 +7,10 @@ import { JSONSchema7 } from "json-schema";
 import Form from "@rjsf/chakra-ui";
 
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
-import SelectField from "./SelectField";
-import FileUploadField from "./FileUploadField";
-import CheckboxWidget from "./CheckboxWidget";
-import EssayWidget from "./EssayWidget";
+import SelectField from "./fields/SelectField";
+import FileUploadField from "./fields/FileUploadField";
+import CheckboxWidget from "./widgets/CheckboxWidget";
+import EssayWidget from "./widgets/EssayWidget";
 
 function transformErrors(errors: any[]) {
   return errors.map((error: any) => {

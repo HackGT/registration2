@@ -6,7 +6,7 @@ import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
-import { apiUrl, Service } from "../../util/apiUrl";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 const Statistics: React.FC = () => {
   const { hexathonId } = useParams();

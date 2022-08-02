@@ -27,12 +27,6 @@ export const useLogin = () => {
         const response = await axios.get("https://auth.api.hexlabs.org/auth/status");
         await signInWithCustomToken(auth, response.data.customToken);
 
-        // If user's profile isn't valid, prevent them from logging in
-        if (!response.data.validProfile) {
-          setLoading(false);
-          return;
-        }
-
         setLoggedIn(true);
         setLoading(false);
 

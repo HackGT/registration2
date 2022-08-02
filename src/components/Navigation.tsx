@@ -24,7 +24,7 @@ const Navigation: React.FC = () => {
   const logOut = async () => {
     signOut(auth);
     await axios.post(apiUrl(Service.AUTH, "/auth/logout"));
-    window.location.href = `https://login.hexlabs.org`;
+    window.location.href = `https://login.hexlabs.org/login?redirect=${window.location.href}`;
   };
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Navigation: React.FC = () => {
     }
 
     getRoles();
-  }, [user?.uid, hexathonId, navigate]);
+  }, [user?.uid, hexathonId]);
 
   return (
     <Header>

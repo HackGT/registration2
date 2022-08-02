@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 import ApplicationReviewPage from "./ApplicationReviewPage";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 /** Manually modify essays to fit frontend data display */
 export const getFrontendFormattedFormData = (data: any) => {
@@ -26,7 +27,7 @@ const ApplicationContainer = () => {
   const [formPageNumber, setFormPageNumber] = useState(0);
 
   const [{ data, loading, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/applications/${applicationId}`,
+    apiUrl(Service.REGISTRATION, `/applications/${applicationId}`),
     { useCache: false }
   );
   const [branch, setBranch] = useState<any>(undefined);

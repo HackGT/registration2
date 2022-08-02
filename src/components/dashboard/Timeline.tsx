@@ -5,11 +5,10 @@ import useAxios from "axios-hooks";
 
 import Hex from "./hex";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 const Timeline: React.FC = () => {
-  const [{ data: hexathons, loading, error }] = useAxios(
-    "https://hexathons.api.hexlabs.org/hexathons"
-  );
+  const [{ data: hexathons, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
   const { currentHexathon } = useCurrentHexathon();
 
   if (loading) return <LoadingScreen />;

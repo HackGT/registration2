@@ -6,12 +6,17 @@ import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 const Statistics: React.FC = () => {
   const { hexathonId } = useParams();
-  const [{ data, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/statistics/?hexathon=${hexathonId}`
-  );
+  const [{ data, loading, error }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/statistics"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 

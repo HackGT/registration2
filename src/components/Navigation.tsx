@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
 import { app } from "../util/firebase";
+import { apiUrl, Service } from "../util/apiUrl";
 
 const auth = getAuth(app);
 
@@ -22,13 +23,13 @@ const Navigation: React.FC = () => {
 
   const logOut = async () => {
     signOut(auth);
-    await axios.post("https://auth.api.hexlabs.org/auth/logout");
+    await axios.post(apiUrl(Service.AUTH, "/auth/logout"));
     window.location.href = `https://login.hexlabs.org`;
   };
 
   useEffect(() => {
     const getRoles = async () => {
-      const response = await axios.get(`https://users.api.hexlabs.org/users/${user?.uid}`);
+      const response = await axios.get(apiUrl(Service.USERS, `/users/${user?.uid}`));
       setRoles({ ...response.data.roles });
     };
 

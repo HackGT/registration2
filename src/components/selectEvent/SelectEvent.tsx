@@ -3,10 +3,11 @@ import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import React from "react";
 
+import { apiUrl, Service } from "../../util/apiUrl";
 import EventCard from "./EventCard";
 
 const SelectEvent: React.FC = () => {
-  const [{ data, loading, error }] = useAxios("https://hexathons.api.hexlabs.org/hexathons");
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
 
   if (loading) {
     return <LoadingScreen />;

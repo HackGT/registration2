@@ -15,6 +15,7 @@ import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../types/helper";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 interface Props {
   defaultFormData: any;
@@ -31,7 +32,10 @@ const ApplicationReviewPage: React.FC<Props> = props => {
   const handleSubmit = async () => {
     try {
       await axios.post(
-        `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/submit-application`
+        apiUrl(
+          Service.REGISTRATION,
+          `/applications/${props.applicationId}/actions/submit-application`
+        )
       );
       props.refetch();
     } catch (error: any) {

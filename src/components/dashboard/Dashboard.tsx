@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Timeline from "./Timeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -16,11 +17,11 @@ const Dashboard: React.FC = () => {
   const { hexathonId } = useParams();
 
   const [{ data: profile, loading: profileLoading, error: profileError }] = useAxios(
-    `https://users.api.hexlabs.org/users/${user?.uid}`
+    apiUrl(Service.USERS, `/users/${user?.uid}`)
   );
   const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
     {
-      url: "https://registration.api.hexlabs.org/applications/",
+      url: apiUrl(Service.REGISTRATION, "/applications"),
       method: "GET",
       params: {
         hexathon: hexathonId,
@@ -31,7 +32,7 @@ const Dashboard: React.FC = () => {
 
   const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
     method: "GET",
-    url: "https://registration.api.hexlabs.org/branches",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
       hexathon: hexathonId,
     },

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import Tile from "./Tile";
 import { handleAxiosError } from "../../util/util";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 interface Props {
   currentApplication: boolean;
@@ -20,7 +21,7 @@ const Branches: React.FC<Props> = props => {
   const chooseBranch = async (appBranchID: any) => {
     try {
       const response = await axios.post(
-        `https://registration.api.hexlabs.org/applications/actions/choose-application-branch`,
+        apiUrl(Service.REGISTRATION, "/applications/actions/choose-application-branch"),
         {
           hexathon: hexathonId,
           applicationBranch: appBranchID,

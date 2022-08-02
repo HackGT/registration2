@@ -6,6 +6,7 @@ import useAxios from "axios-hooks";
 
 import BranchCard from "./BranchCard";
 import BranchFormModal from "./BranchFormModal";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 export enum BranchType {
   APPLICATION = "APPLICATION",
@@ -34,9 +35,13 @@ const BranchSettings: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentBranchData, setCurrentBranchData] = useState<any>(null);
 
-  const [{ data: branches, loading, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
-  );
+  const [{ data: branches, loading, error }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
 
   const handleModalOpen = (defaultValues: Partial<Branch> | null) => {
     setCurrentBranchData(defaultValues);

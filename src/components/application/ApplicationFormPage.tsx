@@ -5,6 +5,7 @@ import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
 import { getFrontendFormattedFormData } from "./ApplicationContainer";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 interface FormPage {
   title: string;
@@ -35,7 +36,10 @@ const ApplicationFormPage: React.FC<Props> = props => {
       const combinedFormData = { ...formData };
 
       const response = await axios.post(
-        `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/save-application-data`,
+        apiUrl(
+          Service.REGISTRATION,
+          `/applications/${props.applicationId}/actions/save-application-data`
+        ),
         {
           applicationData: combinedFormData,
           branchFormPage: props.formPageNumber,

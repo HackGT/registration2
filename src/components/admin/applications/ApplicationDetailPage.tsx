@@ -17,11 +17,12 @@ import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
 import { getApplicationStatusTag } from "../../../util/util";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
   const [{ data, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/applications/${applicationId}`
+    apiUrl(Service.REGISTRATION, `/applications/${applicationId}`)
   );
 
   if (loading) return <LoadingScreen />;
@@ -166,7 +167,7 @@ const ApplicationDetailPage: React.FC = () => {
                 </Text>
                 {data.applicationData.resume?.id ? (
                   <Link
-                    href={`https://files.api.hexlabs.org/files/${data.applicationData.resume?.id}/view`}
+                    href={apiUrl(Service.FILES, `/files/${data.applicationData.resume?.id}/view`)}
                     target="_blank"
                     color="teal.500"
                   >

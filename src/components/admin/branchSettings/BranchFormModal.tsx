@@ -21,6 +21,7 @@ import { Branch } from "./BranchSettings";
 import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 import { AxiosRefetch } from "../../../types/helper";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 enum FormModalType {
   Create = "CREATE",
@@ -79,7 +80,7 @@ const BranchFormModal: React.FC<Props> = props => {
 
     try {
       if (type === FormModalType.Create) {
-        await axios.post(`https://registration.api.hexlabs.org/branches/`, formData);
+        await axios.post(apiUrl(Service.REGISTRATION, "/branches"), formData);
         toast({
           title: "Success!",
           description: "The branch has successfully been created.",
@@ -89,7 +90,7 @@ const BranchFormModal: React.FC<Props> = props => {
         });
       } else {
         await axios.patch(
-          `https://registration.api.hexlabs.org/branches/${props.defaultValues.id}`,
+          apiUrl(Service.REGISTRATION, `/branches/${props.defaultValues.id}`),
           formData
         );
       }

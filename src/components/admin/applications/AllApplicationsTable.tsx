@@ -5,6 +5,7 @@ import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 
 import { getApplicationStatusTag } from "../../../util/util";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 const limit = 50;
 
@@ -36,7 +37,7 @@ const AllApplicationsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [{ data, error }] = useAxios({
     method: "GET",
-    url: "https://registration.api.hexlabs.org/applications",
+    url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
       hexathon: hexathonId,
       search: searchText,

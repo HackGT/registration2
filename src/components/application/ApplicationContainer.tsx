@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
@@ -23,26 +23,31 @@ export const getFrontendFormattedFormData = (data: any) => {
 };
 
 const ApplicationContainer = () => {
-  const { applicationId } = useParams();
+  const { hexathonId, applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
 
-  const [{ data, loading, error }, refetch] = useAxios(
+  const [{ data: application, loading, error }, refetch] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`),
     { useCache: false }
   );
   const [branch, setBranch] = useState<any>(undefined);
 
   useEffect(() => {
-    if (data?.applicationBranch) {
-      setBranch(data.applicationBranch);
+    if (application?.confirmationBranch && application.status === "ACCEPTED") {
+      setBranch(application.confirmationBranch);
+    } else if (application?.applicationBranch) {
+      setBranch(application.applicationBranch);
     }
-  }, [data]);
+  }, [application]);
 
   if (loading || !branch) return <LoadingScreen />;
-
   if (error) return <ErrorScreen error={error} />;
 
-  if (data.status === "APPLIED") {
+  if (application.status === "CONFIRMED") {
+    return <Navigate to={`/${hexathonId}`} />;
+  }
+
+  if (application.status !== "DRAFT" && application.status !== "ACCEPTED") {
     return <ApplicationSubmittedPage />;
   }
 
@@ -64,16 +69,15 @@ const ApplicationContainer = () => {
     }
   };
 
-  const defaultFormData = getFrontendFormattedFormData(data);
+  const defaultFormData = getFrontendFormattedFormData(application);
 
   return (
     <Box maxWidth="700px" marginX="auto" marginTop="15px">
       {formPageNumber < branch.formPages.length ? (
         <ApplicationFormPage
           defaultFormData={defaultFormData}
-          formPage={branch.formPages[formPageNumber]}
+          branch={branch}
           formPageNumber={formPageNumber}
-          commonDefinitionsSchema={branch.commonDefinitionsSchema}
           applicationId={applicationId}
           hasPrevPage={formPageNumber > 0}
           prevPage={prevPage}
@@ -84,6 +88,7 @@ const ApplicationContainer = () => {
           defaultFormData={defaultFormData}
           branch={branch}
           applicationId={applicationId}
+          hasPrevPage={formPageNumber > 0}
           prevPage={prevPage}
           refetch={refetch}
         />

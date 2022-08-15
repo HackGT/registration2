@@ -29,8 +29,10 @@ const Navigation: React.FC = () => {
 
   useEffect(() => {
     const getRoles = async () => {
-      const response = await axios.get(apiUrl(Service.USERS, `/users/${user?.uid}`));
-      setRoles({ ...response.data.roles });
+      if (user?.uid) {
+        const response = await axios.get(apiUrl(Service.USERS, `/users/${user?.uid}`));
+        setRoles({ ...response.data.roles });
+      }
     };
 
     if (hexathonId === undefined) {

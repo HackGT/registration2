@@ -4,8 +4,8 @@ import { ErrorScreen, SearchableTable } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 
-import { getApplicationStatusTag } from "../../../util/util";
 import { apiUrl, Service } from "../../../util/apiUrl";
+import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
 const limit = 50;
 
@@ -27,7 +27,7 @@ const columns = [
   {
     key: 2,
     header: "Status",
-    accessor: (row: any) => getApplicationStatusTag(row),
+    accessor: (row: any) => <ApplicationStatusTag application={row} includeColor />,
   },
 ];
 

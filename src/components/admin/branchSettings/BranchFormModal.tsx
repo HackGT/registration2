@@ -130,10 +130,21 @@ const BranchFormModal: React.FC<Props> = props => {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Name</FormLabel>
-                <Select {...register("type")}>
-                  <option value="">Select branch type</option>
+                <Select {...register("type")} placeholder="Select option">
                   <option value="APPLICATION">Application</option>
                   <option value="CONFIRMATION">Confirmation</option>
+                </Select>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Application Group</FormLabel>
+                <Select {...register("applicationGroup")} placeholder="Select option">
+                  <option value="PARTICIPANT">Participant</option>
+                  <option value="JUDGE">Judge</option>
+                  <option value="MENTOR">Mentor</option>
+                  <option value="VOLUNTEER">Volunteer</option>
+                  <option value="SPONSOR">Sponsor</option>
+                  <option value="PARTNER">Partner</option>
+                  <option value="STAFF">Staff</option>
                 </Select>
               </FormControl>
               <FormControl isRequired>

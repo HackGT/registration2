@@ -16,8 +16,8 @@ import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import { getApplicationStatusTag } from "../../../util/util";
 import { apiUrl, Service } from "../../../util/apiUrl";
+import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -31,7 +31,9 @@ const ApplicationDetailPage: React.FC = () => {
   return (
     <Box paddingX="30px" paddingTop="20px">
       <VStack spacing="6px" align="left" paddingBottom="10px">
-        <Box>{getApplicationStatusTag(data)}</Box>
+        <Box>
+          <ApplicationStatusTag application={data} includeColor />
+        </Box>
         <Heading as="h1" size="xl" fontWeight={700}>
           {data.name}
         </Heading>

@@ -33,7 +33,6 @@ const PRODUCTION_SERVICE_URLS = {
  * @returns The complete request URL
  */
 export const apiUrl = (service: Service, path: string) => {
-  console.log(process.env.REACT_APP_API_ENVIRONMENT);
   if (process.env.REACT_APP_API_ENVIRONMENT === "PRODUCTION") {
     return new URL(path, PRODUCTION_SERVICE_URLS[service]).toString();
   }

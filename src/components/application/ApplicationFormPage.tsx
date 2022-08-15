@@ -7,17 +7,10 @@ import CommonForm from "../commonForm/CommonForm";
 import { getFrontendFormattedFormData } from "./ApplicationContainer";
 import { apiUrl, Service } from "../../util/apiUrl";
 
-interface FormPage {
-  title: string;
-  jsonSchema: string;
-  uiSchema: string;
-}
-
 interface Props {
   defaultFormData: any;
-  formPage: FormPage;
+  branch: any;
   formPageNumber: number;
-  commonDefinitionsSchema: string;
   applicationId?: string;
   hasPrevPage: boolean;
   prevPage: () => void;
@@ -42,6 +35,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
         ),
         {
           applicationData: combinedFormData,
+          branchType: props.branch.type,
           branchFormPage: props.formPageNumber,
           validateData,
         }
@@ -82,12 +76,14 @@ const ApplicationFormPage: React.FC<Props> = props => {
     }
   };
 
+  const formPage = props.branch.formPages[props.formPageNumber];
+
   return (
     <Box marginX="15px">
       <CommonForm
-        schema={props.formPage.jsonSchema}
-        uiSchema={props.formPage.uiSchema}
-        commonDefinitionsSchema={props.commonDefinitionsSchema}
+        schema={formPage.jsonSchema}
+        uiSchema={formPage.uiSchema}
+        commonDefinitionsSchema={props.branch.commonDefinitionsSchema}
         formData={formData}
         onChange={({ formData: updatedFormData }, e) => {
           setFormData(updatedFormData);

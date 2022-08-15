@@ -25,7 +25,8 @@ const BranchCard: React.FC<Props> = props => {
         <Stack>
           <Stack spacing="1">
             <Text fontSize="sm" color="muted">
-              <Tag>{props.branch.type}</Tag>
+              <Tag mr="8px">{props.branch.type}</Tag>
+              {props.branch.applicationGroup && <Tag>{props.branch.applicationGroup}</Tag>}
             </Text>
             <Text fontSize="lg" fontWeight="medium">
               {props.branch.name}

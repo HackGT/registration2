@@ -47,10 +47,6 @@ const ApplicationContainer = () => {
     return <Navigate to={`/${hexathonId}`} />;
   }
 
-  if (application.status !== "DRAFT" && application.status !== "ACCEPTED") {
-    return <ApplicationSubmittedPage />;
-  }
-
   const prevPage = async () => {
     if (formPageNumber > 0) {
       window.scrollTo(0, 0);

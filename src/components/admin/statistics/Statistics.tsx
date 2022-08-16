@@ -37,12 +37,12 @@ const Statistics: React.FC = () => {
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
         </VStack>
-        <Accordion allowToggle>
-          <AccordionSection name="Users" data={userStatistics} />
-          <AccordionSection name="Applications" data={applicationStatistics} />
-          <AccordionSection name="Confirmations" data={confirmationStatistics} />
+        <Accordion allowToggle allowMultiple defaultIndex={[0]}>
+          <AccordionSection name="Overall Users" data={userStatistics} />
+          <AccordionSection name="Application Type" data={applicationStatistics} />
+          <AccordionSection name="Confirmation Type" data={confirmationStatistics} />
           <AccordionSection name="Rejections" data={rejectionStatistics} />
-          <GraphAccordionSection name="Application Statistics" data={applicationDataStatistics} />
+          <GraphAccordionSection name="Graphs" data={applicationDataStatistics} />
         </Accordion>
       </Stack>
     </Box>

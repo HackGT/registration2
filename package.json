@@ -34,6 +34,7 @@
     "framer-motion": "^4.0.0",
     "hammerjs": "^2.0.8",
     "json-schema": "^0.4.0",
+    "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "qrcode.react": "^3.0.1",
     "react": "^18.1.0",

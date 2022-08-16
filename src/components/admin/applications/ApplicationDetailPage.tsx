@@ -11,10 +11,16 @@ import {
   VStack,
   Stack,
   Link,
+  HStack,
+  Tag,
+  TagLabel,
+  TagRightIcon,
+  useToast,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
+import { CopyIcon } from "@chakra-ui/icons";
 
 import { apiUrl, Service } from "../../../util/apiUrl";
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
@@ -24,6 +30,7 @@ const ApplicationDetailPage: React.FC = () => {
   const [{ data, loading, error }] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`)
   );
+  const toast = useToast();
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
@@ -31,15 +38,41 @@ const ApplicationDetailPage: React.FC = () => {
   return (
     <Box paddingX="30px" paddingTop="20px">
       <VStack spacing="6px" align="left" paddingBottom="10px">
-        <Box>
+        <HStack>
           <ApplicationStatusTag application={data} includeColor />
-        </Box>
+          <Tag>
+            <TagLabel>{`ID: ${data.id}`}</TagLabel>
+            <TagRightIcon
+              as={CopyIcon}
+              cursor="pointer"
+              onClick={() => {
+                navigator.clipboard.writeText(data.id);
+                if (!toast.isActive("application-id-copy")) {
+                  toast({
+                    id: "application-id-copy",
+                    description: "Application ID copied to clipboard",
+                    duration: 3000,
+                    position: "top",
+                  });
+                }
+              }}
+              _hover={{
+                color: "purple",
+              }}
+            />
+          </Tag>
+        </HStack>
         <Heading as="h1" size="xl" fontWeight={700}>
           {data.name}
         </Heading>
         <Heading as="h2" size="s" fontWeight={500} color="gray">
-          Application Track: {data.applicationBranch.name}
+          Application Branch: {data.applicationBranch.name}
         </Heading>
+        {data.confirmationBranch && (
+          <Heading as="h2" size="s" fontWeight={500} color="gray">
+            Confirmation Branch: {data.confirmationBranch.name}
+          </Heading>
+        )}
       </VStack>
       <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>
         <AccordionItem>

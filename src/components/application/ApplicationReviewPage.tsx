@@ -23,6 +23,7 @@ interface Props {
   applicationId?: string;
   hasPrevPage: boolean;
   prevPage: () => void;
+  nextPage: () => void;
   refetch: AxiosRefetch;
 }
 
@@ -42,6 +43,7 @@ const ApplicationReviewPage: React.FC<Props> = props => {
         }
       );
       props.refetch();
+      props.nextPage();
     } catch (error: any) {
       console.log(error.message);
       toast({

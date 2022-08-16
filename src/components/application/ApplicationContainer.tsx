@@ -43,10 +43,6 @@ const ApplicationContainer = () => {
   if (loading || !branch) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
-  if (application.status === "CONFIRMED") {
-    return <Navigate to={`/${hexathonId}`} />;
-  }
-
   const prevPage = async () => {
     if (formPageNumber > 0) {
       window.scrollTo(0, 0);
@@ -59,7 +55,7 @@ const ApplicationContainer = () => {
     if (formPageNumber === branch.formPages.length - 1) {
       await refetch();
     }
-    if (formPageNumber < branch.formPages.length) {
+    if (formPageNumber <= branch.formPages.length) {
       window.scrollTo(0, 0);
       setFormPageNumber(formPageNumber + 1);
     }
@@ -67,9 +63,13 @@ const ApplicationContainer = () => {
 
   const defaultFormData = getFrontendFormattedFormData(application);
 
-  return (
-    <Box maxWidth="700px" marginX="auto" marginTop="15px">
-      {formPageNumber < branch.formPages.length ? (
+  if (application.status === "NOT_ATTENDING" || application.status === "CONFIRMED") {
+    return <Navigate to={`/${hexathonId}`} />;
+  }
+
+  if (formPageNumber < branch.formPages.length) {
+    return (
+      <Box maxWidth="700px" marginX="auto" marginTop="15px">
         <ApplicationFormPage
           defaultFormData={defaultFormData}
           branch={branch}
@@ -79,18 +79,25 @@ const ApplicationContainer = () => {
           prevPage={prevPage}
           nextPage={nextPage}
         />
-      ) : (
+      </Box>
+    );
+  }
+  if (formPageNumber === branch.formPages.length) {
+    return (
+      <Box maxWidth="700px" marginX="auto" marginTop="15px">
         <ApplicationReviewPage
           defaultFormData={defaultFormData}
           branch={branch}
           applicationId={applicationId}
           hasPrevPage={formPageNumber > 0}
           prevPage={prevPage}
+          nextPage={nextPage}
           refetch={refetch}
         />
-      )}
-    </Box>
-  );
+      </Box>
+    );
+  }
+  return <ApplicationSubmittedPage />;
 };
 
 export default ApplicationContainer;

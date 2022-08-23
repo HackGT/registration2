@@ -9,15 +9,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
+import BarGraphView from "./BarGraphView";
 
-import BarGraphView from "./GraphView";
-
-const graphQuestions = {
-  University: "What university do you attend?",
-  Age: "Are you over 18?",
-  Major: "What major are you?",
-  Gender: "What gender are you?",
-};
+import PieGraphView from "./PieGraphView";
+import TableView from "./TableView";
 
 interface IProps {
   name: string;
@@ -40,6 +35,7 @@ const GraphAccordionSection: React.FC<IProps> = props => (
         const ages: Record<string, number> = {};
         const majors: Record<string, number> = {};
         const genders: Record<string, number> = {};
+        const schoolYear: Record<string, number> = {};
 
         for (const element of props.data[key]) {
           // records frequency of applicants' school
@@ -67,6 +63,10 @@ const GraphAccordionSection: React.FC<IProps> = props => (
           // records applicants' genders
           "gender" in element &&
             (genders[element.gender] = genders[element.gender] ? genders[element.gender] + 1 : 1);
+          "schoolYear" in element &&
+            (schoolYear[element.schoolYear] = schoolYear[element.schoolYear]
+              ? schoolYear[element.schoolYear] + 1
+              : 1);
         }
 
         return (
@@ -78,17 +78,17 @@ const GraphAccordionSection: React.FC<IProps> = props => (
             Object.keys(genders).length ? (
               <HStack>
                 {Object.keys(universities).length && (
-                  <BarGraphView graphQuestion={graphQuestions.University} data={universities} />
+                  <TableView heading="Universities" data={universities} />
                 )}
-                {Object.keys(ages).length && (
-                  <BarGraphView graphQuestion={graphQuestions.Age} data={ages} />
-                )}
-                {Object.keys(majors).length && (
-                  <BarGraphView graphQuestion={graphQuestions.Major} data={majors} />
-                )}
-                {Object.keys(genders).length && (
-                  <BarGraphView graphQuestion={graphQuestions.Gender} data={genders} />
-                )}
+                <VStack>
+                  {Object.keys(majors).length && (
+                    <TableView heading="Majors" data={majors} />
+                  )}
+                  {Object.keys(schoolYear).length && <BarGraphView heading="School Year" data={schoolYear} />}
+                  {Object.keys(genders).length && (
+                    <PieGraphView heading='Gender' data={genders} />
+                  )}
+                </VStack>
               </HStack>
             ) : (
               <Heading size="md">{`No statistics for ${key}`}</Heading>

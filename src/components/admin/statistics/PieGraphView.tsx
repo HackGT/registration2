@@ -10,7 +10,7 @@ interface IProps {
   data: Record<string, number>;
 }
 
-const GraphView: React.FC<IProps> = props => {
+const PieGraphView: React.FC<IProps> = props => {
   const data = {
     labels: Object.keys(props.data),
     datasets: [
@@ -32,4 +32,4 @@ const GraphView: React.FC<IProps> = props => {
   );
 };
 
-export default GraphView;
+export default PieGraphView;

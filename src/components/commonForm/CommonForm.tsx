@@ -11,6 +11,7 @@ import SelectField from "./fields/SelectField";
 import FileUploadField from "./fields/FileUploadField";
 import CheckboxWidget from "./widgets/CheckboxWidget";
 import EssayWidget from "./widgets/EssayWidget";
+import DateWidget from "./widgets/DateWidget";
 
 function transformErrors(errors: any[]) {
   return errors.map((error: any) => {
@@ -70,6 +71,7 @@ const CommonForm: React.FC<Props> = props => {
         widgets={{
           checkbox: CheckboxWidget,
           essay: EssayWidget,
+          date: DateWidget,
         }}
         noHtml5Validate
         showErrorList={false}

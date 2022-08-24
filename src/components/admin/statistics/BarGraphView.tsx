@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const BarGraphView: React.FC<IProps> = props => (
-  <Box style={{ height: "1500px", width: "500px"}}>
+  <Box style={{ height: "230px", width: "300px"}}>
     <Heading style={{ textAlign: "center", fontSize: "25px" }}>School Year</Heading>
       <Bar
         data={{

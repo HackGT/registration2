@@ -13,8 +13,8 @@ const TableView: React.FC<IProps> = props => (
       <Tbody>
         {Object.keys(props.data).map(key => (
           <Tr>
-            <Td style={{ width: "500px", maxWidth: "500px" }}>{key}</Td>
-            <Td>{props.data[key]}</Td>
+            <Td style={{ width: "315px", maxWidth: "315px", fontSize: "13px" }}>{key}</Td>
+            <Td style={{ fontSize: "13px" }}>{props.data[key]}</Td>
           </Tr>
         ))}
       </Tbody>

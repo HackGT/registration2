@@ -8,7 +8,8 @@ import {
   HStack,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import BarGraphView from "./BarGraphView";
 
 import PieGraphView from "./PieGraphView";
@@ -58,6 +59,20 @@ const GraphAccordionSection: React.FC<IProps> = props => {
   const genders: Record<string, number> = {};
   const schoolYear: Record<string, number> = {};
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
+
+  const isDesktop = width > 768;
+
   Object.keys(props.data).map(key => {
     for (const element of props.data[key]) {
       // records frequency of applicants' school
@@ -91,7 +106,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
           : 1);
     }
   });
-
+  console.log('yo: ', isDesktop)
   return (
     <AccordionItem>
       <h2>
@@ -103,16 +118,40 @@ const GraphAccordionSection: React.FC<IProps> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <VStack>
-          {Object.keys(universities).length ||
-          Object.keys(ages).length ||
-          Object.keys(majors).length ||
-          Object.keys(genders).length ? (
-            <HStack>
-              {Object.keys(universities).length && (
-                <TableView heading="Universities" data={sortObjectByValue(universities)} />
-              )}
+        {isDesktop ? (
+          <VStack>
+            {Object.keys(universities).length ||
+            Object.keys(ages).length || 
+            Object.keys(majors).length ||
+            Object.keys(genders).length ? (
+              <HStack>
+                {Object.keys(majors).length && (
+                  <TableView heading="Universities" data={sortObjectByValue(universities)} />
+                )}
+                <VStack>
+                  {Object.keys(majors).length && (
+                    <TableView heading="Majors" data={sortObjectByValue(majors)} />
+                  )}
+                  {Object.keys(schoolYear).length && (
+                    <BarGraphView heading="School Year" data={sortObjectByKey(schoolYear)}/>
+                  )}
+                  {Object.keys(genders).length && <PieGraphView heading="Gender" data={genders} />}
+                </VStack>
+              </HStack>
+            ) : (
+              <Heading size="md">No statistics available</Heading>
+            )}
+          </VStack>
+        ) : (
+          <VStack>
+            {Object.keys(universities).length ||
+            Object.keys(ages).length ||
+            Object.keys(majors).length ||
+            Object.keys(genders).length ? (
               <VStack>
+                {Object.keys(majors).length && (
+                  <TableView heading="Universities" data={sortObjectByValue(universities)} />
+                )}
                 {Object.keys(majors).length && (
                   <TableView heading="Majors" data={sortObjectByValue(majors)} />
                 )}
@@ -121,11 +160,11 @@ const GraphAccordionSection: React.FC<IProps> = props => {
                 )}
                 {Object.keys(genders).length && <PieGraphView heading="Gender" data={genders} />}
               </VStack>
-            </HStack>
-          ) : (
-            <Heading size="md">No statistics available</Heading>
-          )}
-        </VStack>
+            ) : (
+              <Heading size="md">No statistics available</Heading>
+            )}
+          </VStack>
+        )}
       </AccordionPanel>
     </AccordionItem>
   );

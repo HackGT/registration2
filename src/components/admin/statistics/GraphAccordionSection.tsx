@@ -106,7 +106,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
           : 1);
     }
   });
-  console.log('yo: ', isDesktop)
+
   return (
     <AccordionItem>
       <h2>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as ChakraLink, Text } from "@chakra-ui/react";
+import { Link as ChakraLink } from "@chakra-ui/react";
 import { ErrorScreen, SearchableTable } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";

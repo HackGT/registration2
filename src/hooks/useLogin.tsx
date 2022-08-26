@@ -40,7 +40,7 @@ export const useLogin = () => {
     };
 
     login();
-  }, []);
+  }, [location.pathname, navigate, searchParams]);
 
   return [loading, loggedIn];
 };

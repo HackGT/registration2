@@ -16,6 +16,9 @@ import CheckValidHexathon from "./util/CheckValidHexathon";
 import Statistics from "./components/admin/statistics/Statistics";
 import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
 import AdminControlsHome from "./components/admin/AdminControlsHome";
+import GradingDashboard from "./components/admin/grading/GradingDashboard";
+import GradeQuestion from "./components/admin/grading/GradeQuestion";
+import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
 
@@ -47,6 +50,9 @@ export const App = () => {
           <Route path="admin/applications" element={<AllApplicationsTable />} />
           <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
           <Route path="admin/statistics" element={<Statistics />} />
+          <Route path="grading" element={<GradingDashboard />} />
+          <Route path="grading/question" element={<GradeQuestion />}/>
+          <Route path="grading/leaderboard" element={<Leaderboard />}/>
         </Route>
       </Routes>
       <Footer />

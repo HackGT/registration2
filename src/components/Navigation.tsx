@@ -40,7 +40,7 @@ const Navigation: React.FC = () => {
     }
 
     getRoles();
-  }, [user?.uid, hexathonId]);
+  }, [user?.uid, navigate, hexathonId]);
 
   return (
     <Header>
@@ -54,6 +54,11 @@ const Navigation: React.FC = () => {
           {role.admin || role.exec ? (
             <HeaderItem>
               <Link to={`/${hexathonId}/admin`}>Admin Home</Link>
+            </HeaderItem>
+          ) : null}
+          {role.member ? (
+            <HeaderItem>
+              <Link to={`/${hexathonId}/grading`}>Grading</Link>
             </HeaderItem>
           ) : null}
           <HeaderItem>

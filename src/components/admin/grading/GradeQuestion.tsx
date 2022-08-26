@@ -143,11 +143,12 @@ const GradeQuestion: React.FC = () => {
                           .split("\n")
                           .map((line: string, index: number, array: any[]) =>
                             index === 0 ? (
-                              <Text fontWeight="semibold" paddingBottom="5px">
+                              <Text key={line} fontWeight="semibold" paddingBottom="5px">
                                 {line}
                               </Text>
                             ) : (
                               <Text
+                                key={line}
                                 paddingBottom={index === array.length - 1 ? "0px" : "5px"}
                                 style={{ marginLeft: 20, textIndent: -11 }}
                               >
@@ -177,7 +178,12 @@ const GradeQuestion: React.FC = () => {
         }
       </HStack>
       <HStack margin="auto" width="300px" direction="row" justifyContent="space-between">
-        <Button onClick={skipQuestion}>Skip Question</Button>
+        <Button
+          disabled={questionData.isCalibrationQuestion}
+          onClick={skipQuestion}
+        >
+          Skip Question
+        </Button>
         <Button
           disabled={score.length === 0}
           onClick={() => {

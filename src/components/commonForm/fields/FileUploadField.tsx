@@ -17,6 +17,7 @@ import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
 
 import { handleAxiosError } from "../../../util/util";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 const FileUploadField: React.FC<FieldProps> = props => {
   const inputRef = useRef<any>();
@@ -40,15 +41,11 @@ const FileUploadField: React.FC<FieldProps> = props => {
       multipartFormData.append("type", props.name);
       multipartFormData.append("file", files[0], files[0].name);
       setFileName(files[0].name);
-      const response = await axios.post(
-        "https://files.api.hexlabs.org/files/upload",
-        multipartFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(apiUrl(Service.FILES, "/files/upload"), multipartFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       props.onChange(response.data);
     } catch (error: any) {
       setFileName("");

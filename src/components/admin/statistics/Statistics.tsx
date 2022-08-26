@@ -6,12 +6,17 @@ import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 const Statistics: React.FC = () => {
   const { hexathonId } = useParams();
-  const [{ data, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/statistics/?hexathon=${hexathonId}`
-  );
+  const [{ data, loading, error }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/statistics"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
@@ -32,12 +37,12 @@ const Statistics: React.FC = () => {
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
         </VStack>
-        <Accordion allowToggle>
-          <AccordionSection name="Users" data={userStatistics} />
-          <AccordionSection name="Applications" data={applicationStatistics} />
-          <AccordionSection name="Confirmations" data={confirmationStatistics} />
+        <Accordion allowToggle allowMultiple defaultIndex={[0]}>
+          <AccordionSection name="Overall Users" data={userStatistics} />
+          <AccordionSection name="Application Type" data={applicationStatistics} />
+          <AccordionSection name="Confirmation Type" data={confirmationStatistics} />
           <AccordionSection name="Rejections" data={rejectionStatistics} />
-          <GraphAccordionSection name="Application Statistics" data={applicationDataStatistics} />
+          <GraphAccordionSection name="Graphs" data={applicationDataStatistics} />
         </Accordion>
       </Stack>
     </Box>

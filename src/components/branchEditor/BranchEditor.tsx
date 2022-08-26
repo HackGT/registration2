@@ -5,6 +5,7 @@ import useAxios from "axios-hooks";
 import React from "react";
 import { useParams } from "react-router-dom";
 
+import { apiUrl, Service } from "../../util/apiUrl";
 import BranchFormCreator from "./BranchFormCreator";
 
 const BranchEditor: React.FC = () => {
@@ -12,7 +13,7 @@ const BranchEditor: React.FC = () => {
   const toast = useToast();
 
   const [{ data, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/branches/${branchId}`
+    apiUrl(Service.REGISTRATION, `/branches/${branchId}`)
   );
 
   if (loading) return <LoadingScreen />;
@@ -24,7 +25,7 @@ const BranchEditor: React.FC = () => {
     updatedFormPages.splice(formPageIndex, 1, updatedFormPage);
 
     try {
-      await axios.patch(`https://registration.api.hexlabs.org/branches/${branchId}`, {
+      await axios.patch(apiUrl(Service.REGISTRATION, `/branches/${branchId}`), {
         formPages: updatedFormPages,
       });
       toast({

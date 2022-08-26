@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as ChakraLink, Text } from "@chakra-ui/react";
 import { ErrorScreen, SearchableTable } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
+import _ from "lodash";
 
-import { getApplicationStatusTag } from "../../../util/util";
+import { apiUrl, Service } from "../../../util/apiUrl";
+import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
 const limit = 50;
 
@@ -25,8 +27,13 @@ const columns = [
   },
   {
     key: 2,
+    header: "Group Type",
+    accessor: (row: any) => _.capitalize(row.applicationBranch.applicationGroup),
+  },
+  {
+    key: 3,
     header: "Status",
-    accessor: (row: any) => getApplicationStatusTag(row),
+    accessor: (row: any) => <ApplicationStatusTag application={row} includeColor />,
   },
 ];
 
@@ -36,7 +43,7 @@ const AllApplicationsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [{ data, error }] = useAxios({
     method: "GET",
-    url: "https://registration.api.hexlabs.org/applications",
+    url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
       hexathon: hexathonId,
       search: searchText,

@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { Alert, AlertIcon, Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Heading,
+  SimpleGrid,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import BranchCard from "./BranchCard";
 import BranchFormModal from "./BranchFormModal";
+import { apiUrl, Service } from "../../../util/apiUrl";
 
 export enum BranchType {
   APPLICATION = "APPLICATION",
@@ -17,6 +27,7 @@ export interface Branch {
   name: string;
   hexathon: string;
   type: BranchType;
+  applicationGroup: any;
   settings: {
     open: string;
     close: string;
@@ -34,9 +45,13 @@ const BranchSettings: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentBranchData, setCurrentBranchData] = useState<any>(null);
 
-  const [{ data: branches, loading, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
-  );
+  const [{ data: branches, loading, error }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
 
   const handleModalOpen = (defaultValues: Partial<Branch> | null) => {
     setCurrentBranchData(defaultValues);
@@ -61,11 +76,22 @@ const BranchSettings: React.FC = () => {
         <Button onClick={() => handleModalOpen(null)} marginBottom="20px">
           Create Branch
         </Button>
-        <Stack>
+        <Stack gap="15px">
+          <Heading size="lg">Application Branches</Heading>
           <SimpleGrid columns={[1, 1, 2, 3, 4]} spacing="25px">
-            {branches.map((branch: Branch) => (
-              <BranchCard openModal={handleModalOpen} branch={branch} />
-            ))}
+            {branches
+              .filter((branch: Branch) => branch.type === BranchType.APPLICATION)
+              .map((branch: Branch) => (
+                <BranchCard openModal={handleModalOpen} branch={branch} />
+              ))}
+          </SimpleGrid>
+          <Heading size="lg">Confirmation Branches</Heading>
+          <SimpleGrid columns={[1, 1, 2, 3, 4]} spacing="25px">
+            {branches
+              .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+              .map((branch: Branch) => (
+                <BranchCard openModal={handleModalOpen} branch={branch} />
+              ))}
           </SimpleGrid>
         </Stack>
       </Box>

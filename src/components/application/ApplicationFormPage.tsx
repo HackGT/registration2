@@ -5,18 +5,12 @@ import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
 import { getFrontendFormattedFormData } from "./ApplicationContainer";
-
-interface FormPage {
-  title: string;
-  jsonSchema: string;
-  uiSchema: string;
-}
+import { apiUrl, Service } from "../../util/apiUrl";
 
 interface Props {
   defaultFormData: any;
-  formPage: FormPage;
+  branch: any;
   formPageNumber: number;
-  commonDefinitionsSchema: string;
   applicationId?: string;
   hasPrevPage: boolean;
   prevPage: () => void;
@@ -35,9 +29,13 @@ const ApplicationFormPage: React.FC<Props> = props => {
       const combinedFormData = { ...formData };
 
       const response = await axios.post(
-        `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/save-application-data`,
+        apiUrl(
+          Service.REGISTRATION,
+          `/applications/${props.applicationId}/actions/save-application-data`
+        ),
         {
           applicationData: combinedFormData,
+          branchType: props.branch.type,
           branchFormPage: props.formPageNumber,
           validateData,
         }
@@ -78,12 +76,14 @@ const ApplicationFormPage: React.FC<Props> = props => {
     }
   };
 
+  const formPage = props.branch.formPages[props.formPageNumber];
+
   return (
     <Box marginX="15px">
       <CommonForm
-        schema={props.formPage.jsonSchema}
-        uiSchema={props.formPage.uiSchema}
-        commonDefinitionsSchema={props.commonDefinitionsSchema}
+        schema={formPage.jsonSchema}
+        uiSchema={formPage.uiSchema}
+        commonDefinitionsSchema={props.branch.commonDefinitionsSchema}
         formData={formData}
         onChange={({ formData: updatedFormData }, e) => {
           setFormData(updatedFormData);

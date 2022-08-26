@@ -15,12 +15,15 @@ import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../types/helper";
+import { apiUrl, Service } from "../../util/apiUrl";
 
 interface Props {
   defaultFormData: any;
   branch: any;
   applicationId?: string;
+  hasPrevPage: boolean;
   prevPage: () => void;
+  nextPage: () => void;
   refetch: AxiosRefetch;
 }
 
@@ -31,9 +34,16 @@ const ApplicationReviewPage: React.FC<Props> = props => {
   const handleSubmit = async () => {
     try {
       await axios.post(
-        `https://registration.api.hexlabs.org/applications/${props.applicationId}/actions/submit-application`
+        apiUrl(
+          Service.REGISTRATION,
+          `/applications/${props.applicationId}/actions/submit-application`
+        ),
+        {
+          branchType: props.branch.type,
+        }
       );
       props.refetch();
+      props.nextPage();
     } catch (error: any) {
       console.log(error.message);
       toast({
@@ -53,11 +63,13 @@ const ApplicationReviewPage: React.FC<Props> = props => {
   return (
     <Box marginX="15px">
       <Heading mb="10px">Review Your Submission</Heading>
-      <Alert status="warning" mb="10px">
-        <AlertIcon />
-        Please review your application data before submission. After you submit, you will not be
-        able to change any information.
-      </Alert>
+      {props.branch.type === "APPLICATION" && (
+        <Alert status="info" mb="10px">
+          <AlertIcon />
+          Please review your application before you submit. Don't worry, you'll still be able to
+          edit your submission until the deadline.
+        </Alert>
+      )}
       {props.branch.formPages.map((formPage: any) => (
         <CommonForm
           schema={formPage.jsonSchema}
@@ -72,7 +84,12 @@ const ApplicationReviewPage: React.FC<Props> = props => {
         </CommonForm>
       ))}
       <HStack justify="space-evenly">
-        <Button colorScheme="purple" onClick={handlePreviousClicked} variant="outline">
+        <Button
+          colorScheme="purple"
+          onClick={handlePreviousClicked}
+          variant="outline"
+          visibility={props.hasPrevPage ? "inherit" : "hidden"}
+        >
           <ArrowBackIcon />
           {isDesktop && <Text marginLeft="2">Back</Text>}
         </Button>

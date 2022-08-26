@@ -1,5 +1,6 @@
 import React from "react";
-import { Flex, Box, Text, Image, Heading, Center } from "@chakra-ui/react";
+import { Flex, Box, Image, Heading, Center } from "@chakra-ui/react";
+
 import Logo from "../../assets/hexlabs.svg";
 
 const ApplicationSubmittedPage = () => (
@@ -8,14 +9,15 @@ const ApplicationSubmittedPage = () => (
     justify="center"
     direction={{ lg: "row", md: "column", base: "column" }}
     fontFamily="verdana"
-    width="100vw"
+    width="100%"
     height="100vh"
     bgGradient="linear(90deg, #33C2FF, #7B69EC)"
+    paddingX={{ md: "50px", base: "10px" }}
   >
-    <Box padding={{ md: "50px", base: "10px" }}>
+    <Box>
       <Center>
         <Heading
-          fontSize={{ md: "6xl", base: "4xl" }}
+          fontSize={{ md: "5xl", base: "4xl" }}
           color="white"
           padding={1}
           marginBottom={{ base: "30px" }}

@@ -3,6 +3,7 @@ import { getAuth, signInWithCustomToken } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
+import { apiUrl, Service } from "../util/apiUrl";
 import { app } from "../util/firebase";
 
 const auth = getAuth(app);
@@ -19,19 +20,13 @@ export const useLogin = () => {
     const login = async () => {
       try {
         if (searchParams.get("idToken")) {
-          await axios.post("https://auth.api.hexlabs.org/auth/login", {
+          await axios.post(apiUrl(Service.AUTH, "/auth/login"), {
             idToken: searchParams.get("idToken"),
           });
         }
 
-        const response = await axios.get("https://auth.api.hexlabs.org/auth/status");
+        const response = await axios.get(apiUrl(Service.AUTH, "/auth/status"));
         await signInWithCustomToken(auth, response.data.customToken);
-
-        // If user's profile isn't valid, prevent them from logging in
-        if (!response.data.validProfile) {
-          setLoading(false);
-          return;
-        }
 
         setLoggedIn(true);
         setLoading(false);

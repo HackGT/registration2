@@ -34,16 +34,16 @@ const GradeQuestion: React.FC = () => {
     answer: "",
     rubricLink: "",
     gradingRubric: {},
-    isCalibrationQuestion: false
+    isCalibrationQuestion: false,
   });
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     onChange: setScore,
-  })
+  });
 
-  const group = getRootProps()
+  const group = getRootProps();
 
   const skipQuestion = async () => {
     await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/skip-question"));
@@ -76,7 +76,7 @@ const GradeQuestion: React.FC = () => {
   }, [hexathonId, loading]);
 
   if (loading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   if (Object.keys(questionData).length === 0) {
@@ -166,34 +166,30 @@ const GradeQuestion: React.FC = () => {
       </Stack>
       <HStack margin="auto" width="400px" justifyContent="space-between" paddingY="30px" {...group}>
         {questionData.gradingRubric
-          ? Object.keys(questionData.gradingRubric).map((key) => {
-            const radio = getRadioProps({ value: key })
-            return(
-              <ScoreButton key={key} {...radio}>
-                {key}
-              </ScoreButton>
-            )
-          })
-          : null
-        }
+          ? Object.keys(questionData.gradingRubric).map(key => {
+              const radio = getRadioProps({ value: key });
+              return (
+                <ScoreButton key={key} {...radio}>
+                  {key}
+                </ScoreButton>
+              );
+            })
+          : null}
       </HStack>
       <HStack margin="auto" width="300px" direction="row" justifyContent="space-between">
-        <Button
-          disabled={questionData.isCalibrationQuestion}
-          onClick={skipQuestion}
-        >
+        <Button disabled={questionData.isCalibrationQuestion} onClick={skipQuestion}>
           Skip Question
         </Button>
         <Button
           disabled={score.length === 0}
           onClick={() => {
-            const scoreNumber: number = +score
+            const scoreNumber: number = +score;
             submitReview({
               aplicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
               score: scoreNumber,
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
-            })
+            });
           }}
         >
           Submit Review

@@ -46,13 +46,16 @@ const GradeQuestion: React.FC = () => {
   const group = getRootProps();
 
   const skipQuestion = async () => {
-    await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/skip-question"));
+    await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/skip-question"), {
+      hexathon: hexathonId,
+    });
     setLoading(true);
   };
 
   const submitReview = async (payload: {
     aplicationId?: string;
     essayId: string;
+    hexathon?: string;
     score: number;
     isCalibrationQuestion: boolean;
   }) => {
@@ -191,6 +194,7 @@ const GradeQuestion: React.FC = () => {
             submitReview({
               aplicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
+              hexathon: hexathonId,
               score: scoreNumber,
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
             });

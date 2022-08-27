@@ -142,15 +142,19 @@ const GradeQuestion: React.FC = () => {
                         {questionData.gradingRubric[key]
                           .split("\n")
                           .map((line: string, index: number, array: any[]) =>
-                            index === 0 ? (
-                              <Text key={line} fontWeight="semibold" paddingBottom="5px">
+                            line.includes("•") ? (
+                              <Text
+                                key={line}
+                                paddingBottom={index === array.length - 1 ? "0px" : "5px"}
+                                style={{ marginLeft: 20, textIndent: -11 }}
+                              >
                                 {line}
                               </Text>
                             ) : (
                               <Text
                                 key={line}
+                                fontWeight="semibold"
                                 paddingBottom={index === array.length - 1 ? "0px" : "5px"}
-                                style={{ marginLeft: 20, textIndent: -11 }}
                               >
                                 {line}
                               </Text>

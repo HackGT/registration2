@@ -53,7 +53,7 @@ const GradeQuestion: React.FC = () => {
   };
 
   const submitReview = async (payload: {
-    aplicationId?: string;
+    applicationId?: string;
     essayId: string;
     hexathon?: string;
     score: number;
@@ -192,7 +192,7 @@ const GradeQuestion: React.FC = () => {
           onClick={() => {
             const scoreNumber: number = +score;
             submitReview({
-              aplicationId: questionData?.applicationId,
+              applicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
               hexathon: hexathonId,
               score: scoreNumber,

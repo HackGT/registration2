@@ -38,18 +38,32 @@ const GradeQuestion: React.FC = () => {
   });
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<any>();
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
+  const { setValue, getRootProps, getRadioProps } = useRadioGroup({
     onChange: setScore,
   });
 
   const group = getRootProps();
+
+  const retrieveQuestion = async () => {
+    try {
+      const response = await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),{
+        hexathon: hexathonId,
+      });
+      setQuestionData(response.data);
+    } catch(e) {
+      setError(e);
+    }
+    setLoading(false);
+  };
 
   const skipQuestion = async () => {
     await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/skip-question"), {
       hexathon: hexathonId,
     });
     setLoading(true);
+    retrieveQuestion();
   };
 
   const submitReview = async (payload: {
@@ -61,28 +75,18 @@ const GradeQuestion: React.FC = () => {
   }) => {
     await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), payload);
     setLoading(true);
+    retrieveQuestion();
   };
 
   useEffect(() => {
-    const retrieveQuestion = async () => {
-      const response = await axios.post(
-        apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),
-        {
-          hexathon: hexathonId,
-        }
-      );
-      setQuestionData(response.data);
-      setLoading(false);
-    };
-
     retrieveQuestion();
-  }, [hexathonId, loading]);
+  }, []);
 
   if (loading) {
     return <LoadingScreen />;
   }
 
-  if (Object.keys(questionData).length === 0) {
+  if (Object.keys(questionData).length === 0 || error) {
     return (
       <Box width="100%" textAlign="center">
         <Heading paddingTop="60px" paddingBottom="40px">
@@ -198,6 +202,8 @@ const GradeQuestion: React.FC = () => {
               score: scoreNumber,
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
             });
+            setValue("");
+            setScore("");
           }}
         >
           Submit Review

@@ -16,16 +16,10 @@ const Leaderboard: React.FC = () => {
   const { hexathonId } = useParams();
   const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
-  const [leaderboardData, setLeaderboardData] = useState<
-    { rank: number; entry: leaderboardEntry }[]
-  >([]);
-  const [userRank, setUserRank] = useState<{ rank: number; entry: leaderboardEntry }>({
-    rank: -1,
-    entry: {
-      name: "",
-      numGraded: 0,
-    },
-  });
+  const [leaderboardData, setLeaderboardData] = useState<leaderboardEntry[]>([]);
+  const [userRank, setUserRank] = useState<leaderboardEntry>();
+  let offset = 0;
+  let rank = 1;
 
   useEffect(() => {
     const retrieveLeaderboardData = async () => {
@@ -35,36 +29,11 @@ const Leaderboard: React.FC = () => {
         },
       });
 
-      response.data.leaderboard.sort((a: leaderboardEntry, b: leaderboardEntry) => {
-        if (a.numGraded < b.numGraded) {
-          return 1;
-        }
-        if (a.numGraded > b.numGraded) {
-          return -1;
-        }
-        return 0;
-      });
-
-      let offset = 0;
-      let rank = 1;
-      const leaderboardList: { rank: number; entry: leaderboardEntry }[] = [];
-      response.data.leaderboard.forEach(
-        (entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
-          if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
-            leaderboardList.push({ rank, entry });
-            offset += 1;
-          } else {
-            rank += offset;
-            leaderboardList.push({ rank, entry });
-            offset = 0;
-          }
-          if (user?.displayName === entry.name) {
-            setUserRank({ rank, entry });
-          }
-        }
+      setUserRank(
+        response.data.leaderboard.filter((entry: leaderboardEntry) => user?.displayName === entry.name)[0]
       );
 
-      setLeaderboardData(leaderboardList);
+      setLeaderboardData(response.data.leaderboard);
       setLoading(false);
     };
 
@@ -93,9 +62,9 @@ const Leaderboard: React.FC = () => {
           {userRank ? (
             <>
               <Tr>
-                <Td width="15px">{userRank.rank}</Td>
-                <Td>{userRank.entry.name}</Td>
-                <Td isNumeric>{userRank.entry.numGraded}</Td>
+                <Td width="15px">{}</Td>
+                <Td>{userRank.name}</Td>
+                <Td isNumeric>{userRank.numGraded}</Td>
               </Tr>
               <Tr>
                 <Td />
@@ -104,13 +73,22 @@ const Leaderboard: React.FC = () => {
               </Tr>
             </>
           ) : null}
-          {leaderboardData.map((grader: { rank: number; entry: leaderboardEntry }) => (
-            <Tr key={grader.entry.name + grader.entry.numGraded}>
-              <Td>{grader.rank}</Td>
-              <Td>{grader.entry.name}</Td>
-              <Td isNumeric>{grader.entry.numGraded}</Td>
-            </Tr>
-          ))}
+          {
+            leaderboardData.map((entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
+              if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
+                offset += 1
+              } else {
+                rank += offset;
+              }
+              return(
+                <Tr key={entry.name + entry.numGraded}>
+                  <Td>{rank}</Td>
+                  <Td>{entry.name}</Td>
+                  <Td isNumeric>{entry.numGraded}</Td>
+                </Tr>
+              )
+            })
+          }
         </Tbody>
       </Table>
     </TableContainer>

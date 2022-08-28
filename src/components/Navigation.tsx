@@ -40,7 +40,7 @@ const Navigation: React.FC = () => {
     }
 
     getRoles();
-  }, [user?.uid, navigate, hexathonId]);
+  }, [user?.uid, hexathonId]);
 
   return (
     <Header>

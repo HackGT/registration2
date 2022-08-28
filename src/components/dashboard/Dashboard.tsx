@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Flex, Heading, Text, Divider, Link } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import Timeline from "./Timeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { apiUrl, Service } from "../../util/apiUrl";
 import ApplicationStatusTag from "../../util/ApplicationStatusTag";
 import CurrentApplicationTile from "./CurrentApplicationTile";
 

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Header, HeaderItem } from "@hex-labs/core";
+import { apiUrl, Header, HeaderItem, Service } from "@hex-labs/core";
 import axios from "axios";
 import { signOut, getAuth } from "firebase/auth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
 import { app } from "../util/firebase";
-import { apiUrl, Service } from "../util/apiUrl";
 
 const auth = getAuth(app);
 

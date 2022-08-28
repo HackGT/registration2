@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import axios from "axios";
 
-import { apiUrl, Service } from "../../util/apiUrl";
 import { handleAxiosError } from "../../util/util";
+import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   application: any;

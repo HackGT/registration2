@@ -8,7 +8,7 @@ import { app } from "../util/firebase";
 
 const auth = getAuth(app);
 
-export const useLogin = () => {
+export const useLogin = (): [loading: boolean, loggedIn: boolean] => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();

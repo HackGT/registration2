@@ -30,7 +30,7 @@ export const dateToServerFormat = (date?: string | null) => {
   }).toISO();
 };
 
-const toast = createStandaloneToast();
+const { toast } = createStandaloneToast();
 
 export const handleAxiosError = (error: Error | AxiosError<any>) => {
   if (axios.isAxiosError(error)) {

@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../types/helper";
-import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   defaultFormData: any;

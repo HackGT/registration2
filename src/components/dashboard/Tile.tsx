@@ -17,9 +17,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { handleAxiosError } from "../../util/util";
-import { apiUrl, Service } from "@hex-labs/core";
 
 enum BranchStatus {
   NotStarted = "Not Started",

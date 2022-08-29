@@ -8,6 +8,7 @@ import { apiUrl, Service } from "../../../util/apiUrl";
 import { useAuth } from "../../../contexts/AuthContext";
 
 interface leaderboardEntry {
+  rank?: number;
   name: string;
   numGraded: number;
 }
@@ -17,7 +18,6 @@ const Leaderboard: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [leaderboardData, setLeaderboardData] = useState<leaderboardEntry[]>([]);
-  const [userRank, setUserRank] = useState<leaderboardEntry>();
   let offset = 0;
   let rank = 1;
 
@@ -28,10 +28,6 @@ const Leaderboard: React.FC = () => {
           hexathon: hexathonId,
         },
       });
-
-      setUserRank(
-        response.data.leaderboard.filter((entry: leaderboardEntry) => user?.displayName === entry.name)[0]
-      );
 
       setLeaderboardData(response.data.leaderboard);
       setLoading(false);
@@ -59,20 +55,6 @@ const Leaderboard: React.FC = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {userRank ? (
-            <>
-              <Tr>
-                <Td width="15px">{}</Td>
-                <Td>{userRank.name}</Td>
-                <Td isNumeric>{userRank.numGraded}</Td>
-              </Tr>
-              <Tr>
-                <Td />
-                <Td />
-                <Td />
-              </Tr>
-            </>
-          ) : null}
           {
             leaderboardData.map((entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
               if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
@@ -81,8 +63,8 @@ const Leaderboard: React.FC = () => {
                 rank += offset;
               }
               return(
-                <Tr key={entry.name + entry.numGraded}>
-                  <Td>{rank}</Td>
+                <Tr key={entry.name + entry.numGraded} fontWeight={entry.name === user?.displayName ? "bold" : "normal"}>
+                  <Td isNumeric>{rank}</Td>
                   <Td>{entry.name}</Td>
                   <Td isNumeric>{entry.numGraded}</Td>
                 </Tr>

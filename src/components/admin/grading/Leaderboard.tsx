@@ -60,6 +60,7 @@ const Leaderboard: React.FC = () => {
                 offset += 1;
               } else {
                 rank += offset;
+                offset = 1;
               }
               return (
                 <Tr

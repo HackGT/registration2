@@ -17,7 +17,7 @@ import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
 
 import { handleAxiosError } from "../../../util/util";
-import { apiUrl, Service } from "../../../util/apiUrl";
+import { apiUrl, Service } from "@hex-labs/core";
 
 const FileUploadField: React.FC<FieldProps> = props => {
   const inputRef = useRef<any>();

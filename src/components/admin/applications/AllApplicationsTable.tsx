@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Link as ChakraLink } from "@chakra-ui/react";
-import { ErrorScreen, SearchableTable } from "@hex-labs/core";
+import { Link as ChakraLink, Text } from "@chakra-ui/react";
+import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 import _ from "lodash";
 
-import { apiUrl, Service } from "../../../util/apiUrl";
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
 const limit = 50;

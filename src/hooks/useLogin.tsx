@@ -1,9 +1,9 @@
+import { apiUrl, Service } from "@hex-labs/core";
 import axios from "axios";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { apiUrl, Service } from "../util/apiUrl";
 import { app } from "../util/firebase";
 
 const auth = getAuth(app);

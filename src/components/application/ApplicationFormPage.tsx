@@ -5,7 +5,7 @@ import axios from "axios";
 
 import CommonForm from "../commonForm/CommonForm";
 import { getFrontendFormattedFormData } from "./ApplicationContainer";
-import { apiUrl, Service } from "../../util/apiUrl";
+import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   defaultFormData: any;

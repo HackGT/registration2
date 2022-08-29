@@ -17,12 +17,11 @@ import {
   TagRightIcon,
   useToast,
 } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen, apiUrl, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 import { CopyIcon } from "@chakra-ui/icons";
 
-import { apiUrl, Service } from "../../../util/apiUrl";
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
 const ApplicationDetailPage: React.FC = () => {

@@ -1,9 +1,8 @@
 import { Center, Flex } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import React from "react";
 
-import { apiUrl, Service } from "../../util/apiUrl";
 import EventCard from "./EventCard";
 
 const SelectEvent: React.FC = () => {

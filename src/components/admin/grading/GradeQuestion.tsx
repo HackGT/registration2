@@ -17,7 +17,7 @@ import {
   Tr,
   useRadioGroup,
 } from "@chakra-ui/react";
-import { LoadingScreen } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
 
 import { apiUrl, Service } from "../../../util/apiUrl";
 import ApplicantAnswer from "./ApplicantAnswer";
@@ -86,7 +86,11 @@ const GradeQuestion: React.FC = () => {
     return <LoadingScreen />;
   }
 
-  if (Object.keys(questionData).length === 0 || error) {
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
+
+  if (Object.keys(questionData).length === 0) {
     return (
       <Box width="100%" textAlign="center">
         <Heading paddingTop="60px" paddingBottom="40px">

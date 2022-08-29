@@ -8,10 +8,9 @@ import {
   HStack,
   VStack,
 } from "@chakra-ui/react";
-
 import React, { useEffect, useState } from "react";
-import BarGraphView from "./BarGraphView";
 
+import BarGraphView from "./BarGraphView";
 import PieGraphView from "./PieGraphView";
 import TableView from "./TableView";
 
@@ -25,15 +24,10 @@ function sortObjectByValue(obj: any) {
   items.sort((first, second) => second[1] - first[1]);
   const sortedObj: any = {};
   for (const item of items) {
-    const use_key = item[0];
-    const use_value = item[1];
-    sortedObj[use_key] = use_value;
+    const useKey = item[0];
+    const useValue = item[1];
+    sortedObj[useKey] = useValue;
   }
-  items.map(item => {
-    const key = item[0];
-    const value = item[1];
-    sortedObj[key] = value;
-  });
   return sortedObj;
 }
 
@@ -73,7 +67,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
 
   const isDesktop = width > 768;
 
-  Object.keys(props.data).map(key => {
+  for (const key of Object.keys(props.data)) {
     for (const element of props.data[key]) {
       // records frequency of applicants' school
       "school" in element &&
@@ -105,7 +99,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
           ? schoolYear[element.schoolYear] + 1
           : 1);
     }
-  });
+  };
 
   return (
     <AccordionItem>

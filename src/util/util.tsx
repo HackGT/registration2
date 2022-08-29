@@ -1,5 +1,5 @@
 import React from "react";
-import { createStandaloneToast, Tag } from "@chakra-ui/react";
+import { createStandaloneToast } from "@chakra-ui/react";
 import { DateTime } from "luxon";
 import axios, { AxiosError } from "axios";
 

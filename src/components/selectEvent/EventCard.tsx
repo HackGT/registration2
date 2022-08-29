@@ -1,7 +1,6 @@
 import React from "react";
-
-import { Box, Heading, HStack, LinkBox, LinkOverlay, Image } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Box, Heading, HStack, Image } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   name: string;

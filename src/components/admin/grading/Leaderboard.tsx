@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { LoadingScreen } from "@hex-labs/core";
+import { apiUrl, LoadingScreen, Service } from "@hex-labs/core";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-import { apiUrl, Service } from "../../../util/apiUrl";
 import { useAuth } from "../../../contexts/AuthContext";
 
 interface leaderboardEntry {
@@ -49,28 +48,31 @@ const Leaderboard: React.FC = () => {
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th isNumeric>Rank</Th>
+            <Th>Rank</Th>
             <Th>Name</Th>
-            <Th isNumeric>Graded</Th>
+            <Th>Graded</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {
-            leaderboardData.map((entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
+          {leaderboardData.map(
+            (entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
               if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
-                offset += 1
+                offset += 1;
               } else {
                 rank += offset;
               }
-              return(
-                <Tr key={entry.name + entry.numGraded} fontWeight={entry.name === user?.displayName ? "bold" : "normal"}>
-                  <Td isNumeric>{rank}</Td>
+              return (
+                <Tr
+                  key={entry.name + entry.numGraded}
+                  fontWeight={entry.name === user?.displayName ? "bold" : "normal"}
+                >
+                  <Td>{rank}</Td>
                   <Td>{entry.name}</Td>
-                  <Td isNumeric>{entry.numGraded}</Td>
+                  <Td>{entry.numGraded}</Td>
                 </Tr>
-              )
-            })
-          }
+              );
+            }
+          )}
         </Tbody>
       </Table>
     </TableContainer>

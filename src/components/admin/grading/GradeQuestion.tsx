@@ -17,9 +17,8 @@ import {
   Tr,
   useRadioGroup,
 } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 
-import { apiUrl, Service } from "../../../util/apiUrl";
 import ApplicantAnswer from "./ApplicantAnswer";
 import ScoreButton from "./ScoreButton";
 
@@ -48,11 +47,14 @@ const GradeQuestion: React.FC = () => {
 
   const retrieveQuestion = async () => {
     try {
-      const response = await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),{
-        hexathon: hexathonId,
-      });
+      const response = await axios.post(
+        apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),
+        {
+          hexathon: hexathonId,
+        }
+      );
       setQuestionData(response.data);
-    } catch(e) {
+    } catch (e) {
       setError(e);
     }
     setLoading(false);

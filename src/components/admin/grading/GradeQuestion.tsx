@@ -117,7 +117,7 @@ const GradeQuestion: React.FC = () => {
           width={{ base: "100%", md: "50%" }}
           maxHeight="425px"
           overflowY="auto"
-          marginBottom="50px"
+          marginBottom="10px"
         >
           <Heading
             paddingTop="5px"
@@ -134,7 +134,7 @@ const GradeQuestion: React.FC = () => {
             {questionData?.answer}
           </Text>
         </Box>
-        <Box margin="auto" width={{ base: "100%", md: "50%" }} maxHeight="425px" overflowY="auto">
+        <Box margin="auto" width={{ base: "100%", md: "50%" }}>
           <Table width="100%">
             <Thead position="sticky" top="0" bg="white">
               <Tr>

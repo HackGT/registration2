@@ -48,6 +48,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     [applicationBranch, confirmationBranch]
   );
 
+  const branchTitle = useMemo(() => {
+    if (confirmationBranch?.name) {
+      return confirmationBranch.name;
+    }
+    return applicationBranch.name;
+  }, [applicationBranch, confirmationBranch]);
+
   const branchDescription = useMemo(() => {
     // If this is a confirmation
     if (props.application.status === "ACCEPTED" && confirmationBranch) {
@@ -186,7 +193,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
         />
         <Box padding="20px 32px">
           <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
-            <Text>{props.application.applicationBranch.name}</Text>
+            <Text>{branchTitle}</Text>
           </Heading>
           <Text fontSize="sm" color="#858585" mb="8px">
             {branchDescription}

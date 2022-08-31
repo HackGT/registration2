@@ -70,6 +70,13 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           edit your submission until the deadline.
         </Alert>
       )}
+      {props.branch.type === "CONFIRMATION" && (
+        <Alert status="info" mb="10px">
+          <AlertIcon />
+          Please review your confirmation before you submit. You will not be confirmed until you
+          submit below.
+        </Alert>
+      )}
       {props.branch.formPages.map((formPage: any) => (
         <CommonForm
           schema={formPage.jsonSchema}

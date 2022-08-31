@@ -2582,10 +2582,10 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
-"@hex-labs/core@^1.0.38":
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/@hex-labs/core/-/core-1.0.38.tgz#0b4de422cee92b87cf21e10d9c18b32d9fe16cfa"
-  integrity sha512-3AII52nlj/tb0syH9IZK2Jlj0PkvqHesORDZpEgqPJEwriNncgfD5CZtQ1aM/Zfmkg+BVtUvKSaJsAKuWrvQeg==
+"@hex-labs/core@^1.0.39":
+  version "1.0.39"
+  resolved "https://registry.yarnpkg.com/@hex-labs/core/-/core-1.0.39.tgz#1d1c3063f22ea6a665f0422c3495577a7d2a40ba"
+  integrity sha512-d2uu1l9tPgvqFOYcXxi2UCDy8Vd7ZW+7OpVYoeSZO95rY8KSfnqV/OzSoEaVNhUUCI7kZHWjYo8x5hSilZcIPg==
 
 "@hex-labs/eslint-config-react@^1.2.3":
   version "1.2.3"

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { apiUrl, LoadingScreen, Service } from "@hex-labs/core";
-import axios from "axios";
+import React from "react";
+import { Box, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
+import useAxios from "axios-hooks";
 
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -15,68 +15,67 @@ interface leaderboardEntry {
 const Leaderboard: React.FC = () => {
   const { hexathonId } = useParams();
   const { user } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [leaderboardData, setLeaderboardData] = useState<leaderboardEntry[]>([]);
-  let offset = 0;
-  let rank = 1;
-
-  useEffect(() => {
-    const retrieveLeaderboardData = async () => {
-      const response = await axios.get(apiUrl(Service.REGISTRATION, "/grading/leaderboard"), {
-        params: {
-          hexathon: hexathonId,
-        },
-      });
-
-      setLeaderboardData(response.data.leaderboard);
-      setLoading(false);
-    };
-
-    retrieveLeaderboardData();
-  }, [user]);
+  const [{ data, loading, error }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/grading/leaderboard"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
 
   if (loading) {
     return <LoadingScreen />;
   }
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
+
+  let offset = 0;
+  let rank = 1;
 
   return (
-    <TableContainer
-      margin="auto"
-      width={{ base: "90%", md: "70%" }}
-      maxWidth={{ base: "540px", md: "700px" }}
-    >
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Rank</Th>
-            <Th>Name</Th>
-            <Th>Graded</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {leaderboardData.map(
-            (entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
-              if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
-                offset += 1;
-              } else {
-                rank += offset;
-                offset = 1;
+    <Box mt="5">
+      <Heading size="md" textAlign="center" mb="5">
+        You've graded {data.currentNumGraded} essays.
+      </Heading>
+      <TableContainer
+        margin="auto"
+        width={{ base: "90%", md: "70%" }}
+        maxWidth={{ base: "540px", md: "700px" }}
+      >
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Rank</Th>
+              <Th>Name</Th>
+              <Th>Graded</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {data.leaderboard.map(
+              (entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
+                if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
+                  offset += 1;
+                } else {
+                  rank += offset;
+                  offset = 1;
+                }
+                return (
+                  <Tr
+                    key={entry.name + entry.numGraded}
+                    fontWeight={entry.name === user?.displayName ? "bold" : "normal"}
+                  >
+                    <Td>{rank}</Td>
+                    <Td>{entry.name}</Td>
+                    <Td>{entry.numGraded}</Td>
+                  </Tr>
+                );
               }
-              return (
-                <Tr
-                  key={entry.name + entry.numGraded}
-                  fontWeight={entry.name === user?.displayName ? "bold" : "normal"}
-                >
-                  <Td>{rank}</Td>
-                  <Td>{entry.name}</Td>
-                  <Td>{entry.numGraded}</Td>
-                </Tr>
-              );
-            }
-          )}
-        </Tbody>
-      </Table>
-    </TableContainer>
+            )}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

@@ -41,7 +41,10 @@ const Statistics: React.FC = () => {
           <AccordionSection name="Application Type" data={applicationStatistics} />
           <AccordionSection name="Confirmation Type" data={confirmationStatistics} />
           <AccordionSection name="Rejections" data={rejectionStatistics} />
-          <GraphAccordionSection name="Graphs" data={applicationDataStatistics} />
+          <GraphAccordionSection
+            name="Applied Users Detailed Stats & Graphs"
+            data={applicationDataStatistics}
+          />
         </Accordion>
       </Stack>
     </Box>

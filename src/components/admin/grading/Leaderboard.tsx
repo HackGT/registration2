@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Text, Box, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { apiUrl, LoadingScreen, Service } from "@hex-labs/core";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -19,7 +19,7 @@ const Leaderboard: React.FC = () => {
   const [leaderboardData, setLeaderboardData] = useState<leaderboardEntry[]>([]);
   let offset = 0;
   let rank = 1;
-
+  const [numApps, setNumApps] = useState(0);
   useEffect(() => {
     const retrieveLeaderboardData = async () => {
       const response = await axios.get(apiUrl(Service.REGISTRATION, "/grading/leaderboard"), {
@@ -27,8 +27,14 @@ const Leaderboard: React.FC = () => {
           hexathon: hexathonId,
         },
       });
+      let i = 0;
+      setLeaderboardData(response.data.leaderboard.slice(0, 10));
+      let count = 0;
+      for (i = 0; i < response.data.leaderboard.length; i ++) {
+        count += response.data.leaderboard[i].numGraded;
 
-      setLeaderboardData(response.data.leaderboard);
+      }
+      setNumApps(count);
       setLoading(false);
     };
 
@@ -40,6 +46,12 @@ const Leaderboard: React.FC = () => {
   }
 
   return (
+    <Box>
+      <Box m = {2} >
+        <Center>
+          <Text variant="simple" fontSize='xl' as ='u'>Total Applications Graded: {numApps}</Text>
+        </Center>
+      </Box>
     <TableContainer
       margin="auto"
       width={{ base: "90%", md: "70%" }}
@@ -77,6 +89,7 @@ const Leaderboard: React.FC = () => {
         </Tbody>
       </Table>
     </TableContainer>
+  </Box>
   );
 };
 

@@ -12,7 +12,7 @@ const BranchEditor: React.FC = () => {
   const { branchId } = useParams();
   const toast = useToast();
 
-  const [{ data, loading, error }] = useAxios(
+  const [{ data, loading, error }, refetch] = useAxios(
     apiUrl(Service.REGISTRATION, `/branches/${branchId}`)
   );
 
@@ -43,6 +43,7 @@ const BranchEditor: React.FC = () => {
         duration: 3000,
       });
     }
+    await refetch();
   };
 
   const handleDeleteFormPage = async (formPageIndex: number) => {
@@ -68,6 +69,7 @@ const BranchEditor: React.FC = () => {
         duration: 3000,
       });
     }
+    await refetch();
   };
 
   return (

@@ -48,7 +48,7 @@ const FormPageModal: React.FC<Props> = props => {
     try {
       let pageData = "";
       if (props.type === FormModalType.Add) {
-        props.defaultValues.formPages.push({"title": values.name, "jsonSchema": "{}", "uiSchema": "{}"});
+        props.defaultValues.formPages.push({"title": values.title, "jsonSchema": "{}", "uiSchema": "{}"});
         pageData = props.defaultValues.formPages;
         await axios.patch(`https://registration.api.hexlabs.org/branches/${props.branchId}`, {
             formPages: pageData,
@@ -60,15 +60,15 @@ const FormPageModal: React.FC<Props> = props => {
           duration: 3000,
           isClosable: true,
         });
+        await props.refetch();
       } else {
-        props.defaultValues.formPages[props.formPageIndex].title = values.name;
+        props.defaultValues.formPages[props.formPageIndex].title = values.title;
         pageData = props.defaultValues.formPages;
         await axios.patch(
           `https://registration.api.hexlabs.org/branches/${props.branchId}`, {
             formPages: pageData,
           }
         );
-        await props.refetch();
         toast({
           title: "Success!",
           description: "The form page has successfully been edited.",
@@ -76,6 +76,7 @@ const FormPageModal: React.FC<Props> = props => {
           duration: 3000,
           isClosable: true,
         });
+        await props.refetch();
       }
     } catch (e: any) {
       console.log(e);
@@ -102,7 +103,7 @@ const FormPageModal: React.FC<Props> = props => {
             <VStack spacing={4} alignItems="normal">
               <FormControl isRequired>
                 <FormLabel>Form Title</FormLabel>
-                <Input {...register("name")} />
+                <Input {...register("title")} />
               </FormControl>
               <Button colorScheme="purple" isLoading={isSubmitting} type="submit">
                 {props.type == FormModalType.Edit ? "Save" : "Add"}

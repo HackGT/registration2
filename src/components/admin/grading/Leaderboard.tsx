@@ -3,6 +3,7 @@ import { Text, Box, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } fr
 import { apiUrl, LoadingScreen, Service } from "@hex-labs/core";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import useAxios from "axios-hooks";
 
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -15,11 +16,23 @@ interface leaderboardEntry {
 const Leaderboard: React.FC = () => {
   const { hexathonId } = useParams();
   const { user } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [load, setLoading] = useState<boolean>(true);
   const [leaderboardData, setLeaderboardData] = useState<leaderboardEntry[]>([]);
   let offset = 0;
   let rank = 1;
   const [numApps, setNumApps] = useState(0);
+  const [numApplied, setNumApplied] = useState(0);
+  const [numConfirmed, setNumConfirmed] = useState(0);
+  const [{ data, loading, error }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/statistics"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
+
+
+
   useEffect(() => {
     const retrieveLeaderboardData = async () => {
       const response = await axios.get(apiUrl(Service.REGISTRATION, "/grading/leaderboard"), {
@@ -27,6 +40,7 @@ const Leaderboard: React.FC = () => {
           hexathon: hexathonId,
         },
       });
+
       let i = 0;
       setLeaderboardData(response.data.leaderboard.slice(0, 10));
       let count = 0;
@@ -34,6 +48,9 @@ const Leaderboard: React.FC = () => {
         count += response.data.leaderboard[i].numGraded;
 
       }
+      setNumConfirmed(data.userStatistics.confirmedUsers);
+      setNumApplied(data.userStatistics.appliedUsers);
+      console.log(data);
       setNumApps(count);
       setLoading(false);
     };
@@ -41,7 +58,7 @@ const Leaderboard: React.FC = () => {
     retrieveLeaderboardData();
   }, [user]);
 
-  if (loading) {
+  if (load) {
     return <LoadingScreen />;
   }
 
@@ -49,7 +66,11 @@ const Leaderboard: React.FC = () => {
     <Box>
       <Box m = {2} >
         <Center>
-          <Text variant="simple" fontSize='xl' as ='u'>Total Applications Graded: {numApps}</Text>
+          <Text variant="simple" fontSize='xl' as ='u'>Essays Graded: {numApps}</Text>
+        </Center>
+        <Center>
+          <Text m = {2} variant="simple" fontSize='l'>Total Applications: {numApplied}</Text>
+          <Text m = {2} variant="simple" fontSize='l'>Total Applications Confirmed: {numConfirmed}</Text>
         </Center>
       </Box>
     <TableContainer

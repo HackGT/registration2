@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   AlertDialog,
@@ -24,38 +24,13 @@ import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
 import CommonForm from "../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
-import { JSONSchema7 } from "json-schema";
-import FormPageModal from "../admin/branchSettings/FormPageModal";
-import useAxios from "axios-hooks";
-
-export enum BranchType {
-  APPLICATION = "APPLICATION",
-  CONFIRMATION = "CONFIRMATION",
-}
-
-export interface Branch {
-  _id: string;
-  name: string;
-  hexathon: string;
-  type: BranchType;
-  settings: {
-    open: string;
-    close: string;
-  };
-  formPages: {
-    _id: string;
-    title: string;
-    jsonSchema: string;
-    uiSchema: string;
-  }[];
-}
 
 interface Props {
-  branchId: any;
   formPage: any;
   formPageIndex: number;
   handleSaveFormPage: (updatedFormPage: any, formPageIndex: number) => Promise<void>;
   handleDeleteFormPage: (formPageIndex: number) => Promise<void>;
+  handleEditFormPage: (formPageIndex: number) => Promise<void>;
   commonDefinitionsSchema: string;
 }
 
@@ -69,12 +44,9 @@ const BranchFormCreator: React.FC<Props> = props => {
   const [formData, setFormData] = useState("{}");
   const [loading, setLoading] = useState(false);
   const [schemaErrors, setSchemaErrors] = useState<any>({});
-  const [modalType, setModalType] = useState("");
   const toast = useToast();
-
-  const [{ data: branchData, loading: load, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/branches/${props.branchId}`
-  );
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSaveFormPage = async () => {
     // If JSON schema or UI schema have errors, don't save
@@ -104,11 +76,12 @@ const BranchFormCreator: React.FC<Props> = props => {
     setLoading(false);
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
+  const handleEditFormPage = async () => {
+    setLoading(true);
+    props.handleEditFormPage(props.formPageIndex);
+    setLoading(false);
+  };
 
-  const btnRef = React.useRef<HTMLButtonElement>(null);
-  
   const handleDeleteFormPage = async () => {
     onClose();
     setLoading(true);
@@ -116,70 +89,34 @@ const BranchFormCreator: React.FC<Props> = props => {
     setLoading(false);
   };
 
-  const handleModalOpen = (defaultValues: any) => {
-    if (defaultValues) {
-      setModalType("EDIT");
-    } else {
-      setModalType("ADD");
-    }
-    onOpen2();
-  };
-
-  const handleModalClose = () => {
-    onClose2();
-  };
-
-  // Need to use this memo function to include the common definitions schema. These
-  // definitions don't show up in the editor
-  const combinedJsonSchema = useMemo(() => {
-    const schema = JSON.parse(jsonSchema);
-    schema.definitions = JSON.parse(props.commonDefinitionsSchema);
-    return schema as JSONSchema7;
-  }, [jsonSchema, props.commonDefinitionsSchema]);
-
   return (
     <>
-      <Button onClick={handleSaveFormPage} colorScheme="purple" isLoading={loading}>
-        Save Form Page
-      </Button>
-      <Button colorScheme="red" isLoading={loading} onClick={onOpen}>
-        Delete Form Page
-      </Button>
-      <Button colorScheme="orange" isLoading={loading} onClick={() => handleModalOpen(branchData)}>
-        Edit Form Page
-      </Button>
-      <Button colorScheme="green" isLoading={loading} onClick={() => handleModalOpen(null)}>
-        Add Form Page
-      </Button>
-      <FormPageModal
-        defaultValues={branchData}
-        type={modalType}
-        branchId={props.branchId}
-        formPageIndex={props.formPageIndex}
-        isOpen={isOpen2}
-        onClose={handleModalClose}
-        refetch={refetch}
-      />
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={btnRef}
-        onClose={onClose}
-      >
+      <Stack direction={{ base: "column", sm: "row" }}>
+        <Button onClick={handleSaveFormPage} isLoading={loading}>
+          Save Form
+        </Button>
+        <Button isLoading={loading} onClick={handleEditFormPage}>
+          Edit Name
+        </Button>
+        <Button isLoading={loading} onClick={onOpen}>
+          Delete
+        </Button>
+      </Stack>
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete Form Page
             </AlertDialogHeader>
-
             <AlertDialogBody>
-              Are you sure? This will affect all applications and is unrecoverable
+              Are you sure? This will not delete any existing application data, but it will remove
+              this form page from the user view.
             </AlertDialogBody>
-
             <AlertDialogFooter>
-              <Button ref={btnRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='red' onClick={handleDeleteFormPage} ml={3}>
+              <Button colorScheme="red" onClick={handleDeleteFormPage} ml={3}>
                 Delete
               </Button>
             </AlertDialogFooter>

@@ -2,15 +2,18 @@ import React from "react";
 import { Text, SimpleGrid } from "@chakra-ui/react";
 
 import Tile from "./Tile";
+import { BranchType } from "../admin/branchSettings/BranchSettings";
 
 interface Props {
   application: any;
   branches: any;
 }
 const Branches: React.FC<Props> = props => {
-  const branchesToRender = props.application
+  let branchesToRender = props.application
     ? props.branches.filter((branch: any) => branch.id !== props.application.applicationBranch?.id)
     : props.branches;
+
+  branchesToRender = props.branches.filter((branch: any) => branch.type === BranchType.APPLICATION);
 
   return branchesToRender.length === 0 ? (
     <Text textAlign="center" fontStyle="italic">

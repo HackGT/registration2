@@ -49,7 +49,6 @@ const BranchFormModal: React.FC<Props> = props => {
   );
 
   useEffect(() => {
-    console.log(props.defaultValues);
     // Manually parse open/close time into human readable formats
     const openTime = parseDateString(props.defaultValues?.settings?.open);
     const closeTime = parseDateString(props.defaultValues?.settings?.close);
@@ -75,8 +74,6 @@ const BranchFormModal: React.FC<Props> = props => {
       },
       ...(type === FormModalType.Create && { hexathon: currentHexathon.id }),
     };
-
-    console.log(formData);
 
     try {
       if (type === FormModalType.Create) {

@@ -18,9 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import axios from "axios";
-
-import { apiUrl, Service } from "../../util/apiUrl";
-import { handleAxiosError } from "../../util/util";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 interface Props {
   application: any;
@@ -49,6 +47,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }),
     [applicationBranch, confirmationBranch]
   );
+
+  const branchTitle = useMemo(() => {
+    if (confirmationBranch?.name) {
+      return confirmationBranch.name;
+    }
+    return applicationBranch.name;
+  }, [applicationBranch, confirmationBranch]);
 
   const branchDescription = useMemo(() => {
     // If this is a confirmation
@@ -188,7 +193,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
         />
         <Box padding="20px 32px">
           <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
-            <Text>{props.application.applicationBranch.name}</Text>
+            <Text>{branchTitle}</Text>
           </Heading>
           <Text fontSize="sm" color="#858585" mb="8px">
             {branchDescription}

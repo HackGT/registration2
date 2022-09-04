@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, useMemo } from "react";
+import React, { useContext, createContext, useState, useMemo, PropsWithChildren } from "react";
 import { getAuth, onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 
 import { app } from "../util/firebase";
@@ -17,7 +17,7 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-const AuthProvider: React.FC = ({ children }) => {
+const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
 

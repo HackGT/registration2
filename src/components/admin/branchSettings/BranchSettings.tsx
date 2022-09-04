@@ -9,13 +9,12 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import BranchCard from "./BranchCard";
 import BranchFormModal from "./BranchFormModal";
-import { apiUrl, Service } from "../../../util/apiUrl";
 
 export enum BranchType {
   APPLICATION = "APPLICATION",

@@ -1,11 +1,10 @@
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Text, Heading, useToast } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import { apiUrl, Service } from "../../util/apiUrl";
 import BranchFormCreator from "./BranchFormCreator";
 
 const BranchEditor: React.FC = () => {

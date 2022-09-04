@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Navigate, useParams } from "react-router-dom";
 
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 import ApplicationReviewPage from "./ApplicationReviewPage";
-import { apiUrl, Service } from "../../util/apiUrl";
 
 /** Manually modify essays to fit frontend data display */
 export const getFrontendFormattedFormData = (data: any) => {

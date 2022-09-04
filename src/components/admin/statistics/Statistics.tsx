@@ -1,12 +1,11 @@
 import React from "react";
 import { Accordion, Box, Heading, Stack, Text, VStack } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
-import { apiUrl, Service } from "../../../util/apiUrl";
 
 const Statistics: React.FC = () => {
   const { hexathonId } = useParams();
@@ -42,7 +41,10 @@ const Statistics: React.FC = () => {
           <AccordionSection name="Application Type" data={applicationStatistics} />
           <AccordionSection name="Confirmation Type" data={confirmationStatistics} />
           <AccordionSection name="Rejections" data={rejectionStatistics} />
-          <GraphAccordionSection name="Graphs" data={applicationDataStatistics} />
+          <GraphAccordionSection
+            name="Applied Users Detailed Stats & Graphs"
+            data={applicationDataStatistics}
+          />
         </Accordion>
       </Stack>
     </Box>

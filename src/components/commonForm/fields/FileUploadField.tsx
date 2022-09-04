@@ -15,9 +15,7 @@ import {
 import { FiFile } from "react-icons/fi";
 import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
-
-import { handleAxiosError } from "../../../util/util";
-import { apiUrl, Service } from "../../../util/apiUrl";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 const FileUploadField: React.FC<FieldProps> = props => {
   const inputRef = useRef<any>();
@@ -27,7 +25,7 @@ const FileUploadField: React.FC<FieldProps> = props => {
   // Manually create error message since empty object ({}) are still considered valid
   const errorMessage = useMemo(() => {
     try {
-      return props.errorSchema.name.__errors[0];
+      return String(props.errorSchema.name.__errors[0]);
     } catch {
       return "";
     }

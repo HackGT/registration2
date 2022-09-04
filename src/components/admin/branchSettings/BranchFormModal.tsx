@@ -16,12 +16,12 @@ import {
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import { Branch } from "./BranchSettings";
 import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 import { AxiosRefetch } from "../../../types/helper";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
-import { apiUrl, Service } from "../../../util/apiUrl";
 
 enum FormModalType {
   Create = "CREATE",

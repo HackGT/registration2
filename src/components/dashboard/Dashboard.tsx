@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Flex, Heading, Text, Divider, Link } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import Timeline from "./Timeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
-import { apiUrl, Service } from "../../util/apiUrl";
 import ApplicationStatusTag from "../../util/ApplicationStatusTag";
 import CurrentApplicationTile from "./CurrentApplicationTile";
 
@@ -57,11 +56,11 @@ const Dashboard: React.FC = () => {
       case "DRAFT":
         return "Your application isn't submitted yet. Please ensure you finish your application before the deadline!";
       case "APPLIED":
-        return "You've applied and are all set for now! Feel free to edit your application at any time until the registration deadline.";
+        return "You've applied and are all set for now! Feel free to edit your application at any time until the registration deadline. Application decisions will be released together some time after applications close.";
       case "ACCEPTED":
-        return "Congratulations! You've been accepted to the event. Please make sure to confirm your attendance below before the deadline closes.";
+        return "Congratulations! You've been accepted to the event. Please make sure to confirm your attendance below before the deadline closes as there are a limited number of spots.";
       case "WAITLISTED":
-        return "Thank you for applying! At this time, you have been put on our waitlist. We will be sending you more updates to your email address.";
+        return "Thank you for applying! At this time, you have been put on our waitlist. We will be sending more updates to your email address soon.";
       case "CONFIRMED":
         return "You're all set to attend our event! Please check your email and our social media for any updates. We look forward to seeing you!";
       case "DENIED":

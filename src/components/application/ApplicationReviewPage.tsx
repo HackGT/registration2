@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../types/helper";
-import { apiUrl, Service } from "../../util/apiUrl";
 
 interface Props {
   defaultFormData: any;
@@ -68,6 +68,13 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           <AlertIcon />
           Please review your application before you submit. Don't worry, you'll still be able to
           edit your submission until the deadline.
+        </Alert>
+      )}
+      {props.branch.type === "CONFIRMATION" && (
+        <Alert status="info" mb="10px">
+          <AlertIcon />
+          Please review your confirmation before you submit. You will not be confirmed until you
+          submit below.
         </Alert>
       )}
       {props.branch.formPages.map((formPage: any) => (

@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Header, HeaderItem } from "@hex-labs/core";
+import { apiUrl, Header, HeaderItem, Service } from "@hex-labs/core";
 import axios from "axios";
-import { signOut, getAuth } from "firebase/auth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
-import { app } from "../util/firebase";
-import { apiUrl, Service } from "../util/apiUrl";
-
-const auth = getAuth(app);
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -22,7 +17,6 @@ const Navigation: React.FC = () => {
   });
 
   const logOut = async () => {
-    signOut(auth);
     await axios.post(apiUrl(Service.AUTH, "/auth/logout"));
     window.location.href = `https://login.hexlabs.org/login?redirect=${window.location.href}`;
   };
@@ -54,6 +48,11 @@ const Navigation: React.FC = () => {
           {role.admin || role.exec ? (
             <HeaderItem>
               <Link to={`/${hexathonId}/admin`}>Admin Home</Link>
+            </HeaderItem>
+          ) : null}
+          {role.member ? (
+            <HeaderItem>
+              <Link to={`/${hexathonId}/grading`}>Grading</Link>
             </HeaderItem>
           ) : null}
           <HeaderItem>

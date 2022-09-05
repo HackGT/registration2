@@ -1,10 +1,8 @@
 import React from "react";
 import { Box, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
-
-import { useAuth } from "../../../contexts/AuthContext";
 
 interface leaderboardEntry {
   rank?: number;

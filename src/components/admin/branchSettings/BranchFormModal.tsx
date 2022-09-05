@@ -20,7 +20,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import { Branch } from "./BranchSettings";
 import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
-import { AxiosRefetch } from "../../../types/helper";
+import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
 
 enum FormModalType {

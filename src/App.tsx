@@ -1,13 +1,11 @@
 import React from "react";
-import { LoadingScreen, Footer } from "@hex-labs/core";
+import { LoadingScreen, Footer, AuthProvider, useLogin } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 
 import "./App.css";
-import { AuthProvider } from "./contexts/AuthContext";
-import { useLogin } from "./hooks/useLogin";
 import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
 import EmailScreen from "./components/admin/email/EmailScreen";

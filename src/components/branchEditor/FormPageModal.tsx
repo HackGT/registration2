@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
-import { AxiosRefetch } from "../../types/helper";
+import { AxiosRefetch } from "../../util/types";
 
 enum FormModalType {
   Add = "ADD",

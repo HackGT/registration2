@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { apiUrl, Header, HeaderItem, Service } from "@hex-labs/core";
+import { apiUrl, Header, HeaderItem, Service, useAuth } from "@hex-labs/core";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import { useAuth } from "../contexts/AuthContext";
 
 const Navigation: React.FC = () => {
   const location = useLocation();

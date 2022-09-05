@@ -15,7 +15,7 @@ import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
 import CommonForm from "../commonForm/CommonForm";
-import { AxiosRefetch } from "../../types/helper";
+import { AxiosRefetch } from "../../util/types";
 
 interface Props {
   defaultFormData: any;

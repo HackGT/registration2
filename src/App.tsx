@@ -2,6 +2,8 @@ import React from "react";
 import { LoadingScreen, Footer } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
+import { initializeApp } from "firebase/app";
+import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -21,7 +23,12 @@ import GradeQuestion from "./components/admin/grading/GradeQuestion";
 import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
-import { app } from "./util/firebase";
+
+export const app = initializeApp({
+  apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
+  authDomain: "hexlabs-cloud.firebaseapp.com",
+});
+setPersistence(getAuth(app), inMemoryPersistence);
 
 axios.defaults.withCredentials = true;
 

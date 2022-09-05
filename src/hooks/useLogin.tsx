@@ -1,17 +1,16 @@
 import { apiUrl, Service } from "@hex-labs/core";
 import axios from "axios";
+import { FirebaseApp } from "firebase/app";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { app } from "../util/firebase";
-
-const auth = getAuth(app);
-
-export const useLogin = (): [loading: boolean, loggedIn: boolean] => {
+const useLogin = (app: FirebaseApp): [loading: boolean, loggedIn: boolean] => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const auth = useMemo(() => getAuth(app), [app]);
 
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -40,7 +39,9 @@ export const useLogin = (): [loading: boolean, loggedIn: boolean] => {
     };
 
     login();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return [loading, loggedIn];
 };
+
+export { useLogin };

@@ -21,11 +21,12 @@ import GradeQuestion from "./components/admin/grading/GradeQuestion";
 import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
+import { app } from "./util/firebase";
 
 axios.defaults.withCredentials = true;
 
 export const App = () => {
-  const [loading, loggedIn] = useLogin();
+  const [loading, loggedIn] = useLogin(app);
 
   if (loading) {
     return <LoadingScreen />;
@@ -36,7 +37,7 @@ export const App = () => {
   }
 
   return (
-    <AuthProvider>
+    <AuthProvider app={app}>
       <Navigation />
       <Routes>
         <Route path="/" element={<SelectEvent />} />

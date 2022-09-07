@@ -57,7 +57,7 @@ export const App = () => {
           <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
           <Route path="admin/statistics" element={<Statistics />} />
           <Route path="grading" element={<GradingDashboard />} />
-          <Route path="grading/question" element={<GradeQuestion />} />
+          <Route path="grading/:gradingGroup/question" element={<GradeQuestion />} />
           <Route path="grading/leaderboard" element={<Leaderboard />} />
         </Route>
       </Routes>

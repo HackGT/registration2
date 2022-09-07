@@ -17,13 +17,13 @@ import {
   Tr,
   useRadioGroup,
 } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, LoadingScreen, Service } from "@hex-labs/core";
 
 import ApplicantAnswer from "./ApplicantAnswer";
 import ScoreButton from "./ScoreButton";
 
 const GradeQuestion: React.FC = () => {
-  const { hexathonId } = useParams();
+  const { hexathonId, gradingGroup } = useParams();
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState<ApplicantAnswer>({
     essayId: "",
@@ -37,7 +37,6 @@ const GradeQuestion: React.FC = () => {
   });
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>();
 
   const { setValue, getRootProps, getRadioProps } = useRadioGroup({
     onChange: setScore,
@@ -51,11 +50,12 @@ const GradeQuestion: React.FC = () => {
         apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),
         {
           hexathon: hexathonId,
+          gradingGroup,
         }
       );
       setQuestionData(response.data);
-    } catch (e) {
-      setError(e);
+    } catch (err: any) {
+      handleAxiosError(err);
     }
     setLoading(false);
   };
@@ -71,11 +71,14 @@ const GradeQuestion: React.FC = () => {
   const submitReview = async (payload: {
     applicationId?: string;
     essayId: string;
-    hexathon?: string;
     score: number;
     isCalibrationQuestion: boolean;
   }) => {
-    await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), payload);
+    await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), {
+      ...payload,
+      hexathon: hexathonId,
+      gradingGroup,
+    });
     setLoading(true);
     retrieveQuestion();
   };
@@ -86,10 +89,6 @@ const GradeQuestion: React.FC = () => {
 
   if (loading) {
     return <LoadingScreen />;
-  }
-
-  if (error) {
-    return <ErrorScreen error={error} />;
   }
 
   if (Object.keys(questionData).length === 0) {
@@ -204,7 +203,6 @@ const GradeQuestion: React.FC = () => {
             submitReview({
               applicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
-              hexathon: hexathonId,
               score: scoreNumber,
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
             });

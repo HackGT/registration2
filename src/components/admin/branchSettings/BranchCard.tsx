@@ -1,6 +1,7 @@
 import { Box, Text, Tag, Stack, Button, Container } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import _ from "lodash";
 
 import { Branch } from "./BranchSettings";
 import { parseDateString } from "../../../util/util";
@@ -25,8 +26,14 @@ const BranchCard: React.FC<Props> = props => {
         <Stack>
           <Stack spacing="1">
             <Text fontSize="sm" color="muted">
-              <Tag mr="8px">{props.branch.type}</Tag>
-              {props.branch.applicationGroup && <Tag>{props.branch.applicationGroup}</Tag>}
+              {props.branch.grading?.enabled && (
+                <Tag mr="8px" colorScheme="orange">
+                  Grading Enabled
+                </Tag>
+              )}
+              {props.branch.applicationGroup && (
+                <Tag>{_.capitalize(props.branch.applicationGroup)}</Tag>
+              )}
             </Text>
             <Text fontSize="lg" fontWeight="medium">
               {props.branch.name}

@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 import { AxiosRefetch } from "../../util/types";
 
@@ -92,14 +92,7 @@ const FormPageModal: React.FC<Props> = props => {
       }
       await props.refetch();
     } catch (e: any) {
-      console.log(e);
-      toast({
-        title: "Error!",
-        description: "One or more entries are invalid. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      handleAxiosError(e);
     } finally {
       props.onClose();
     }

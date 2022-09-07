@@ -12,14 +12,15 @@ import {
   useToast,
   FormControl,
   FormLabel,
+  Checkbox,
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
+import { useParams } from "react-router-dom";
 
 import { Branch } from "./BranchSettings";
-import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
 
@@ -36,12 +37,18 @@ interface Props {
 }
 
 const BranchFormModal: React.FC<Props> = props => {
+  const { hexathonId } = useParams();
+  const toast = useToast();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     reset,
+    watch,
   } = useForm();
+
+  const branchType = watch("type");
+  const gradingEnabled = watch("grading.enabled");
 
   const type = useMemo(
     () => (props.defaultValues ? FormModalType.Edit : FormModalType.Create),
@@ -62,17 +69,18 @@ const BranchFormModal: React.FC<Props> = props => {
     });
   }, [props.defaultValues, reset]);
 
-  const { currentHexathon } = useCurrentHexathon();
-  const toast = useToast();
-
   const handleFormSubmit = async (values: any) => {
     const formData = {
+      ...(type === FormModalType.Create && { hexathon: hexathonId }),
       ...values,
       settings: {
         open: dateToServerFormat(values.settings.open),
         close: dateToServerFormat(values.settings.close),
       },
-      ...(type === FormModalType.Create && { hexathon: currentHexathon.id }),
+      grading: {
+        enabled: gradingEnabled,
+        group: gradingEnabled ? values.grading.group : undefined,
+      },
     };
 
     try {
@@ -100,13 +108,7 @@ const BranchFormModal: React.FC<Props> = props => {
         isClosable: true,
       });
     } catch (e: any) {
-      toast({
-        title: "Error!",
-        description: "One or more entries are invalid. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      handleAxiosError(e);
     } finally {
       props.onClose();
     }
@@ -126,7 +128,7 @@ const BranchFormModal: React.FC<Props> = props => {
                 <Input {...register("name")} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Type</FormLabel>
                 <Select {...register("type")} placeholder="Select option">
                   <option value="APPLICATION">Application</option>
                   <option value="CONFIRMATION">Confirmation</option>
@@ -152,6 +154,20 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormLabel>Close Time</FormLabel>
                 <Input {...register("settings.close")} />
               </FormControl>
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && gradingEnabled && (
+                <FormControl isRequired>
+                  <FormLabel>Grading Group</FormLabel>
+                  <Select {...register("grading.group")} placeholder="Select option">
+                    <option value="generalGroup">General Group</option>
+                    <option value="emergingGroup">Emerging Group</option>
+                  </Select>
+                </FormControl>
+              )}
               <Button colorScheme="purple" isLoading={isSubmitting} type="submit">
                 {type === FormModalType.Edit ? "Save" : "Create"}
               </Button>

@@ -37,6 +37,10 @@ export interface Branch {
     jsonSchema: string;
     uiSchema: string;
   }[];
+  grading?: {
+    enabled: boolean;
+    group?: string;
+  };
 }
 
 const BranchSettings: React.FC = () => {

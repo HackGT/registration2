@@ -1,82 +1,228 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Heading,
-  Textarea,
   Button,
-  Tabs,
   Input,
-  Select,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Wrap,
-  WrapItem,
-  Stack,
+  FormLabel,
+  FormControl,
+  FormErrorMessage,
+  VStack,
+  useToast,
+  AlertIcon,
+  Alert,
+  AlertDescription,
+  AlertTitle,
 } from "@chakra-ui/react";
+import { convertToRaw, EditorState } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+// @ts-ignore
+import draftToHtml from "draftjs-to-html";
+import useAxios from "axios-hooks";
+import { useParams } from "react-router-dom";
+import { Letter } from "react-letter";
+import { Select } from "chakra-react-select";
+import { LoadingScreen, ErrorScreen, Service, apiUrl } from "@hex-labs/core";
+import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
-import EmailContent from "./EmailContent";
+import styles from "./email.module.css";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-const EmailScreen: React.FC = () => (
-  <>
-    <Box
-      color="Black"
-      paddingY={{ base: "32px", md: "32px" }}
-      paddingLeft={{ base: "16px", md: "64px" }}
-      paddingRight={{ base: "16px", md: "0" }}
-    >
-      <Heading size="2xl">Send a Batch Email</Heading>
+const applicationStatusOptions = [
+  {
+    label: "Draft",
+    value: "DRAFT",
+  },
+  {
+    label: "Applied",
+    value: "APPLIED",
+  },
+  {
+    label: "Accepted",
+    value: "ACCEPTED",
+  },
+  {
+    label: "Waitlisted",
+    value: "WAITLISTED",
+  },
+  {
+    label: "Confirmed",
+    value: "CONFIRMED",
+  },
+  {
+    label: "Denied",
+    value: "DENIED",
+  },
+  {
+    label: "Not Attending",
+    value: "NOT_ATTENDING",
+  },
+];
+
+const EmailScreen: React.FC = () => {
+  const { hexathonId } = useParams();
+  const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
+  const [{ data: branches, loading, error }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
+  const [{ data }] = useAxios({
+    method: "POST",
+    url: apiUrl(Service.NOTIFICATIONS, "/email/render"),
+    data: {
+      hexathon: hexathonId,
+      message: editorState ? draftToHtml(convertToRaw(editorState.getCurrentContent())) : "",
+    },
+  });
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+  const toast = useToast();
+
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen error={error} />;
+
+  const onSubmit = async (values: any) => {
+    if (!editorState) return;
+
+    try {
+      const response = await axios.post(
+        apiUrl(Service.REGISTRATION, "/email/actions/send-emails"),
+        {
+          hexathon: hexathonId,
+          message: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+          subject: values.subject,
+          branchList: values.branchList.map((option: any) => option.value),
+          // We make this into an array in case in the future we want to send multiple status
+          statusList: [values.status.value],
+        }
+      );
+      console.log(response.data);
+      toast({
+        title: "Success",
+        description: "The emails are queued to be sent soon. You will also receive a copy.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      console.error(e);
+      toast({
+        title: "Error",
+        description:
+          "Something went wrong. Please contact a tech director before trying again to ensure duplicate emails aren't sent.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  return (
+    <Box paddingY={{ base: "32px", md: "32px" }} paddingX={{ base: "16px", md: "32px" }}>
+      <Alert status="warning" marginBottom="20px" title="Warning">
+        <AlertIcon />
+        <AlertTitle>Warning</AlertTitle>
+        <AlertDescription>
+          Please be careful when sending an email as after you press send, it cannot be undone.
+          Ensure you are selecting the right target group, and double check that the email subject &
+          body is correct. Please reach out to someone on tech team if you have any questions about
+          how to use this form.
+        </AlertDescription>
+      </Alert>
+      <Heading size="xl" mb="10px">
+        Send a Batch Email
+      </Heading>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <VStack spacing="3" align="left" mb="20px">
+          <Controller
+            control={control}
+            name="branchList"
+            rules={{ required: "Please select at least one branch" }}
+            render={({
+              field: { onChange, onBlur, value, name, ref },
+              fieldState: { error: fieldError },
+            }) => (
+              <FormControl isInvalid={!!fieldError} isRequired>
+                <FormLabel>Branches</FormLabel>
+                <Select
+                  name={name}
+                  ref={ref}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  options={branches.map((branch: any) => ({
+                    label: branch.name,
+                    value: branch.id,
+                  }))}
+                  isSearchable
+                  isMulti
+                  closeMenuOnSelect={false}
+                />
+                <FormErrorMessage>{fieldError && fieldError.message}</FormErrorMessage>
+              </FormControl>
+            )}
+          />
+          <Controller
+            control={control}
+            name="status"
+            rules={{ required: "Please select a status" }}
+            render={({
+              field: { onChange, onBlur, value, name, ref },
+              fieldState: { error: fieldError },
+            }) => (
+              <FormControl isInvalid={!!fieldError} isRequired>
+                <FormLabel>Application Status</FormLabel>
+                <Select
+                  name={name}
+                  ref={ref}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  options={applicationStatusOptions}
+                />
+                <FormErrorMessage>{fieldError && fieldError.message}</FormErrorMessage>
+              </FormControl>
+            )}
+          />
+          <FormControl isInvalid={Boolean(errors.subject)} isRequired>
+            <FormLabel>Subject</FormLabel>
+            <Input
+              placeholder="Welcome to HexLabs!"
+              {...register("subject", {
+                required: "Please enter a subject",
+              })}
+            />
+            <FormErrorMessage>{errors.subject && (errors.subject.message as any)}</FormErrorMessage>
+          </FormControl>
+          {/*
+              // @ts-ignore */}
+          <Editor
+            onEditorStateChange={newEditorState => setEditorState(newEditorState)}
+            editorStyle={{
+              border: "1px solid #F1F1F1",
+              padding: "0 10px",
+              minHeight: "250px",
+            }}
+          />
+          <Button colorScheme="purple" maxW="150px" type="submit" isLoading={isSubmitting}>
+            Send Emails!
+          </Button>
+        </VStack>
+      </form>
+      <Heading size="xl" mb="10px">
+        Email Preview
+      </Heading>
+      <Letter html={data?.html} text={data?.text} className={styles["email-screen"]} />
     </Box>
-
-    <Wrap
-      paddingY={{ base: "32px", md: "32px" }}
-      paddingLeft={{ base: "16px", md: "64px" }}
-      paddingRight={{ base: "16px", md: "0" }}
-      spacing="30px"
-    >
-      {/* left panel */}
-      <WrapItem width={{ base: "100%", md: "45%" }}>
-        <Stack width="100%">
-          <Select placeholder="Select Recipient">
-            <option value="participants">Participants</option>
-            <option value="sponsors">Sponsors</option>
-            <option value="mentors">Mentors</option>
-          </Select>
-
-          <Input placeholder="Subject" />
-
-          <Textarea placeholder="Email Content..." h="50vh" />
-          <Button colorScheme="purple">Send</Button>
-        </Stack>
-      </WrapItem>
-
-      {/* right panel */}
-      <WrapItem width={{ base: "100%", md: "45%" }}>
-        <Tabs variant="soft-rounded" colorScheme="purple" width="100%">
-          <TabList>
-            <Tab>Format Guide</Tab>
-            <Tab>Email Log</Tab>
-            <Tab>Preview</Tab>
-          </TabList>
-          <TabPanels shadow="md" borderRadius="md" mt={2}>
-            <TabPanel>
-              <EmailContent
-                heading="HTML & Variable Considerations"
-                content="format guide content..."
-              />
-            </TabPanel>
-            <TabPanel>
-              <EmailContent heading="Email Log" content="content..." />
-            </TabPanel>
-            <TabPanel>
-              <EmailContent heading="Preview" content="preview content..." />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </WrapItem>
-    </Wrap>
-  </>
-);
+  );
+};
 
 export default EmailScreen;

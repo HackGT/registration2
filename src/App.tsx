@@ -1,5 +1,5 @@
 import React from "react";
-import { LoadingScreen, Footer, AuthProvider, useLogin } from "@hex-labs/core";
+import { LoadingScreen, Footer, AuthProvider, ErrorScreen, useLogin } from "@hex-labs/core";
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import { initializeApp } from "firebase/app";
@@ -31,13 +31,16 @@ setPersistence(getAuth(app), inMemoryPersistence);
 axios.defaults.withCredentials = true;
 
 export const App = () => {
-  const [loading, loggedIn] = useLogin(app);
+  const [loading, error, loggedIn] = useLogin(app);
 
   if (loading) {
     return <LoadingScreen />;
   }
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
 
-  if (!loading && !loggedIn) {
+  if (!loggedIn) {
     window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
   }
 

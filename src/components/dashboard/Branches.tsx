@@ -13,7 +13,7 @@ const Branches: React.FC<Props> = props => {
     ? props.branches.filter((branch: any) => branch.id !== props.application.applicationBranch?.id)
     : props.branches;
 
-  branchesToRender = props.branches.filter((branch: any) => branch.type === BranchType.APPLICATION);
+  branchesToRender = props.branches.filter((branch: any) => branch.type === BranchType.APPLICATION && !branch.secret);
 
   return branchesToRender.length === 0 ? (
     <Text textAlign="center" fontStyle="italic">

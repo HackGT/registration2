@@ -21,6 +21,16 @@ const Leaderboard: React.FC = () => {
     },
   });
 
+  const [{data: data2, loading: loading2, error: error2 }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/grading/leaderboard-statistics"),
+    params: {
+      hexathon: hexathonId,
+    }
+  });
+
+  console.log(data);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -35,6 +45,9 @@ const Leaderboard: React.FC = () => {
     <Box mt="5">
       <Heading size="md" textAlign="center" mb="5">
         You've graded {data.currentNumGraded} essays.
+      </Heading>
+      <Heading size="md" textAlign="center" mb="5">
+        250/1000 applications graded.
       </Heading>
       <TableContainer
         margin="auto"

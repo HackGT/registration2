@@ -14,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -55,7 +56,59 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     return applicationBranch.name;
   }, [applicationBranch, confirmationBranch]);
 
+  const travelReimbursementDescription = useMemo(() => {
+    if (!["ACCEPTED", "CONFIRMED"].includes(props.application.status)) {
+      return "";
+    }
+
+    const travelReimbursementInfoLink = (
+      <>
+        {" "}
+        Please visit{" "}
+        <Link
+          color="teal.500"
+          href={props.application.decisionData?.travelReimbursementInfoLink}
+          target="_blank"
+          rel="noreferrer"
+        >
+          this link
+        </Link>{" "}
+        to view the specific details & requirements.
+      </>
+    );
+    switch (props.application.decisionData?.travelReimbursement) {
+      case "gas":
+        return (
+          <>
+            You've been awarded gas reimbursement for your travel.
+            {travelReimbursementInfoLink}
+          </>
+        );
+      case "flight":
+        return (
+          <>
+            You've been awarded flight reimbursement of{" "}
+            <Text as="b">${props.application.decisionData?.travelReimbursementAmount}</Text> for
+            your travel.
+            {travelReimbursementInfoLink}
+          </>
+        );
+      case "bus":
+        return (
+          <>
+            You've been assigned a bus route for your travel.
+            {travelReimbursementInfoLink}
+          </>
+        );
+      default:
+        return "";
+    }
+  }, [props.application]);
+
   const branchDescription = useMemo(() => {
+    if (props.application.status === "CONFIRMED") {
+      return "";
+    }
     // If this is a confirmation
     if (props.application.status === "ACCEPTED" && confirmationBranch) {
       if (dates.currentDate < dates.confirmationOpen) {
@@ -195,6 +248,9 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
             <Text>{branchTitle}</Text>
           </Heading>
+          <Text fontSize="sm" mb="8px">
+            {travelReimbursementDescription}
+          </Text>
           <Text fontSize="sm" color="#858585" mb="8px">
             {branchDescription}
           </Text>

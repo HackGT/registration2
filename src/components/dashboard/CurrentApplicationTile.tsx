@@ -240,7 +240,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
         <Flex
           bgGradient="linear(to-l, #33c2ff, #7b69ec)"
           borderTopRadius="4px"
-          height="100px"
+          height="70px"
           justifyContent="flex-end"
           alignItems="flex-start"
         />

@@ -7,7 +7,7 @@
     "@chakra-ui/react": "^2.3.0",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
-    "@hex-labs/core": "^1.0.41",
+    "@hex-labs/core": "^1.0.40",
     "@monaco-editor/react": "^4.4.1",
     "@progress/kendo-charts": "^1.24.0",
     "@progress/kendo-drawing": "^1.16.3",

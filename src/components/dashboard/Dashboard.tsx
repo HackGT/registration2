@@ -63,9 +63,9 @@ const Dashboard: React.FC = () => {
       case "CONFIRMED":
         return "You're all set to attend our event! Please check your email and our social media for any updates. We look forward to seeing you!";
       case "DENIED":
-        return "Thank you for taking the time to apply to our event. Unfortunately, we are only able to take a limited number of qualified students each year due to space and funding constraints. We hope to see you again at another one of our events!";
+        return "Thank you for taking the time to apply to our event. Unfortunately, we are only able to take a limited number of qualified students each year due to space and funding constraints. We hope to see you again at another one of our events in the future!";
       case "NOT_ATTENDING":
-        return "You have confirmed that you will not be attending our event. We are sorry to see you go, but hope to see you again at another one of our events!";
+        return "You have confirmed that you will not be attending our event. We are sorry to see you go, but hope to see you again at another one of our events in the future!";
       default:
         return "You haven't started an application yet. Please choose a path from the list below to get started.";
     }
@@ -124,6 +124,14 @@ const Dashboard: React.FC = () => {
         </Flex>
         <Text textAlign="center">{applicationStatusDescription}</Text>
       </Box>
+      {application && (
+        <Box marginX={{ base: "15px", md: 0 }}>
+          <Heading fontWeight="semibold" marginBottom="20px">
+            Your Application
+          </Heading>
+          <CurrentApplicationTile application={application} />
+        </Box>
+      )}
       {application?.status === "CONFIRMED" && (
         <>
           <Box>
@@ -144,15 +152,7 @@ const Dashboard: React.FC = () => {
           />
         </>
       )}
-      {application && (
-        <Box marginX={{ base: "15px", md: 0 }}>
-          <Heading fontWeight="semibold" marginBottom="20px">
-            Your Application
-          </Heading>
-          <CurrentApplicationTile application={application} />
-        </Box>
-      )}
-      {(!application || application.status === "DRAFT") && (
+      {(!application || ["DRAFT", "APPLIED"].includes(application.status)) && (
         <Box marginX={{ base: "15px", md: 0 }}>
           <Heading fontWeight="semibold" marginBottom="10px">
             Application Paths

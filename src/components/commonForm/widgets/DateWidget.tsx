@@ -5,7 +5,6 @@ import { WidgetProps } from "@rjsf/core";
 
 const DateWidget: React.FC<WidgetProps> = props => {
   const _onChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(value);
     props.onChange(value === "" ? props.options.emptyValue : value);
   };
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) =>

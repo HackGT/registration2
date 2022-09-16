@@ -161,6 +161,11 @@ const BranchFormModal: React.FC<Props> = props => {
               )}
               {branchType === "APPLICATION" && (
                 <FormControl>
+                  <Checkbox {...register("automaticConfirmation.enabled")}>Enable Auto-Confirmation?</Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && (
+                <FormControl>
                   <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>
                 </FormControl>
               )}

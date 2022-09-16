@@ -156,6 +156,11 @@ const BranchFormModal: React.FC<Props> = props => {
               </FormControl>
               {branchType === "APPLICATION" && (
                 <FormControl>
+                  <Checkbox {...register("secret")}>Secret</Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && (
+                <FormControl>
                   <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>
                 </FormControl>
               )}

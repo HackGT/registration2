@@ -17,14 +17,8 @@
       "type": "number",
       "title": "Are you over 18?",
       "oneOf": [
-        {
-          "const": 1,
-          "title": "Yes"
-        },
-        {
-          "const": 0,
-          "title": "No"
-        }
+        {"const": 1, "title": "Yes"},
+        {"const": 0, "title": "No"}
       ]
     },
     "phoneNumber": {

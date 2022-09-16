@@ -147,13 +147,6 @@ const BranchFormModal: React.FC<Props> = props => {
                 </Select>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Secret</FormLabel>
-                <Select {...register("secret")} placeholder="Select option">
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </Select>
-              </FormControl>
-              <FormControl isRequired>
                 <FormLabel>Open Time</FormLabel>
                 <Input {...register("settings.open")} />
               </FormControl>
@@ -161,6 +154,11 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormLabel>Close Time</FormLabel>
                 <Input {...register("settings.close")} />
               </FormControl>
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("secret")}>Secret</Checkbox>
+                </FormControl>
+              )}
               {branchType === "APPLICATION" && (
                 <FormControl>
                   <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>

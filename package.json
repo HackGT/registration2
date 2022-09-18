@@ -87,6 +87,7 @@
     "@hex-labs/eslint-config-react": "^1.2.3",
     "@hex-labs/prettier-config": "^1.2.4",
     "@hex-labs/stylelint-config": "^1.2.0",
+    "@types/react-helmet": "^6.1.5",
     "eslint": "^8.12.0",
     "prettier": "^2.6.2",
     "stylelint": "^14.6.1"

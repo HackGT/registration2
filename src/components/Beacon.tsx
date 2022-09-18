@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-const HelpScoutBeacon: React.FC = () => (
+const Beacon: React.FC = () => (
     <div>
         <h1 hidden>{process.env.REACT_APP_HELPSCOUT_BEACON_ID}</h1>
         <Helmet>
@@ -18,4 +18,4 @@ const HelpScoutBeacon: React.FC = () => (
 )
 
 
-export default HelpScoutBeacon;
+export default Beacon;

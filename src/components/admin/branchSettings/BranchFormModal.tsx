@@ -40,26 +40,6 @@ interface Props {
   branches: any
 }
 
-const EmailHelp: React.FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  return (
-    <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            bruh
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
-  )
-}
-
 const BranchFormModal: React.FC<Props> = props => {
   const { hexathonId } = useParams();
   const toast = useToast();

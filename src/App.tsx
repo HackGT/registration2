@@ -21,7 +21,7 @@ import GradeQuestion from "./components/admin/grading/GradeQuestion";
 import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
-import Beacon from "./components/Beacon";
+import HelpScoutBeacon from "./util/HelpScoutBeacon";
 
 export const app = initializeApp({
   apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
@@ -63,7 +63,7 @@ export const App = () => {
           <Route path="grading/leaderboard" element={<Leaderboard />} />
         </Route>
       </Routes>
-      <Beacon />
+      <HelpScoutBeacon />
       <Footer />
     </AuthProvider>
   );

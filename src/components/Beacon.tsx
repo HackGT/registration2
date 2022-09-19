@@ -1,9 +1,10 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-const Beacon: React.FC = () => (
+const Beacon: React.FC = () => {
+    const beaconId = `"${process.env.REACT_APP_HELPSCOUT_BEACON_ID}"`;
+    return (
     <div>
-        <h1 hidden>{process.env.REACT_APP_HELPSCOUT_BEACON_ID}</h1>
         <Helmet>
             <script>
             {`
@@ -11,11 +12,14 @@ const Beacon: React.FC = () => (
             `}
             </script>
             <script>
-                window.Beacon('init', document.getElementsByTagName('h1')[0].textContent);
+            {`
+                window.Beacon('init', ${beaconId});
+            `}
             </script>
         </Helmet>
     </div>
-)
+    );
+};
 
 
 export default Beacon;

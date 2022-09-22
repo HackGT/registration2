@@ -1,6 +1,18 @@
 import React from "react";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  CircularProgressLabel,
+  Heading,
+  HStack,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import useAxios from "axios-hooks";
 
 const GradingDashboardCard: React.FC<{
   title: string;
@@ -17,7 +29,7 @@ const GradingDashboardCard: React.FC<{
       {props.title}
     </Heading>
     <Text mb="3">{props.description}</Text>
-    <Stack direction={{ base: "column", lg: "row" }} flexGrow="1">
+    <Stack direction={{ base: "column", lg: "row" }} flexGrow="1" justifyContent="space-around">
       {props.buttons}
     </Stack>
   </Box>
@@ -25,20 +37,42 @@ const GradingDashboardCard: React.FC<{
 
 const GradingDashboard: React.FC = () => {
   const { hexathonId } = useParams();
+  const [{ data, loading, error }] = useAxios({
+    url: apiUrl(Service.REGISTRATION, "/grading/grading-status"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
+
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen error={error} />;
+
   const options = [
     {
       title: "Grade a Question",
       description:
-        "Score a random applicant's question and score their answer based on the provided rubric!",
+        "Score a random applicant's question and score their answer based on the provided rubric! Select a group below to get started.",
       endpoint: `/${hexathonId}/grading/question`,
       buttons: (
         <>
-          <Link to="generalGroup/question" style={{ width: "100%" }}>
-            <Button w="100%">General Group</Button>
-          </Link>
-          <Link to="emergingGroup/question" style={{ width: "100%" }}>
-            <Button w="100%">Emerging Group</Button>
-          </Link>
+          <VStack>
+            <Text fontWeight="bold">General Group</Text>
+            <CircularProgress value={data.generalGroup}>
+              <CircularProgressLabel>{data.generalGroup}%</CircularProgressLabel>
+            </CircularProgress>
+            <Link to="generalGroup/question" style={{ width: "100%" }}>
+              <Button w="100%">Grade General</Button>
+            </Link>
+          </VStack>
+          <VStack>
+            <Text fontWeight="bold">Emerging Group</Text>
+            <CircularProgress value={data.emergingGroup}>
+              <CircularProgressLabel>{data.emergingGroup}%</CircularProgressLabel>
+            </CircularProgress>
+            <Link to="emergingGrouop/question" style={{ width: "100%" }}>
+              <Button w="100%">Grade Emerging</Button>
+            </Link>
+          </VStack>
         </>
       ),
     },
@@ -63,6 +97,7 @@ const GradingDashboard: React.FC = () => {
       direction={{ base: "column", md: "row" }}
       spacing="20px"
       alignContent="center"
+      flex={1}
     >
       {options.map(option => (
         <GradingDashboardCard

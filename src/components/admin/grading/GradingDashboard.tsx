@@ -69,7 +69,7 @@ const GradingDashboard: React.FC = () => {
             <CircularProgress value={data.emergingGroup}>
               <CircularProgressLabel>{data.emergingGroup}%</CircularProgressLabel>
             </CircularProgress>
-            <Link to="emergingGrouop/question" style={{ width: "100%" }}>
+            <Link to="emergingGroup/question" style={{ width: "100%" }}>
               <Button w="100%">Grade Emerging</Button>
             </Link>
           </VStack>

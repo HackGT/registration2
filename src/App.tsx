@@ -25,7 +25,7 @@ import HelpScoutBeacon from "./util/HelpScoutBeacon";
 
 export const app = initializeApp({
   apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
-  authDomain: "hexlabs-cloud.firebaseapp.com",
+  authDomain: "auth.hexlabs.org",
 });
 setPersistence(getAuth(app), inMemoryPersistence);
 

@@ -22,18 +22,6 @@ const TeamDashboard: React.FC = () => {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  const [{ data: applications, loading: applicationsLoading, error: applicationsError }] = useAxios(
-    {
-      url: apiUrl(Service.REGISTRATION, "/applications"),
-      method: "GET",
-      params: {
-        hexathon: hexathonId,
-        userId: user?.uid,
-      },
-    },
-    { useCache: false }
-  );
-
   const [{ data: teams, loading: teamLoading, error: teamError }] = useAxios(
     {
       url: apiUrl(Service.USERS, `/teams/user/${user?.uid}`),
@@ -45,14 +33,10 @@ const TeamDashboard: React.FC = () => {
     { useCache: false }
   );
 
-  if (teamLoading || applicationsLoading) {
+  if (teamLoading) {
     return <LoadingScreen />;
   }
-
-  if (applicationsError) return <ErrorScreen error={applicationsError} />;
   if (teamError) return <ErrorScreen error={teamError} />;
-
-  const team = teams[0];
 
   return (
     <Box>
@@ -73,8 +57,10 @@ const TeamDashboard: React.FC = () => {
           and add members. If someone else has made a team, have them add you by the email you
           applied with.
         </Text>
-        {team && <OnTeam hexathonId={hexathonId} team={team} />}
-        {!team && <CreateTeam hexathonId={hexathonId} />}
+        {teams.team && (
+          <OnTeam hexathonId={hexathonId} team={teams.team} members={teams.profiles} />
+        )}
+        {!teams.team && <CreateTeam hexathonId={hexathonId} />}
       </Box>
     </Box>
   );

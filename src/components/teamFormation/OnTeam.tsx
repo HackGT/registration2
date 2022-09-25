@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Box, Heading, Text, Input, Button, Center, VStack, HStack } from "@chakra-ui/react";
+import { Box, Heading, Text, Input, Button, VStack, HStack } from "@chakra-ui/react";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
 
 interface Props {
   team: any;
+  members: any;
   hexathonId: string | undefined;
 }
 
@@ -37,13 +38,22 @@ const OnTeam: React.FC<Props> = props => {
     <Box>
       <VStack>
         <Heading paddingTop="20px" paddingBottom="10px" size="lg" lineHeight="inherit">
-          Welcome to team {name}!
+          Welcome to the {name}!
         </Heading>
-        <Heading paddingTop="20px" paddingBottom="10px" size="sm" lineHeight="inherit">
+        <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
           Current members
         </Heading>
-        <Box paddingBottom="100px">
-          {props.team.members.length >= 4 && <Text>Y'all are at max capacity</Text>}
+        {props.members.map((member: any) => (
+          <Text>
+            {member.name.first} {member.name.last} - {member.email}
+          </Text>
+        ))}
+        <Box paddingBottom="20vh">
+          {props.team.members.length >= 4 && (
+            <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
+              You can have up to 4 members on a team.
+            </Heading>
+          )}
           {props.team.members.length < 4 && (
             <Box>
               <VStack>
@@ -55,7 +65,7 @@ const OnTeam: React.FC<Props> = props => {
                     value={email}
                     width="40vw"
                     onChange={changeEmail}
-                    placeholder="Type in the email of someone you want to add"
+                    placeholder="beardell@hackgt.com"
                   />
                   <Button onClick={addMember}>Add</Button>
                 </HStack>

@@ -13,16 +13,19 @@ import {
   FormControl,
   FormLabel,
   Checkbox,
+  useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 
-import { Branch } from "./BranchSettings";
+import { Branch, BranchType } from "./BranchSettings";
 import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
+import { InfoIcon } from "@chakra-ui/icons";
 
 enum FormModalType {
   Create = "CREATE",
@@ -34,6 +37,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   refetch: AxiosRefetch;
+  branches: any;
 }
 
 const BranchFormModal: React.FC<Props> = props => {
@@ -47,8 +51,12 @@ const BranchFormModal: React.FC<Props> = props => {
     watch,
   } = useForm();
 
+  const [emails, setEmails] = useState(props.defaultValues?.automaticConfirmation?.emails);
+  const emailHelpMessage =
+    "Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
   const branchType = watch("type");
   const gradingEnabled = watch("grading.enabled");
+  const automaticConfirmationEnabled = watch("automaticConfirmation.enabled");
 
   const type = useMemo(
     () => (props.defaultValues ? FormModalType.Edit : FormModalType.Create),
@@ -59,7 +67,7 @@ const BranchFormModal: React.FC<Props> = props => {
     // Manually parse open/close time into human readable formats
     const openTime = parseDateString(props.defaultValues?.settings?.open);
     const closeTime = parseDateString(props.defaultValues?.settings?.close);
-
+    setEmails(props.defaultValues?.automaticConfirmation?.emails);
     reset({
       ...props.defaultValues,
       settings: {
@@ -68,6 +76,8 @@ const BranchFormModal: React.FC<Props> = props => {
       },
     });
   }, [props.defaultValues, reset]);
+
+  const handleEmailInput = (e: any) => setEmails(e.target.value.split(","));
 
   const handleFormSubmit = async (values: any) => {
     const formData = {
@@ -80,6 +90,13 @@ const BranchFormModal: React.FC<Props> = props => {
       grading: {
         enabled: gradingEnabled,
         group: gradingEnabled ? values.grading.group : undefined,
+      },
+      automaticConfirmation: {
+        enabled: automaticConfirmationEnabled,
+        confirmationBranch: automaticConfirmationEnabled
+          ? values.automaticConfirmation.confirmationBranch.id
+          : undefined,
+        emails: automaticConfirmationEnabled ? emails : undefined,
       },
     };
 
@@ -158,6 +175,40 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormControl>
                   <Checkbox {...register("secret")}>Secret</Checkbox>
                 </FormControl>
+              )}
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("automaticConfirmation.enabled")}>
+                    Enable Auto-Confirmation?
+                  </Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && automaticConfirmationEnabled && (
+                <>
+                  <FormControl isRequired>
+                    <FormLabel>Confirmation Branch</FormLabel>
+                    <Select
+                      {...register("automaticConfirmation.confirmationBranch.id")}
+                      placeholder="Select option"
+                    >
+                      {props.branches &&
+                        props.branches
+                          .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+                          .map((branch: Branch) => (
+                            <option value={branch.id}>{branch.name}</option>
+                          ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>
+                      Emails
+                      <Tooltip hasArrow label={emailHelpMessage} bg="#d4d4d4" placement="right">
+                        <InfoIcon marginLeft="3.5px" marginBottom="2.5px" />
+                      </Tooltip>
+                    </FormLabel>
+                    <Input value={String(emails)} onChange={handleEmailInput} />
+                  </FormControl>
+                </>
               )}
               {branchType === "APPLICATION" && (
                 <FormControl>

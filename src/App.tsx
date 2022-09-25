@@ -21,6 +21,7 @@ import GradeQuestion from "./components/admin/grading/GradeQuestion";
 import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
+import TeamDashboard from "./components/teamFormation/TeamDashboard";
 
 export const app = initializeApp({
   apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
@@ -60,6 +61,7 @@ export const App = () => {
           <Route path="grading" element={<GradingDashboard />} />
           <Route path="grading/:gradingGroup/question" element={<GradeQuestion />} />
           <Route path="grading/leaderboard" element={<Leaderboard />} />
+          <Route path="team/dashboard" element={<TeamDashboard />} />
         </Route>
       </Routes>
       <Footer />

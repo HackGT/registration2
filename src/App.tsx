@@ -22,10 +22,11 @@ import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import Navigation from "./components/Navigation";
 import TeamDashboard from "./components/teamFormation/TeamDashboard";
+import HelpScoutBeacon from "./util/HelpScoutBeacon";
 
 export const app = initializeApp({
   apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
-  authDomain: "hexlabs-cloud.firebaseapp.com",
+  authDomain: "auth.hexlabs.org",
 });
 setPersistence(getAuth(app), inMemoryPersistence);
 
@@ -64,6 +65,7 @@ export const App = () => {
           <Route path="team/dashboard" element={<TeamDashboard />} />
         </Route>
       </Routes>
+      <HelpScoutBeacon />
       <Footer />
     </AuthProvider>
   );

@@ -37,6 +37,11 @@ export interface Branch {
     jsonSchema: string;
     uiSchema: string;
   }[];
+  automaticConfirmation?: {
+    enabled: boolean;
+    confirmationBranch?: any;
+    emails: Array<string>
+  };
   grading?: {
     enabled: boolean;
     group?: string;
@@ -103,6 +108,7 @@ const BranchSettings: React.FC = () => {
         isOpen={isOpen}
         onClose={handleModalClose}
         refetch={refetch}
+        branches={branches}
       />
     </>
   );

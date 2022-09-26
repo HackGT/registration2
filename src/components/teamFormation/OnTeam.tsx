@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Box, Heading, Text, Input, Button, VStack, HStack } from "@chakra-ui/react";
+import { Box, Heading, Text, Input, Button, VStack, HStack, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 interface Props {
   team: any;
@@ -12,27 +12,36 @@ interface Props {
 const OnTeam: React.FC<Props> = props => {
   const { name } = props.team;
   const [email, setEmail] = useState("");
+  const toast = useToast();
 
   const changeEmail = (e: any) => {
     setEmail(e.target.value);
   };
 
-  const addMember = async () => {
-    await axios.post(apiUrl(Service.USERS, "/teams/add"), {
-      name,
-      hexathon: props.hexathonId,
-      email,
-    });
-    window.location.reload();
-  };
+  const handleAddMember = async () => {
+    try {
+      await axios.post(apiUrl(Service.USERS, "/teams/add"), {
+        name,
+        hexathon: props.hexathonId,
+        email,
+      });
+      window.location.reload();
+    } catch (err: any) {
+      handleAxiosError(err);
+    }
+  }
 
-  const removeSelf = async () => {
-    await axios.post(apiUrl(Service.USERS, "/teams/leave"), {
-      name,
-      hexathon: props.hexathonId,
-    });
-    window.location.reload();
-  };
+  const handleRemoveSelf = async () => {
+    try {
+      await axios.post(apiUrl(Service.USERS, "/teams/leave"), {
+        name,
+        hexathon: props.hexathonId,
+      });
+      window.location.reload();
+    } catch (err: any) {
+      handleAxiosError(err);
+    }
+  }
 
   return (
     <Box>
@@ -67,13 +76,13 @@ const OnTeam: React.FC<Props> = props => {
                     onChange={changeEmail}
                     placeholder="beardell@hackgt.com"
                   />
-                  <Button onClick={addMember}>Add</Button>
+                  <Button onClick={handleAddMember}>Add</Button>
                 </HStack>
               </VStack>
             </Box>
           )}
         </Box>
-        <Button onClick={removeSelf}>Leave team</Button>
+        <Button onClick={handleRemoveSelf}>Leave team</Button>
       </VStack>
     </Box>
   );

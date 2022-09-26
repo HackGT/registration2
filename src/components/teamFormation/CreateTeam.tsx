@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Box, Text, Button, Input, Heading, VStack, Center } from "@chakra-ui/react";
+import { Box, Text, Button, Input, Heading, VStack, Center, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { apiUrl, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 interface Props {
   hexathonId: string | undefined;
@@ -9,20 +9,25 @@ interface Props {
 
 const CreateTeam: React.FC<Props> = props => {
   const [teamName, setTeamName] = useState("");
+  const toast = useToast();
 
   const changeTeamName = (e: any) => {
     setTeamName(e.target.value);
   };
 
-  const createTeam = async () => {
-    await axios.post(apiUrl(Service.USERS, "/teams/"), {
-      name: teamName,
-      hexathon: props.hexathonId,
-      description: "This is a team.",
-      publicTeam: true,
-    });
-    window.location.reload();
-  };
+  const handleCreateTeam = async () => {
+    try {
+      await axios.post(apiUrl(Service.USERS, "/teams/"), {
+        name: teamName,
+        hexathon: props.hexathonId,
+        description: "This is a team.",
+        publicTeam: true,
+      });
+      window.location.reload();
+    } catch (err: any) {
+      handleAxiosError(err);
+    }
+  }
 
   return (
     <Box>
@@ -44,7 +49,7 @@ const CreateTeam: React.FC<Props> = props => {
           onChange={changeTeamName}
           placeholder="BeardellBears"
         />
-        <Button onClick={createTeam}>Create team</Button>
+        <Button onClick={handleCreateTeam}>Create team</Button>
       </VStack>
     </Box>
   );

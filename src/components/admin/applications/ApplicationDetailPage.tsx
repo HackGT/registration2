@@ -73,7 +73,7 @@ const ApplicationDetailPage: React.FC = () => {
           </Heading>
         )}
       </VStack>
-      <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>
+      <Accordion defaultIndex={[0, 1, 2, 3, 4]} allowMultiple>
         <AccordionItem>
           <h2>
             <AccordionButton>
@@ -126,6 +126,14 @@ const ApplicationDetailPage: React.FC = () => {
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
+                  Level of Study
+                </Text>
+                {data.applicationData.levelOfStudy === ""
+                ? data.applicationData.levelOfStudy
+                : "N/A"}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
                   School Year
                 </Text>
                 {data.applicationData.schoolYear}
@@ -144,23 +152,27 @@ const ApplicationDetailPage: React.FC = () => {
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
-                  Identifies as
+                  Address
                 </Text>
-                {data.applicationData.gender}
+                {data.applicationData.address.line1
+                  ? `${data.applicationData.address.line1}  ${data.applicationData.address.city}, ${data.applicationData.address.state} ${data.applicationData.address.zip}, ${data.applicationData.address.country}`
+                  : "N/A"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
-                  Ethnicity
+                  Country of Residence
                 </Text>
-                {data.applicationData.ethnicity}
+                {data.applicationData.countryOfResidence !== ""
+                ? data.applicationData.countryOfResidence
+                : "N/A"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
                   Dietary Restrictions
                 </Text>
                 {data.applicationData.dietaryRestrictions
-                  ? "None"
-                  : data.applicationData.dietaryRestrictions.join(", ")}
+                  ? data.applicationData.dietaryRestrictions.join(", ")
+                  : "None"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
@@ -180,6 +192,33 @@ const ApplicationDetailPage: React.FC = () => {
                 </Text>
                 {data.applicationData.marketing}
               </Text>
+            </Stack>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                <Text style={{ fontWeight: "bold" }}>Diversity Information</Text>
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <Stack>
+              <Text>
+                  <Text color="gray" fontSize="sm">
+                    Identifies as
+                  </Text>
+                  {data.applicationData.gender}
+                </Text>
+                <Text>
+                  <Text color="gray" fontSize="sm">
+                    Ethnicity
+                  </Text>
+                  {data.applicationData.ethnicity}
+                </Text>
             </Stack>
           </AccordionPanel>
         </AccordionItem>
@@ -231,7 +270,41 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Travel Assistance
                 </Text>
-                <Text>{data.applicationData.travelReimbursement}</Text>
+                <Text>{data.applicationData.travelAssistance === ""
+                ? data.applicationData.travelAssistance
+                : "N/A"}</Text>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Past Experience
+                </Text>
+                <Text>{data.applicationData.pastExperience === ""
+                ? data.applicationData.pastExperience
+                : "N/A"}</Text>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Skills
+                </Text>
+                <Text>
+                  {data.applicationData.skills
+                    ? "N/A"
+                    : data.applicationData.skills.join(", ")}
+                </Text>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Number of Hackathons
+                </Text>
+                <Text>{data.applicationData.travelAssistance === ""
+                ? data.applicationData.travelAssistance
+                : "N/A"}</Text>
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Extra Info
+                </Text>
+                <Text>{data.applicationData.extraInfo}</Text>
               </Text>
             </Stack>
           </AccordionPanel>

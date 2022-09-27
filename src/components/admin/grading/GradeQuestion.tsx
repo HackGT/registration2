@@ -114,20 +114,8 @@ const GradeQuestion: React.FC = () => {
         width="90%"
         spacing="10px"
       >
-        <Box
-          width={{ base: "100%", md: "50%" }}
-          maxHeight="425px"
-          overflowY="auto"
-          marginBottom="10px"
-        >
-          <Heading
-            paddingTop="5px"
-            position="sticky"
-            top="0"
-            fontSize="20px"
-            width="100%"
-            bg="white"
-          >
+        <Box width={{ base: "100%", md: "50%" }} marginBottom="10px">
+          <Heading paddingTop="5px" fontSize="20px" width="100%" bg="white">
             {questionData?.question}
             <Divider paddingTop="11px" />
           </Heading>
@@ -180,7 +168,13 @@ const GradeQuestion: React.FC = () => {
           </Table>
         </Box>
       </Stack>
-      <HStack margin="auto" width="400px" justifyContent="space-between" paddingY="30px" {...group}>
+      <HStack
+        maxWidth="400px"
+        margin="auto"
+        justifyContent="space-between"
+        padding="30px 15px"
+        {...group}
+      >
         {questionData.gradingRubric
           ? Object.keys(questionData.gradingRubric).map(key => {
               const radio = getRadioProps({ value: key });

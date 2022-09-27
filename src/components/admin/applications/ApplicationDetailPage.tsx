@@ -73,7 +73,7 @@ const ApplicationDetailPage: React.FC = () => {
           </Heading>
         )}
       </VStack>
-      <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>
+      <Accordion defaultIndex={[0, 1, 2, 3, 4]} allowMultiple>
         <AccordionItem>
           <h2>
             <AccordionButton>
@@ -200,7 +200,7 @@ const ApplicationDetailPage: React.FC = () => {
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Text style={{ fontWeight: "bold" }}>Equal Employment Information</Text>
+                <Text style={{ fontWeight: "bold" }}>Diversity Information</Text>
               </Box>
               <AccordionIcon />
             </AccordionButton>

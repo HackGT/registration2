@@ -43,6 +43,9 @@ const Navigation: React.FC = () => {
               <Link to={`/${hexathonId}`}>Dashboard</Link>
             </HeaderItem>
           ) : null}
+          <HeaderItem>
+            <Link to={`/${hexathonId}/team/dashboard`}>Team Management</Link>
+          </HeaderItem>
           {role.admin || role.exec ? (
             <HeaderItem>
               <Link to={`/${hexathonId}/admin`}>Admin Home</Link>

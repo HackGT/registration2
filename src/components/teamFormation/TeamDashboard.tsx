@@ -39,7 +39,6 @@ const TeamDashboard: React.FC = () => {
   if (teamError) return <ErrorScreen error={teamError} />;
 
   return (
-    <Box>
       <Box paddingX={{ base: "16px", md: "32px" }} paddingY="15px">
         <Flex
           direction={["column", "row"]}
@@ -62,7 +61,6 @@ const TeamDashboard: React.FC = () => {
         )}
         {!teams.team && <CreateTeam hexathonId={hexathonId} />}
       </Box>
-    </Box>
   );
 };
 

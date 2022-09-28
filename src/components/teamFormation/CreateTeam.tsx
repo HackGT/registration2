@@ -27,31 +27,43 @@ const CreateTeam: React.FC<Props> = props => {
     } catch (err: any) {
       handleAxiosError(err);
     }
-  }
+  };
 
   return (
-    <Box>
-      <Center>
-        <VStack>
-          <Heading paddingTop="20px" paddingBottom="10px" size="md" lineHeight="inherit">
-            You are not currently on a team.
-          </Heading>
-          <Text>Create a team or have your teammate add you to their team by email.</Text>
-        </VStack>
-      </Center>
-      <VStack spacing="20px">
-        <Heading paddingTop="20px" size="md" lineHeight="inherit">
-          Create a team
-        </Heading>
-        <Input
-          width="40vw"
-          value={teamName}
-          onChange={changeTeamName}
-          placeholder="BeardellBears"
-        />
-        <Button onClick={handleCreateTeam}>Create team</Button>
-      </VStack>
-    </Box>
+    <Center>
+      <Box
+        marginTop="40px"
+        width="70vw"
+        borderRadius="2px"
+        boxShadow={{
+          base: "rgba(0, 0, 0, 0.15) 0px 0px 6px 1px",
+        }}
+        paddingBottom="30px"
+      >
+        <Center paddingBottom="50px">
+          <VStack>
+            <Heading paddingTop="20px" paddingBottom="10px" size="md" lineHeight="inherit">
+              You are not currently on a team.
+            </Heading>
+            <Text>Create a team or have your teammate add you to their team by email.</Text>
+          </VStack>
+        </Center>
+        <Center>
+          <VStack spacing="20px" paddingBottom="30px">
+            <Heading paddingTop="20px" size="md" lineHeight="inherit">
+              Create a team
+            </Heading>
+            <Input
+              width="40vw"
+              value={teamName}
+              onChange={changeTeamName}
+              placeholder="BeardellBears"
+            />
+            <Button onClick={handleCreateTeam}>Create team</Button>
+          </VStack>
+        </Center>
+      </Box>
+    </Center>
   );
 };
 

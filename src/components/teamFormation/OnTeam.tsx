@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Box, Heading, Text, Input, Button, VStack, HStack, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  Input,
+  Button,
+  VStack,
+  HStack,
+  useToast,
+  Center,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
@@ -29,7 +39,7 @@ const OnTeam: React.FC<Props> = props => {
     } catch (err: any) {
       handleAxiosError(err);
     }
-  }
+  };
 
   const handleRemoveSelf = async () => {
     try {
@@ -41,30 +51,38 @@ const OnTeam: React.FC<Props> = props => {
     } catch (err: any) {
       handleAxiosError(err);
     }
-  }
+  };
 
   return (
     <Box>
-      <VStack>
-        <Heading paddingTop="20px" paddingBottom="10px" size="lg" lineHeight="inherit">
-          Welcome to the {name}!
-        </Heading>
-        <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
-          Current members
-        </Heading>
-        {props.members.map((member: any) => (
-          <Text>
-            {member.name.first} {member.name.last} - {member.email}
-          </Text>
-        ))}
-        <Box paddingBottom="20vh">
-          {props.team.members.length >= 4 && (
-            <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
-              You can have up to 4 members on a team.
-            </Heading>
-          )}
-          {props.team.members.length < 4 && (
-            <Box>
+      <Center>
+        <VStack
+          marginTop="40px"
+          width="70vw"
+          borderRadius="2px"
+          boxShadow={{
+            base: "rgba(0, 0, 0, 0.15) 0px 0px 6px 1px",
+          }}
+          paddingBottom="30px"
+        >
+          <Heading paddingTop="20px" paddingBottom="10px" size="lg" lineHeight="inherit">
+            Welcome to the {name}!
+          </Heading>
+          <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
+            Current members
+          </Heading>
+          {props.members.map((member: any) => (
+            <Text>
+              {member.name.first} {member.name.last} - {member.email}
+            </Text>
+          ))}
+          <Box paddingBottom="20vh">
+            {props.team.members.length >= 4 && (
+              <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
+                You can have up to 4 members on a team.
+              </Heading>
+            )}
+            {props.team.members.length < 4 && (
               <VStack>
                 <Heading paddingTop="20px" paddingBottom="10px" size="sm" lineHeight="inherit">
                   Add more members to your team!
@@ -79,11 +97,11 @@ const OnTeam: React.FC<Props> = props => {
                   <Button onClick={handleAddMember}>Add</Button>
                 </HStack>
               </VStack>
-            </Box>
-          )}
-        </Box>
-        <Button onClick={handleRemoveSelf}>Leave team</Button>
-      </VStack>
+            )}
+          </Box>
+          <Button onClick={handleRemoveSelf}>Leave team</Button>
+        </VStack>
+      </Center>
     </Box>
   );
 };

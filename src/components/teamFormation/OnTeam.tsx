@@ -9,6 +9,7 @@ import {
   HStack,
   useToast,
   Center,
+  Wrap,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
@@ -65,10 +66,22 @@ const OnTeam: React.FC<Props> = props => {
           }}
           paddingBottom="30px"
         >
-          <Heading paddingTop="20px" paddingBottom="10px" size="lg" lineHeight="inherit">
+          <Heading
+            textAlign="center"
+            paddingTop="20px"
+            paddingBottom="10px"
+            size="lg"
+            lineHeight="inherit"
+          >
             Welcome to the {name}!
           </Heading>
-          <Heading paddingTop="10px" paddingBottom="10px" size="sm" lineHeight="inherit">
+          <Heading
+            textAlign="center"
+            paddingTop="10px"
+            paddingBottom="10px"
+            size="sm"
+            lineHeight="inherit"
+          >
             Current members
           </Heading>
           {props.members.map((member: any) => (
@@ -84,18 +97,25 @@ const OnTeam: React.FC<Props> = props => {
             )}
             {props.team.members.length < 4 && (
               <VStack>
-                <Heading paddingTop="20px" paddingBottom="10px" size="sm" lineHeight="inherit">
+                <Heading
+                  textAlign="center"
+                  padding="0px 20px 0px 20px"
+                  paddingTop="20px"
+                  paddingBottom="10px"
+                  size="sm"
+                  lineHeight="inherit"
+                >
                   Add more members to your team!
                 </Heading>
-                <HStack spacing="20px">
+                <Wrap justify="center" spacing="20px">
                   <Input
                     value={email}
-                    width="40vw"
+                    width="220px"
                     onChange={changeEmail}
                     placeholder="beardell@hackgt.com"
                   />
                   <Button onClick={handleAddMember}>Add</Button>
-                </HStack>
+                </Wrap>
               </VStack>
             )}
           </Box>

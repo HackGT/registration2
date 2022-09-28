@@ -42,10 +42,12 @@ const CreateTeam: React.FC<Props> = props => {
       >
         <Center paddingBottom="50px">
           <VStack>
-            <Heading paddingTop="20px" paddingBottom="10px" size="md" lineHeight="inherit">
+            <Heading textAlign="center" padding="20px 15px 0px 15px" size="md" lineHeight="inherit">
               You are not currently on a team.
             </Heading>
-            <Text>Create a team or have your teammate add you to their team by email.</Text>
+            <Text textAlign="center" padding="20px 20px 10px 20px">
+              Create a team or have your teammate add you to their team by email.
+            </Text>
           </VStack>
         </Center>
         <Center>

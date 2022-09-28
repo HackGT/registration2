@@ -1,28 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Flex, Heading, Text, Divider, Link } from "@chakra-ui/react";
+import React from "react";
+import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import CreateTeam from "./CreateTeam";
 import OnTeam from "./OnTeam";
 
 const TeamDashboard: React.FC = () => {
   const { user } = useAuth();
-  const { currentHexathon } = useCurrentHexathon();
   const { hexathonId } = useParams();
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const updateDimensions = () => {
-    setScreenWidth(window.innerWidth);
-  };
-  useEffect(() => {
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
-  const [{ data: teams, loading: teamLoading, error: teamError }] = useAxios(
+  const [{ data: teams, loading, error }] = useAxios(
     {
       url: apiUrl(Service.USERS, `/teams/user/${user?.uid}`),
       method: "GET",
@@ -33,34 +22,49 @@ const TeamDashboard: React.FC = () => {
     { useCache: false }
   );
 
-  if (teamLoading) {
+  if (loading) {
     return <LoadingScreen />;
   }
-  if (teamError) return <ErrorScreen error={teamError} />;
+  if (error) return <ErrorScreen error={error} />;
 
   return (
-      <Box paddingX={{ base: "16px", md: "32px" }} paddingY="15px">
-        <Flex
-          direction={["column", "row"]}
-          justifyContent="center"
-          alignItems="center"
-          gap="20px"
-          marginBottom="5px"
+    <Box paddingX={{ base: "16px", md: "32px" }} paddingY="15px">
+      <Flex
+        direction={["column", "row"]}
+        justifyContent="center"
+        alignItems="center"
+        gap="20px"
+        marginBottom="5px"
+      >
+        <Heading size="lg" lineHeight="inherit">
+          Team Management Portal
+        </Heading>
+      </Flex>
+      <Text textAlign="center">
+        Welcome! Here, you can create teams and add members. If someone else has made a team, have
+        them add you by the email you applied with. Teams can have up to 4 members.
+        <br />
+        <br />
+        If you don't have a team yet, we'll have a team formation tool you can use to meet new
+        people soon!
+      </Text>
+      <Center>
+        <Box
+          width={{ base: "90vw", md: "70vw" }}
+          marginTop="40px"
+          borderRadius="2px"
+          boxShadow={{
+            base: "rgba(0, 0, 0, 0.15) 0px 0px 6px 1px",
+          }}
+          paddingBottom="30px"
         >
-          <Heading size="lg" lineHeight="inherit">
-            Team Formation Portal
-          </Heading>
-        </Flex>
-        <Text textAlign="center">
-          Welcome to the team formation portal for {currentHexathon.name}. Here you can create teams
-          and add members. If someone else has made a team, have them add you by the email you
-          applied with.
-        </Text>
-        {teams.team && (
-          <OnTeam hexathonId={hexathonId} team={teams.team} members={teams.profiles} />
-        )}
-        {!teams.team && <CreateTeam hexathonId={hexathonId} />}
-      </Box>
+          <Center flexDir="column">
+            {teams.team && <OnTeam team={teams.team} members={teams.profiles} />}
+            {!teams.team && <CreateTeam />}
+          </Center>
+        </Box>
+      </Center>
+    </Box>
   );
 };
 

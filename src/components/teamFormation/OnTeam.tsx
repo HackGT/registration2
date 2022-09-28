@@ -85,7 +85,7 @@ const OnTeam: React.FC<Props> = props => {
             Current members
           </Heading>
           {props.members.map((member: any) => (
-            <Text>
+            <Text textAlign="center">
               {member.name.first} {member.name.last} - {member.email}
             </Text>
           ))}

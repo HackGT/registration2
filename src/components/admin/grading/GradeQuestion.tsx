@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Divider,
@@ -15,7 +19,9 @@ import {
   Th,
   Thead,
   Tr,
+  useMediaQuery,
   useRadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { apiUrl, handleAxiosError, LoadingScreen, Service } from "@hex-labs/core";
 
@@ -38,6 +44,8 @@ const GradeQuestion: React.FC = () => {
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(true);
+  const toast = useToast();
+  const [isDesktop] = useMediaQuery("(min-width: 600px)");
 
   // Create timer based on length of answer to disable submit button
   useEffect(() => {
@@ -64,7 +72,7 @@ const GradeQuestion: React.FC = () => {
 
   const group = getRootProps();
 
-  const retrieveQuestion = async () => {
+  const retrieveQuestion = useCallback(async () => {
     try {
       const response = await axios.post(
         apiUrl(Service.REGISTRATION, "/grading/actions/retrieve-question"),
@@ -78,33 +86,69 @@ const GradeQuestion: React.FC = () => {
       handleAxiosError(err);
     }
     setLoading(false);
-  };
+  }, [gradingGroup, hexathonId]);
 
-  const skipQuestion = async () => {
+  const skipQuestion = useCallback(async () => {
     await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/skip-question"), {
       hexathon: hexathonId,
     });
     setLoading(true);
     retrieveQuestion();
-  };
+  }, [hexathonId, retrieveQuestion]);
 
-  const submitReview = async (payload: {
-    applicationId?: string;
-    essayId: string;
-    score: number;
-    isCalibrationQuestion: boolean;
-  }) => {
-    await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), {
-      ...payload,
-      hexathon: hexathonId,
-      gradingGroup,
-    });
-    setLoading(true);
-    setValue("");
-    setScore("");
-    retrieveQuestion();
-    window.scrollTo(0, 0);
-  };
+  const submitReview = useCallback(
+    async (payload: {
+      applicationId?: string;
+      essayId: string;
+      score: number;
+      isCalibrationQuestion: boolean;
+    }) => {
+      await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), {
+        ...payload,
+        hexathon: hexathonId,
+        gradingGroup,
+      });
+      setLoading(true);
+      setValue("");
+      setScore("");
+      setSubmitButtonDisabled(true);
+      retrieveQuestion();
+      window.scrollTo(0, 0);
+    },
+    [gradingGroup, hexathonId, setValue, retrieveQuestion]
+  );
+
+  useEffect(() => {
+    const keyUpHandler = ({ key }: any) => {
+      if (key === "1" || key === "2" || key === "3" || key === "4") {
+        setScore(key);
+        setValue(key);
+      } else if (key === "Enter" && !!score) {
+        if (submitButtonDisabled) {
+          toast({
+            title: "Please wait",
+            description: "Please read the entire response before submitting your review.",
+            status: "info",
+            duration: 2000,
+          });
+        } else {
+          submitReview({
+            applicationId: questionData?.applicationId,
+            essayId: questionData?.essayId,
+            score: parseInt(score),
+            isCalibrationQuestion: questionData?.isCalibrationQuestion,
+          });
+        }
+      }
+    };
+
+    window.addEventListener("keyup", keyUpHandler);
+
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener("keyup", keyUpHandler);
+    };
+  }, [questionData, score, setValue, submitButtonDisabled, submitReview, toast]);
 
   useEffect(() => {
     retrieveQuestion();
@@ -129,6 +173,15 @@ const GradeQuestion: React.FC = () => {
 
   return (
     <>
+      {isDesktop && (
+        <Alert status="info">
+          <AlertIcon />
+          <AlertTitle>Tip</AlertTitle>
+          <AlertDescription>
+            Try using the keyboard (1, 2, 3, 4) + Enter to submit your scores quicker!
+          </AlertDescription>
+        </Alert>
+      )}
       <Stack
         direction={{ base: "column", md: "row" }}
         margin="auto"
@@ -209,7 +262,7 @@ const GradeQuestion: React.FC = () => {
           Skip Question
         </Button>
         <Button
-          disabled={score.length === 0 || submitButtonDisabled}
+          disabled={!score || submitButtonDisabled}
           onClick={() =>
             submitReview({
               applicationId: questionData?.applicationId,

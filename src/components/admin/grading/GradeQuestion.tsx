@@ -37,6 +37,26 @@ const GradeQuestion: React.FC = () => {
   });
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(true);
+
+  // Create timer based on length of answer to disable submit button
+  useEffect(() => {
+    if (questionData.answer) {
+      const readingSpeed = 700; // Words per minute constant
+      const numWords = questionData.answer.split(" ").length;
+      const timer = setTimeout(
+        () => setSubmitButtonDisabled(false),
+        (numWords / readingSpeed) * 60 * 1000
+      );
+
+      // Clear timeout on unmount
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+
+    return () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
+  }, [questionData]);
 
   const { setValue, getRootProps, getRadioProps } = useRadioGroup({
     onChange: setScore,
@@ -80,7 +100,10 @@ const GradeQuestion: React.FC = () => {
       gradingGroup,
     });
     setLoading(true);
+    setValue("");
+    setScore("");
     retrieveQuestion();
+    window.scrollTo(0, 0);
   };
 
   useEffect(() => {
@@ -132,38 +155,37 @@ const GradeQuestion: React.FC = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {questionData.gradingRubric
-                ? Object.keys(questionData.gradingRubric).map(key => (
-                    <Tr key={key}>
-                      <Td isNumeric fontWeight="bold">
-                        {key}
-                      </Td>
-                      <Td>
-                        {questionData.gradingRubric[key]
-                          .split("\n")
-                          .map((line: string, index: number, array: any[]) =>
-                            line.includes("•") ? (
-                              <Text
-                                key={line}
-                                paddingBottom={index === array.length - 1 ? "0px" : "5px"}
-                                style={{ marginLeft: 20, textIndent: -11 }}
-                              >
-                                {line}
-                              </Text>
-                            ) : (
-                              <Text
-                                key={line}
-                                fontWeight="semibold"
-                                paddingBottom={index === array.length - 1 ? "0px" : "5px"}
-                              >
-                                {line}
-                              </Text>
-                            )
-                          )}
-                      </Td>
-                    </Tr>
-                  ))
-                : null}
+              {questionData.gradingRubric &&
+                Object.keys(questionData.gradingRubric).map(key => (
+                  <Tr key={key}>
+                    <Td isNumeric fontWeight="bold">
+                      {key}
+                    </Td>
+                    <Td>
+                      {questionData.gradingRubric[key]
+                        .split("\n")
+                        .map((line: string, index: number, array: any[]) =>
+                          line.includes("•") ? (
+                            <Text
+                              key={line}
+                              paddingBottom={index === array.length - 1 ? "0px" : "5px"}
+                              style={{ marginLeft: 20, textIndent: -11 }}
+                            >
+                              {line}
+                            </Text>
+                          ) : (
+                            <Text
+                              key={line}
+                              fontWeight="semibold"
+                              paddingBottom={index === array.length - 1 ? "0px" : "5px"}
+                            >
+                              {line}
+                            </Text>
+                          )
+                        )}
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </Box>
@@ -175,34 +197,27 @@ const GradeQuestion: React.FC = () => {
         padding="30px 15px"
         {...group}
       >
-        {questionData.gradingRubric
-          ? Object.keys(questionData.gradingRubric).map(key => {
-              const radio = getRadioProps({ value: key });
-              return (
-                <ScoreButton key={key} {...radio}>
-                  {key}
-                </ScoreButton>
-              );
-            })
-          : null}
+        {questionData.gradingRubric &&
+          Object.keys(questionData.gradingRubric).map(key => (
+            <ScoreButton key={key} {...getRadioProps({ value: key })}>
+              {key}
+            </ScoreButton>
+          ))}
       </HStack>
       <HStack margin="auto" width="300px" direction="row" justifyContent="space-between">
         <Button disabled={questionData.isCalibrationQuestion} onClick={skipQuestion}>
           Skip Question
         </Button>
         <Button
-          disabled={score.length === 0}
-          onClick={() => {
-            const scoreNumber: number = +score;
+          disabled={score.length === 0 || submitButtonDisabled}
+          onClick={() =>
             submitReview({
               applicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
-              score: scoreNumber,
+              score: parseInt(score),
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
-            });
-            setValue("");
-            setScore("");
-          }}
+            })
+          }
         >
           Submit Review
         </Button>

@@ -2396,10 +2396,10 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
-"@hex-labs/core@^1.0.40":
-  version "1.0.40"
-  resolved "https://registry.npmjs.org/@hex-labs/core/-/core-1.0.40.tgz"
-  integrity sha512-loRYgga349QZ9NTlgncJQCSFvyHqTxhq96t7u+Mo8erW/1j34z5kMfQtARwOeA2xYWTgzBhjr/i8BEgTFGlk1A==
+"@hex-labs/core@^1.0.49":
+  version "1.0.49"
+  resolved "https://registry.yarnpkg.com/@hex-labs/core/-/core-1.0.49.tgz#255a2385dff91a6f58262494962e9809a4e0c889"
+  integrity sha512-fWzP3/Avu4l787p5imJNfgcj7xgOVbvbPClzOpZqIKZfgYLg9LG7cEKjsVguY3/BYNjpiucDyn1RjgVaF2FbMg==
 
 "@hex-labs/eslint-config-react@^1.2.3":
   version "1.2.3"

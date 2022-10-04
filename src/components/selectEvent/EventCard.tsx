@@ -12,6 +12,17 @@ interface Props {
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
   const imageURL = `/events/${props.id}.jpeg`; // this is relative to public
+
+  const handleClick = () => {
+    // Set expiration time of one week
+    window.localStorage.setItem(
+      "hexathonId",
+      JSON.stringify({ hexathonId: props.id, expires: Date.now() + 1000 * 60 * 60 * 24 * 7 })
+    );
+
+    navigate(`/${props.id}`);
+  };
+
   return (
     <Box
       position="relative"
@@ -30,10 +41,7 @@ const EventCard: React.FC<Props> = props => {
       _hover={{
         shadow: "md",
       }}
-      onClick={() => {
-        window.sessionStorage.setItem("hexathonId", props.id);
-        navigate(`/${props.id}`);
-      }}
+      onClick={handleClick}
     >
       <HStack>
         <Heading>{props.name}</Heading>

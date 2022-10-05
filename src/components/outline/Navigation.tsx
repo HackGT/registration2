@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { apiUrl, Header, HeaderItem, Service, useAuth } from "@hex-labs/core";
 import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  Avatar,
   Box,
-  Button,
-  Center,
   Image,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Text,
@@ -51,9 +47,7 @@ const Navigation: React.FC = () => {
     getRoles();
   }, [user?.uid]);
 
-  console.log(currentHexathon);
-
-  const currentHexathonHeaderItem = currentHexathon && (
+  const rightHeaderItem = currentHexathon ? (
     <HeaderItem onMouseEnter={onOpen} onMouseLeave={onClose}>
       <Menu isOpen={isOpen}>
         <MenuButton>
@@ -83,22 +77,29 @@ const Navigation: React.FC = () => {
         </MenuList>
       </Menu>
     </HeaderItem>
+  ) : (
+    <Link to="/" onClick={logOut}>
+      <HeaderItem>Sign Out</HeaderItem>
+    </Link>
+  );
+
+  const rightHeaderItemMobile = currentHexathon ? (
+    <>
+      <Link to="/" onClick={changeEvent}>
+        <HeaderItem>Change Event</HeaderItem>
+      </Link>
+      <Link to="/" onClick={logOut}>
+        <HeaderItem>Sign Out</HeaderItem>
+      </Link>
+    </>
+  ) : (
+    <Link to="/" onClick={logOut}>
+      <HeaderItem>Sign Out</HeaderItem>
+    </Link>
   );
 
   return (
-    <Header
-      rightItem={currentHexathonHeaderItem}
-      rightItemMobile={
-        <>
-          <Link to="/" onClick={changeEvent}>
-            <HeaderItem>Change Event</HeaderItem>
-          </Link>
-          <Link to="/" onClick={logOut}>
-            <HeaderItem>Sign Out</HeaderItem>
-          </Link>
-        </>
-      }
-    >
+    <Header rightItem={rightHeaderItem} rightItemMobile={rightHeaderItemMobile}>
       {currentHexathon && (
         <>
           <Link to={`/${currentHexathon.id}`}>

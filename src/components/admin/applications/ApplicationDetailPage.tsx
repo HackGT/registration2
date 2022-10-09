@@ -38,7 +38,7 @@ const ApplicationDetailPage: React.FC = () => {
     <Box paddingX="30px" paddingTop="20px">
       <VStack spacing="6px" align="left" paddingBottom="10px">
         <HStack>
-          <ApplicationStatusTag application={data} includeColor />
+          <ApplicationStatusTag status={data.status} includeColor />
           <Tag>
             <TagLabel>{`ID: ${data.id}`}</TagLabel>
             <TagRightIcon
@@ -129,8 +129,8 @@ const ApplicationDetailPage: React.FC = () => {
                   Level of Study
                 </Text>
                 {data.applicationData.levelOfStudy === ""
-                ? data.applicationData.levelOfStudy
-                : "N/A"}
+                  ? data.applicationData.levelOfStudy
+                  : "N/A"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
@@ -163,8 +163,8 @@ const ApplicationDetailPage: React.FC = () => {
                   Country of Residence
                 </Text>
                 {data.applicationData.countryOfResidence !== ""
-                ? data.applicationData.countryOfResidence
-                : "N/A"}
+                  ? data.applicationData.countryOfResidence
+                  : "N/A"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
@@ -208,17 +208,17 @@ const ApplicationDetailPage: React.FC = () => {
           <AccordionPanel pb={4}>
             <Stack>
               <Text>
-                  <Text color="gray" fontSize="sm">
-                    Identifies as
-                  </Text>
-                  {data.applicationData.gender}
+                <Text color="gray" fontSize="sm">
+                  Identifies as
                 </Text>
-                <Text>
-                  <Text color="gray" fontSize="sm">
-                    Ethnicity
-                  </Text>
-                  {data.applicationData.ethnicity}
+                {data.applicationData.gender}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Ethnicity
                 </Text>
+                {data.applicationData.ethnicity}
+              </Text>
             </Stack>
           </AccordionPanel>
         </AccordionItem>
@@ -270,35 +270,39 @@ const ApplicationDetailPage: React.FC = () => {
                 <Text color="gray" fontSize="sm">
                   Travel Assistance
                 </Text>
-                <Text>{data.applicationData.travelAssistance === ""
-                ? data.applicationData.travelAssistance
-                : "N/A"}</Text>
+                <Text>
+                  {data.applicationData.travelAssistance === ""
+                    ? data.applicationData.travelAssistance
+                    : "N/A"}
+                </Text>
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
                   Past Experience
                 </Text>
-                <Text>{data.applicationData.pastExperience === ""
-                ? data.applicationData.pastExperience
-                : "N/A"}</Text>
+                <Text>
+                  {data.applicationData.pastExperience === ""
+                    ? data.applicationData.pastExperience
+                    : "N/A"}
+                </Text>
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
                   Skills
                 </Text>
                 <Text>
-                  {data.applicationData.skills
-                    ? "N/A"
-                    : data.applicationData.skills.join(", ")}
+                  {data.applicationData.skills ? "N/A" : data.applicationData.skills.join(", ")}
                 </Text>
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">
                   Number of Hackathons
                 </Text>
-                <Text>{data.applicationData.travelAssistance === ""
-                ? data.applicationData.travelAssistance
-                : "N/A"}</Text>
+                <Text>
+                  {data.applicationData.travelAssistance === ""
+                    ? data.applicationData.travelAssistance
+                    : "N/A"}
+                </Text>
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">

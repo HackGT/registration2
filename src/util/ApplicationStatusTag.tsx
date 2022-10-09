@@ -2,15 +2,15 @@ import React from "react";
 import { Tag } from "@chakra-ui/react";
 
 interface Props {
-  application: any;
+  status: string;
   includeColor?: boolean;
   [key: string]: any;
 }
 
 const ApplicationStatusTag: React.FC<Props> = props => {
-  const { application, includeColor, ...rest } = props;
+  const { status, includeColor, ...rest } = props;
 
-  switch (application?.status) {
+  switch (status) {
     case "DRAFT":
       return <Tag {...rest}>Draft</Tag>;
     case "APPLIED":

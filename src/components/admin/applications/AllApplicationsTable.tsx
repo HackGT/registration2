@@ -32,7 +32,7 @@ const columns = [
   {
     key: 3,
     header: "Status",
-    accessor: (row: any) => <ApplicationStatusTag application={row} includeColor />,
+    accessor: (row: any) => <ApplicationStatusTag status={row.status} includeColor />,
   },
 ];
 

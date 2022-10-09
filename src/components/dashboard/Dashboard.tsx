@@ -152,7 +152,10 @@ const Dashboard: React.FC = () => {
           />
         </>
       )}
-      {(!application || ["DRAFT", "APPLIED"].includes(application.status)) && (
+      {(!application ||
+        ["DRAFT", "APPLIED", "WAITLISTED", "DENIED", "NOT_ATTENDING"].includes(
+          application.status
+        )) && (
         <Box marginX={{ base: "15px", md: 0 }}>
           <Heading fontWeight="semibold" marginBottom="10px">
             Application Paths

@@ -8,7 +8,7 @@ import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import "./App.css";
 import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
-import EmailScreen from "./components/admin/email/EmailScreen";
+import EmailHome from "./components/admin/email/EmailHome";
 import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
 import BranchSettings from "./components/admin/branchSettings/BranchSettings";
@@ -51,7 +51,7 @@ export const App = () => {
             <Route path="" element={<Dashboard />} />
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
             <Route path="admin" element={<AdminControlsHome />} />
-            <Route path="admin/email" element={<EmailScreen />} />
+            <Route path="admin/email" element={<EmailHome />} />
             <Route path="admin/branch-settings" element={<BranchSettings />} />
             <Route path="admin/branch-settings/:branchId" element={<BranchEditor />} />
             <Route path="admin/applications" element={<AllApplicationsTable />} />

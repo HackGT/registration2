@@ -126,7 +126,7 @@ const EmailScreen: React.FC = () => {
   };
 
   return (
-    <Box paddingY={{ base: "32px", md: "32px" }} paddingX={{ base: "16px", md: "32px" }}>
+    <Box>
       <Alert status="warning" marginBottom="20px" title="Warning">
         <AlertIcon />
         <AlertTitle>Warning</AlertTitle>

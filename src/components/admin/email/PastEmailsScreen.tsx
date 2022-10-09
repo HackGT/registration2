@@ -44,7 +44,7 @@ const PastEmailsScreen: React.FC = () => {
         Past Emails
       </Heading>
       <TableContainer>
-        <Table variant="striped" size="sm">
+        <Table variant="simple" size="sm">
           <Thead>
             <Tr>
               <Th>Subject</Th>
@@ -73,9 +73,7 @@ const PastEmailsScreen: React.FC = () => {
                 <Td>{`${email.sender.name.first} ${email.sender.name.last}`}</Td>
                 <Td>
                   {email.filter.branchList.map((branch: any) => (
-                    <Tag mr="2" bgColor="gray.200">
-                      {branch.name}
-                    </Tag>
+                    <Tag mr="2">{branch.name}</Tag>
                   ))}
                 </Td>
               </Tr>

@@ -1,27 +1,23 @@
 import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  TabPanels,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
   Heading,
   Tag,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { DateTime } from "luxon";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
+import PastEmailPreviewModal from "./PastEmailPreviewModal";
 
 const PastEmailsScreen: React.FC = () => {
   const { hexathonId } = useParams();
@@ -32,11 +28,16 @@ const PastEmailsScreen: React.FC = () => {
       hexathon: hexathonId,
     },
   });
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedEmailMessage, setSelectedEmailMessage] = useState("");
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
-  console.log(data);
+  const openEmailPreviewModal = (message: string) => {
+    setSelectedEmailMessage(message);
+    onOpen();
+  };
 
   return (
     <>
@@ -58,7 +59,13 @@ const PastEmailsScreen: React.FC = () => {
           <Tbody>
             {data.map((email: any) => (
               <Tr>
-                <Td>{email.subject}</Td>
+                <Td
+                  onClick={() => openEmailPreviewModal(email.message)}
+                  cursor="pointer"
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  {email.subject}
+                </Td>
                 <Td>
                   {email.filter.statusList.map((status: any) => (
                     <ApplicationStatusTag status={status} includeColor />
@@ -81,6 +88,12 @@ const PastEmailsScreen: React.FC = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      <PastEmailPreviewModal
+        isOpen={isOpen}
+        onClose={onClose}
+        selectedEmailMessage={selectedEmailMessage}
+        setSelectedEmailMessage={setSelectedEmailMessage}
+      />
     </>
   );
 };

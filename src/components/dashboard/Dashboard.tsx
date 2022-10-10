@@ -116,7 +116,7 @@ const Dashboard: React.FC = () => {
           </Heading>
           <Box>
             <ApplicationStatusTag
-              status={application.status}
+              status={application?.status}
               size="lg"
               style={{ fontSize: "18px" }}
             />

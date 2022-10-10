@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Code,
-  FormControl,
-  FormLabel,
   Heading,
   HStack,
   Link as ChakraLink,
@@ -13,7 +10,6 @@ import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
-import { useForm } from "react-hook-form";
 import _ from "lodash";
 
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
@@ -56,8 +52,6 @@ const AllApplicationsTable: React.FC = () => {
   const [status, setStatus] = useState<string[]>([]);
   const [applicationBranch, setApplicationBranch] = useState<string[]>([]);
   const [confirmationBranch, setConfirmationBranch] = useState<string[]>([]);
-
-  const { register, watch } = useForm();
 
   const [{ data, error }] = useAxios({
     method: "GET",

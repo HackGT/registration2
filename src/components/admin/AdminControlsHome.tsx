@@ -44,6 +44,7 @@ const AdminControlsHome: React.FC = () => (
         href="applications"
       />
       <AdminWidget title="Emailing" description="Email participants" href="email" />
+      <AdminWidget title="Branch Templates" description="Edit Post-apply and Post-confirmation branch templates" href="templates" />
       <AdminWidget
         title="Branch Settings"
         description="Update application settings"

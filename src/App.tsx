@@ -9,6 +9,7 @@ import "./App.css";
 import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
 import EmailHome from "./components/admin/email/EmailHome";
+import BranchTemplates from "./components/admin/email/BranchTemplates";
 import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
 import BranchSettings from "./components/admin/branchSettings/BranchSettings";
@@ -52,6 +53,7 @@ export const App = () => {
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
             <Route path="admin" element={<AdminControlsHome />} />
             <Route path="admin/email" element={<EmailHome />} />
+            <Route path="admin/templates" element={<BranchTemplates />} />
             <Route path="admin/branch-settings" element={<BranchSettings />} />
             <Route path="admin/branch-settings/:branchId" element={<BranchEditor />} />
             <Route path="admin/applications" element={<AllApplicationsTable />} />

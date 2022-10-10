@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Heading,
-  HStack,
-  Link as ChakraLink,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Heading, HStack, Link as ChakraLink, Text } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
@@ -64,7 +58,7 @@ const AllApplicationsTable: React.FC = () => {
       offset,
     },
   });
-  const [{ data: branches, error: error2 }] = useAxios({
+  const [{ data: branches, error: branchesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
@@ -88,8 +82,8 @@ const AllApplicationsTable: React.FC = () => {
   if (error) {
     return <ErrorScreen error={error} />;
   }
-  if (error2) {
-    return <ErrorScreen error={error2} />;
+  if (branchesError) {
+    return <ErrorScreen error={branchesError} />;
   }
 
   // Filters
@@ -124,30 +118,22 @@ const AllApplicationsTable: React.FC = () => {
       label: "Denied",
       value: "DENIED",
     },
+    {
+      label: "Not Attending",
+      value: "NOT_ATTENDING",
+    },
   ];
 
-  const applicationBranchOptions: any[] = [];
-  const confirmationBranchOptions: any[] = [];
-
-  branches &&
-    branches
-      .filter((branch: any) => branch.type === "APPLICATION")
-      .map((branch: any) =>
-        applicationBranchOptions.push({
-          label: branch.name,
-          value: branch.id,
-        })
-      );
-
-  branches &&
-    branches
-      .filter((branch: any) => branch.type === "CONFIRMATION")
-      .map((branch: any) =>
-        confirmationBranchOptions.push({
-          label: branch.name,
-          value: branch.id,
-        })
-      );
+  const applicationBranchOptions = branches
+    ? branches
+        .filter((branch: any) => branch.type === "APPLICATION")
+        .map((branch: any) => ({ label: branch.name, value: branch.id }))
+    : [];
+  const confirmationBranchOptions = branches
+    ? branches
+        .filter((branch: any) => branch.type === "CONFIRMATION")
+        .map((branch: any) => ({ label: branch.name, value: branch.id }))
+    : [];
 
   return (
     <>
@@ -158,6 +144,7 @@ const AllApplicationsTable: React.FC = () => {
         <Box p={4} w="80">
           <Text size="sm">Status</Text>
           <Select<GroupOption, true, GroupBase<GroupOption>>
+            maxMenuHeight={120}
             isMulti
             options={statusOptions}
             placeholder="Select status..."
@@ -167,7 +154,7 @@ const AllApplicationsTable: React.FC = () => {
             size="sm"
             onChange={(e: any) => {
               if (e !== null) {
-                const statuses: string[] = []
+                const statuses: string[] = [];
                 e.map((val: any) => statuses.push(val.value));
                 setStatus(statuses);
               }
@@ -177,6 +164,7 @@ const AllApplicationsTable: React.FC = () => {
         <Box p={4} w="80">
           <Text size="sm">Application Branch</Text>
           <Select<GroupOption, true, GroupBase<GroupOption>>
+            maxMenuHeight={120}
             isMulti
             options={applicationBranchOptions}
             placeholder="Select application branch..."
@@ -186,7 +174,7 @@ const AllApplicationsTable: React.FC = () => {
             size="sm"
             onChange={(e: any) => {
               if (e !== null) {
-                const applicationBranches: string[] = []
+                const applicationBranches: string[] = [];
                 e.map((val: any) => applicationBranches.push(val.value));
                 setApplicationBranch(applicationBranches);
               }
@@ -196,6 +184,7 @@ const AllApplicationsTable: React.FC = () => {
         <Box p={4} w="80">
           <Text size="sm">Confirmation Branch</Text>
           <Select<GroupOption, true, GroupBase<GroupOption>>
+            maxMenuHeight={120}
             isMulti
             options={confirmationBranchOptions}
             placeholder="Select confirmation branch..."
@@ -205,7 +194,7 @@ const AllApplicationsTable: React.FC = () => {
             size="sm"
             onChange={(e: any) => {
               if (e !== null) {
-                const confirmationBranches: string[] = []
+                const confirmationBranches: string[] = [];
                 e.map((val: any) => confirmationBranches.push(val.value));
                 setConfirmationBranch(confirmationBranches);
               }

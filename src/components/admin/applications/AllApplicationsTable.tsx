@@ -48,7 +48,6 @@ const AllApplicationsTable: React.FC = () => {
   const [offset, setOffset] = useState(0);
   const [searchText, setSearchText] = useState("");
 
-  const [applicantGroup, setApplicantGroup] = useState<string[]>([]);
   const [status, setStatus] = useState<string[]>([]);
   const [applicationBranch, setApplicationBranch] = useState<string[]>([]);
   const [confirmationBranch, setConfirmationBranch] = useState<string[]>([]);
@@ -58,6 +57,9 @@ const AllApplicationsTable: React.FC = () => {
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
       hexathon: hexathonId,
+      status,
+      applicationBranch,
+      confirmationBranch,
       search: searchText,
       offset,
     },
@@ -96,37 +98,6 @@ const AllApplicationsTable: React.FC = () => {
     label: string;
     value: string;
   }
-
-  const groupOptions = [
-    {
-      label: "Participant",
-      value: "PARTICIPANT",
-    },
-    {
-      label: "Judge",
-      value: "JUDGE",
-    },
-    {
-      label: "Mentor",
-      value: "MENTOR",
-    },
-    {
-      label: "Volunteer",
-      value: "VOLUNTEER",
-    },
-    {
-      label: "Sponsor",
-      value: "SPONSOR",
-    },
-    {
-      label: "Partner",
-      value: "PARTNER",
-    },
-    {
-      label: "Staff",
-      value: "STAFF",
-    },
-  ];
 
   const statusOptions = [
     {
@@ -184,25 +155,6 @@ const AllApplicationsTable: React.FC = () => {
         Filters:
       </Heading>
       <HStack marginLeft={2}>
-        <Box p={4} w="80">
-          <Text size="sm">Applicant Group</Text>
-          <Select<GroupOption, true, GroupBase<GroupOption>>
-            isMulti
-            options={groupOptions}
-            placeholder="Select application group(s)..."
-            closeMenuOnSelect={false}
-            selectedOptionStyle="check"
-            hideSelectedOptions={false}
-            size="sm"
-            onChange={(e: any) => {
-              if (e !== null) {
-                const applicantGroups: string[] = []
-                e.map((val: any) => applicantGroups.push(val.value));
-                setApplicantGroup(applicantGroups);
-              }
-            }}
-          />
-        </Box>
         <Box p={4} w="80">
           <Text size="sm">Status</Text>
           <Select<GroupOption, true, GroupBase<GroupOption>>

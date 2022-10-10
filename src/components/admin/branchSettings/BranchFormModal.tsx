@@ -51,9 +51,9 @@ const BranchFormModal: React.FC<Props> = props => {
     watch,
   } = useForm();
 
-  const [emails, setEmails] = useState(props.defaultValues?.automaticConfirmation?.emails);
+  const [emails, setEmails] = useState<any>("");
   const emailHelpMessage =
-    "Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
+    "Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
   const branchType = watch("type");
   const gradingEnabled = watch("grading.enabled");
   const automaticConfirmationEnabled = watch("automaticConfirmation.enabled");
@@ -67,7 +67,11 @@ const BranchFormModal: React.FC<Props> = props => {
     // Manually parse open/close time into human readable formats
     const openTime = parseDateString(props.defaultValues?.settings?.open);
     const closeTime = parseDateString(props.defaultValues?.settings?.close);
-    setEmails(props.defaultValues?.automaticConfirmation?.emails);
+    setEmails(
+      props.defaultValues?.automaticConfirmation?.emails
+        ? props.defaultValues?.automaticConfirmation?.emails.join(", ")
+        : ""
+    );
     reset({
       ...props.defaultValues,
       settings: {
@@ -77,7 +81,7 @@ const BranchFormModal: React.FC<Props> = props => {
     });
   }, [props.defaultValues, reset]);
 
-  const handleEmailInput = (e: any) => setEmails(e.target.value.split(","));
+  const handleEmailInput = (e: any) => setEmails(e.target.value);
 
   const handleFormSubmit = async (values: any) => {
     const formData = {
@@ -94,9 +98,9 @@ const BranchFormModal: React.FC<Props> = props => {
       automaticConfirmation: {
         enabled: automaticConfirmationEnabled,
         confirmationBranch: automaticConfirmationEnabled
-          ? values.automaticConfirmation.confirmationBranch.id
+          ? values.automaticConfirmation.confirmationBranch
           : undefined,
-        emails: automaticConfirmationEnabled ? emails : undefined,
+        emails: automaticConfirmationEnabled ? emails.replace(/ /g, "").split(",") : undefined,
       },
     };
 
@@ -188,7 +192,7 @@ const BranchFormModal: React.FC<Props> = props => {
                   <FormControl isRequired>
                     <FormLabel>Confirmation Branch</FormLabel>
                     <Select
-                      {...register("automaticConfirmation.confirmationBranch.id")}
+                      {...register("automaticConfirmation.confirmationBranch")}
                       placeholder="Select option"
                     >
                       {props.branches &&
@@ -206,7 +210,7 @@ const BranchFormModal: React.FC<Props> = props => {
                         <InfoIcon marginLeft="3.5px" marginBottom="2.5px" />
                       </Tooltip>
                     </FormLabel>
-                    <Input value={String(emails)} onChange={handleEmailInput} />
+                    <Input value={emails} onChange={handleEmailInput} />
                   </FormControl>
                 </>
               )}

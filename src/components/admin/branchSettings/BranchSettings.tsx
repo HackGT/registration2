@@ -40,7 +40,7 @@ export interface Branch {
   automaticConfirmation?: {
     enabled: boolean;
     confirmationBranch?: any;
-    emails: Array<string>
+    emails: Array<string>;
   };
   grading?: {
     enabled: boolean;

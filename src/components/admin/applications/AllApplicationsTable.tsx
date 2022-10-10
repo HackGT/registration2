@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Heading, HStack, Link as ChakraLink, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Link as ChakraLink, Text, VStack } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { Link, useParams } from "react-router-dom";
@@ -45,6 +45,10 @@ const AllApplicationsTable: React.FC = () => {
   const [status, setStatus] = useState<string[]>([]);
   const [applicationBranch, setApplicationBranch] = useState<string[]>([]);
   const [confirmationBranch, setConfirmationBranch] = useState<string[]>([]);
+
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  const isMobile = width <= 768;
 
   const [{ data, error }] = useAxios({
     method: "GET",
@@ -140,68 +144,134 @@ const AllApplicationsTable: React.FC = () => {
       <Heading as="h5" size="sm" marginLeft={6} marginTop={6}>
         Filters:
       </Heading>
-      <HStack marginLeft={2}>
-        <Box p={4} w="80">
-          <Text size="sm">Status</Text>
-          <Select<GroupOption, true, GroupBase<GroupOption>>
-            maxMenuHeight={120}
-            isMulti
-            options={statusOptions}
-            placeholder="Select status..."
-            closeMenuOnSelect={false}
-            selectedOptionStyle="check"
-            hideSelectedOptions={false}
-            size="sm"
-            onChange={(e: any) => {
-              if (e !== null) {
-                const statuses: string[] = [];
-                e.map((val: any) => statuses.push(val.value));
-                setStatus(statuses);
-              }
-            }}
-          />
-        </Box>
-        <Box p={4} w="80">
-          <Text size="sm">Application Branch</Text>
-          <Select<GroupOption, true, GroupBase<GroupOption>>
-            maxMenuHeight={120}
-            isMulti
-            options={applicationBranchOptions}
-            placeholder="Select application branch..."
-            closeMenuOnSelect={false}
-            selectedOptionStyle="check"
-            hideSelectedOptions={false}
-            size="sm"
-            onChange={(e: any) => {
-              if (e !== null) {
-                const applicationBranches: string[] = [];
-                e.map((val: any) => applicationBranches.push(val.value));
-                setApplicationBranch(applicationBranches);
-              }
-            }}
-          />
-        </Box>
-        <Box p={4} w="80">
-          <Text size="sm">Confirmation Branch</Text>
-          <Select<GroupOption, true, GroupBase<GroupOption>>
-            maxMenuHeight={120}
-            isMulti
-            options={confirmationBranchOptions}
-            placeholder="Select confirmation branch..."
-            closeMenuOnSelect={false}
-            selectedOptionStyle="check"
-            hideSelectedOptions={false}
-            size="sm"
-            onChange={(e: any) => {
-              if (e !== null) {
-                const confirmationBranches: string[] = [];
-                e.map((val: any) => confirmationBranches.push(val.value));
-                setConfirmationBranch(confirmationBranches);
-              }
-            }}
-          />
-        </Box>
-      </HStack>
+      {isMobile ? (
+        <VStack marginLeft={2} spacing={-6}>
+          <Box p={4} w="80">
+            <Text size="xs">Status</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={statusOptions}
+              placeholder="Select status..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const statuses: string[] = [];
+                  e.map((val: any) => statuses.push(val.value));
+                  setStatus(statuses);
+                }
+              }}
+            />
+          </Box>
+          <Box p={4} w="80">
+            <Text size="xs">Application Branch</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={applicationBranchOptions}
+              placeholder="Select application branch..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const applicationBranches: string[] = [];
+                  e.map((val: any) => applicationBranches.push(val.value));
+                  setApplicationBranch(applicationBranches);
+                }
+              }}
+            />
+          </Box>
+          <Box p={4} w="80">
+            <Text size="xs">Confirmation Branch</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={confirmationBranchOptions}
+              placeholder="Select confirmation branch..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const confirmationBranches: string[] = [];
+                  e.map((val: any) => confirmationBranches.push(val.value));
+                  setConfirmationBranch(confirmationBranches);
+                }
+              }}
+            />
+          </Box>
+        </VStack>
+      ) : (
+        <HStack marginLeft={2}>
+          <Box p={4} w="80">
+            <Text size="sm">Status</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={statusOptions}
+              placeholder="Select status..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const statuses: string[] = [];
+                  e.map((val: any) => statuses.push(val.value));
+                  setStatus(statuses);
+                }
+              }}
+            />
+          </Box>
+          <Box p={4} w="80">
+            <Text size="sm">Application Branch</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={applicationBranchOptions}
+              placeholder="Select application branch..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const applicationBranches: string[] = [];
+                  e.map((val: any) => applicationBranches.push(val.value));
+                  setApplicationBranch(applicationBranches);
+                }
+              }}
+            />
+          </Box>
+          <Box p={4} w="80">
+            <Text size="sm">Confirmation Branch</Text>
+            <Select<GroupOption, true, GroupBase<GroupOption>>
+              maxMenuHeight={140}
+              isMulti
+              options={confirmationBranchOptions}
+              placeholder="Select confirmation branch..."
+              closeMenuOnSelect={false}
+              selectedOptionStyle="check"
+              hideSelectedOptions={false}
+              size="sm"
+              onChange={(e: any) => {
+                if (e !== null) {
+                  const confirmationBranches: string[] = [];
+                  e.map((val: any) => confirmationBranches.push(val.value));
+                  setConfirmationBranch(confirmationBranches);
+                }
+              }}
+            />
+          </Box>
+        </HStack>
+      )}
+
       <SearchableTable
         title="Applications"
         data={data?.applications}

@@ -68,17 +68,11 @@ const BranchTemplates: React.FC = () => {
 
   useEffect(() => {
     const curBranch = watchSelectors[0];
-
-    console.log(curBranch)
-
     const template = templates.get(curBranch?.value)?.content || "Hello from Hexlabs!";
     const subject = templates.get(curBranch?.value)?.subject || "Hello!";
-
-    // Set editor content
     const newEditorState = EditorState.createWithContent(ContentState.createFromText(template))
-    setEditorState(newEditorState)
 
-    // Set subject content
+    setEditorState(newEditorState)
     setValue("subject", subject)
   }, watchSelectors)
   
@@ -92,7 +86,7 @@ const BranchTemplates: React.FC = () => {
       const response = await axios.patch(
         apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
         {
-          postApplyTemplate: {
+          postSubmitEmailTemplate: {
             subject: values.subject.value,
             content: data?.text
           }

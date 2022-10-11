@@ -53,21 +53,67 @@ const Dashboard: React.FC = () => {
   const applicationStatusDescription = useMemo(() => {
     switch (application?.status) {
       case "DRAFT":
-        return "Your application isn't submitted yet. Please ensure you finish your application before the deadline!";
+        return (
+          <>
+            Your application isn't submitted yet. Please ensure you finish your application before
+            the deadline!";
+          </>
+        );
       case "APPLIED":
-        return "You've applied and are all set for now! Feel free to edit your application at any time until the registration deadline. Application decisions will be released together some time after applications close.";
+        return (
+          <>
+            You've applied and are all set for now! Feel free to edit your application at any time
+            until the registration deadline. Application decisions will be released together some
+            time after applications close.
+          </>
+        );
       case "ACCEPTED":
-        return "Congratulations! You've been accepted to the event. Please make sure to confirm your attendance below before the deadline closes as there are a limited number of spots.";
+        return (
+          <>
+            Congratulations! You've been accepted to the event. Please make sure to confirm your
+            attendance below before the deadline closes as there are a limited number of spots.
+          </>
+        );
       case "WAITLISTED":
-        return "Thank you for applying! At this time, you have been put on our waitlist. We will be sending more updates to your email address soon.";
+        return (
+          <>
+            Thank you for applying! At this time, you have been put on our waitlist. We will be
+            sending more updates to your email address soon.
+          </>
+        );
       case "CONFIRMED":
-        return "You're all set to attend our event! Please check your email and our social media for any updates. We look forward to seeing you!";
+        return (
+          <>
+            You're all set to attend our event! Please check your email and our social media for any
+            updates. We look forward to seeing you!
+          </>
+        );
       case "DENIED":
-        return "Thank you for taking the time to apply to our event. Unfortunately, we are only able to take a limited number of qualified students each year due to space and funding constraints. We hope to see you again at another one of our events in the future!";
+        return (
+          <>
+            Thank you for taking the time to apply to our event. Unfortunately, we are only able to
+            take a limited number of qualified students each year due to space and funding
+            constraints. You can read more about our admissions process on our{" "}
+            <Link href="https://medium.com/@thehexlabs" target="_blank" color="teal">
+              Medium blog
+            </Link>
+            . We hope to see you again at another one of our events in the future!
+          </>
+        );
       case "NOT_ATTENDING":
-        return "You have confirmed that you will not be attending our event. We are sorry to see you go, but hope to see you again at another one of our events in the future!";
+        return (
+          <>
+            You have confirmed that you will not be attending our event. We are sorry to see you go,
+            but hope to see you again at another one of our events in the future!
+          </>
+        );
       default:
-        return "You haven't started an application yet. Please choose a path from the list below to get started.";
+        return (
+          <>
+            You haven't started an application yet. Please choose a path from the list below to get
+            started.
+          </>
+        );
     }
   }, [application]);
 
@@ -122,7 +168,9 @@ const Dashboard: React.FC = () => {
             />
           </Box>
         </Flex>
-        <Text textAlign="center">{applicationStatusDescription}</Text>
+        <Text textAlign="center" maxWidth="1000px" margin="auto">
+          {applicationStatusDescription}
+        </Text>
       </Box>
       {application && (
         <Box marginX={{ base: "15px", md: 0 }}>

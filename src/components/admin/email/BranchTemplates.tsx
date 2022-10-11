@@ -13,6 +13,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
+  Checkbox
 } from "@chakra-ui/react";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -31,7 +32,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const BranchTemplates: React.FC = () => {
   const { hexathonId } = useParams();
-  const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
+  
   const {
     control,
     setValue,
@@ -43,6 +44,8 @@ const BranchTemplates: React.FC = () => {
   const toast = useToast();
 
   const watchSelectors = watch(["branch"])
+  const [checked, setChecked] = useState(false);
+  const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
 
   const [{ data: branches, loading, error }] = useAxios({
     method: "GET",
@@ -87,6 +90,7 @@ const BranchTemplates: React.FC = () => {
         apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
         {
           postSubmitEmailTemplate: {
+            enabled: checked,
             subject: values.subject.value,
             content: data?.text
           }
@@ -116,14 +120,13 @@ const BranchTemplates: React.FC = () => {
 
   return (
     <Box paddingY={{ base: "32px", md: "32px" }} paddingX={{ base: "16px", md: "32px" }}>
-      <Alert status="warning" marginBottom="20px" title="Warning">
+      <Alert status="info" marginBottom="20px" title="Info">
         <AlertIcon />
-        <AlertTitle>Warning</AlertTitle>
+        <AlertTitle>Info</AlertTitle>
         <AlertDescription>
-          Please be careful when editing the email templates as after you press save, it cannot be undone.
-          Ensure you are selecting the right target group, and double check that the email subject &
-          body is correct. Please reach out to someone on tech team if you have any questions about
-          how to use this form.
+          Edit post-submit email templates here! Pick a branch and edit the template that pops into the email editor,
+          or create a new one if it doesn't exist. Double check that the value of the checkbox is correct. 
+          Please reach out to someone on tech team if you have any questions about how to use this form.
         </AlertDescription>
       </Alert>
       <Heading size="xl" mb="10px">
@@ -156,6 +159,12 @@ const BranchTemplates: React.FC = () => {
               </FormControl>
             )}
           />
+          <Checkbox
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+          >
+            Enable emails
+          </Checkbox>
           <FormControl isInvalid={Boolean(errors.subject)} isRequired>
             <FormLabel>Subject</FormLabel>
             <Input

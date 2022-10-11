@@ -29,22 +29,6 @@ import axios from "axios";
 import styles from "./email.module.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-const applicationStatusOptions = [
-  {
-    label: "Applied",
-    value: "APPLIED",
-  },
-  {
-    label: "Confirmed",
-    value: "CONFIRMED",
-  },
-];
-
-
-/*
-  Flow:
-    Selector Boxes get updated -> updates watchSelectors via watch() -> updates editorState based on the params -> re-renders editorState
-*/
 const BranchTemplates: React.FC = () => {
   const { hexathonId } = useParams();
   const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
@@ -58,12 +42,7 @@ const BranchTemplates: React.FC = () => {
   } = useForm();
   const toast = useToast();
 
-  const watchSelectors = watch(["branch", "status"])
-
-  const [{data: hexathon}] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.HEXATHONS, `/hexathons/${hexathonId}`)
-  });
+  const watchSelectors = watch(["branch"])
 
   const [{ data: branches, loading, error }] = useAxios({
     method: "GET",
@@ -84,28 +63,16 @@ const BranchTemplates: React.FC = () => {
 
   const templates = new Map();
   for (let idx = 0; idx < branches?.length; idx += 1) {
-    templates.set(branches[idx]?.id, [branches[idx]?.postApplyTemplate, branches[idx]?.postConfirmTemplate])
+    templates.set(branches[idx]?.id, branches[idx]?.postSubmitEmailTemplate)
   }
 
   useEffect(() => {
-    const curStatus = watchSelectors[1]?.value;
     const curBranch = watchSelectors[0];
 
-    let subject: string;
-    let template: string;
-    if (curStatus === "APPLIED") {
-      template = templates.get(curBranch?.value)[0]?.content || "Hello from Hexlabs!";
-      subject = templates.get(curBranch?.value)[0]?.subject || `[${hexathon.name}] ${curBranch?.label} - Thank you for Applying!`;
-    } else if (curStatus === "CONFIRMED") {
-      template = templates.get(curBranch?.value)[1]?.content || "Hello from Hexlabs!";
-      subject = templates.get(curBranch?.value)[1]?.subject || `[${hexathon.name}] ${curBranch?.label} - Thank you for RSVPing!`;
-    } else if (curBranch) {
-      template = "";
-      subject = `[${hexathon.name}]`
-    } else {
-      template = "";
-      subject = "";
-    }
+    console.log(curBranch)
+
+    const template = templates.get(curBranch?.value)?.content || "Hello from Hexlabs!";
+    const subject = templates.get(curBranch?.value)?.subject || "Hello!";
 
     // Set editor content
     const newEditorState = EditorState.createWithContent(ContentState.createFromText(template))
@@ -122,28 +89,15 @@ const BranchTemplates: React.FC = () => {
     if (!editorState) return;
 
     try {
-      let response;
-      if (values.status.value === "APPLIED") {
-        response = await axios.patch(
-          apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
-          {
-            postApplyTemplate: {
-              subject: values.subject.value,
-              content: data?.text
-            }
+      const response = await axios.patch(
+        apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
+        {
+          postApplyTemplate: {
+            subject: values.subject.value,
+            content: data?.text
           }
-        );
-      } else {
-        response = await axios.patch(
-          apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
-          {
-            postConfirmTemplate: {
-              subject: values.subject.value,
-              content: data?.html
-            }
-          }
-        );
-      }
+        }
+      );
 
       console.log(response.data);
       toast({
@@ -203,28 +157,6 @@ const BranchTemplates: React.FC = () => {
                     label: branch.name,
                     value: branch.id,
                   }))}
-                />
-                <FormErrorMessage>{fieldError && fieldError.message}</FormErrorMessage>
-              </FormControl>
-            )}
-          />
-          <Controller
-            control={control}
-            name="status"
-            rules={{ required: "Please select a status" }}
-            render={({
-              field: { onChange, onBlur, value, name, ref },
-              fieldState: { error: fieldError },
-            }) => (
-              <FormControl isInvalid={!!fieldError} isRequired>
-                <FormLabel>Application Status</FormLabel>
-                <Select
-                  name={name}
-                  ref={ref}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value}
-                  options={applicationStatusOptions}
                 />
                 <FormErrorMessage>{fieldError && fieldError.message}</FormErrorMessage>
               </FormControl>

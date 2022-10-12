@@ -39,14 +39,20 @@ const CurrentApplicationTile: React.FC<Props> = props => {
       applicationClose: DateTime.fromISO(
         new Date(applicationBranch?.settings?.close).toISOString()
       ),
-      confirmationOpen:
-        confirmationBranch &&
-        DateTime.fromISO(new Date(confirmationBranch?.settings?.open).toISOString()),
-      confirmationClose:
-        confirmationBranch &&
-        DateTime.fromISO(new Date(confirmationBranch?.settings?.close).toISOString()),
+      applicationExtendedDeadline: props.application.applicationExtendedDeadline
+        ? DateTime.fromISO(new Date(props.application.applicationExtendedDeadline).toISOString())
+        : null,
+      confirmationOpen: confirmationBranch
+        ? DateTime.fromISO(new Date(confirmationBranch?.settings?.open).toISOString())
+        : null,
+      confirmationClose: confirmationBranch
+        ? DateTime.fromISO(new Date(confirmationBranch?.settings?.close).toISOString())
+        : null,
+      confirmationExtendedDeadline: props.application.confirmationExtendedDeadline
+        ? DateTime.fromISO(new Date(props.application.confirmationExtendedDeadline).toISOString())
+        : null,
     }),
-    [applicationBranch, confirmationBranch]
+    [props.application, applicationBranch, confirmationBranch]
   );
 
   const branchTitle = useMemo(() => {
@@ -111,29 +117,47 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }
     // If this is a confirmation
     if (props.application.status === "ACCEPTED" && confirmationBranch) {
+      if (!dates.confirmationOpen || !dates.confirmationClose) {
+        return "Unknown dates";
+      }
       if (dates.currentDate < dates.confirmationOpen) {
         return `RSVP's will open on ${dates.confirmationOpen.toLocaleString(
           DateTime.DATETIME_FULL
         )}`;
       }
-      if (dates.currentDate > dates.confirmationClose) {
-        return `RSVP's closed on ${dates.confirmationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
+      if (dates.currentDate < dates.confirmationClose) {
+        return `Accepting RSVP's until ${dates.confirmationClose.toLocaleString(
+          DateTime.DATETIME_FULL
+        )}`;
       }
-      return `Accepting RSVP's until ${dates.confirmationClose.toLocaleString(
-        DateTime.DATETIME_FULL
-      )}`;
+      if (
+        dates.confirmationExtendedDeadline &&
+        dates.currentDate < dates.confirmationExtendedDeadline
+      ) {
+        return `Accepting RSVP's until ${dates.confirmationExtendedDeadline.toLocaleString(
+          DateTime.DATETIME_FULL
+        )}`;
+      }
+      return `RSVP's closed on ${dates.confirmationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
     }
+
     if (dates.currentDate < dates.applicationOpen) {
       return `Submissions open on ${dates.applicationOpen.toLocaleString(DateTime.DATETIME_FULL)}`;
     }
-    if (dates.currentDate > dates.applicationClose) {
-      return `Submissions closed on ${dates.applicationClose.toLocaleString(
+    if (dates.currentDate < dates.applicationClose) {
+      return `Accepting submissions until ${dates.applicationClose.toLocaleString(
         DateTime.DATETIME_FULL
       )}`;
     }
-    return `Accepting submissions until ${dates.applicationClose.toLocaleString(
-      DateTime.DATETIME_FULL
-    )}`;
+    if (
+      dates.applicationExtendedDeadline &&
+      dates.currentDate < dates.applicationExtendedDeadline
+    ) {
+      return `Accepting submissions until ${dates.applicationExtendedDeadline.toLocaleString(
+        DateTime.DATETIME_FULL
+      )}`;
+    }
+    return `Submissions closed on ${dates.applicationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
   }, [dates, confirmationBranch, props.application]);
 
   const updateStatus = useMemo(
@@ -161,21 +185,36 @@ const CurrentApplicationTile: React.FC<Props> = props => {
       navigate(`application/${props.application.id}`);
     };
 
-    if (props.application.status === "DRAFT" && dates.currentDate < dates.applicationClose) {
+    if (
+      props.application.status === "DRAFT" &&
+      (dates.currentDate < dates.applicationClose ||
+        (dates.applicationExtendedDeadline &&
+          dates.currentDate < dates.applicationExtendedDeadline))
+    ) {
       return (
         <Button onClick={openApplication} variant="outline" width="100%" colorScheme="purple">
           Continue Application
         </Button>
       );
     }
-    if (props.application.status === "APPLIED" && dates.currentDate < dates.applicationClose) {
+    if (
+      props.application.status === "APPLIED" &&
+      (dates.currentDate < dates.applicationClose ||
+        (dates.applicationExtendedDeadline &&
+          dates.currentDate < dates.applicationExtendedDeadline))
+    ) {
       return (
         <Button onClick={openApplication} variant="outline" width="100%" colorScheme="purple">
           Edit Application
         </Button>
       );
     }
-    if (props.application.status === "ACCEPTED" && dates.currentDate < dates.confirmationClose) {
+    if (
+      props.application.status === "ACCEPTED" &&
+      ((dates.confirmationClose && dates.currentDate < dates.confirmationClose) ||
+        (dates.confirmationExtendedDeadline &&
+          dates.currentDate < dates.confirmationExtendedDeadline))
+    ) {
       return (
         <Stack gap="5px">
           <Button

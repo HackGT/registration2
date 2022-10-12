@@ -71,8 +71,8 @@ const BranchTemplates: React.FC = () => {
 
   useEffect(() => {
     const curBranch = watchSelectors[0];
-    const template = templates.get(curBranch?.value)?.content || "Hello from Hexlabs!";
-    const subject = templates.get(curBranch?.value)?.subject || "Hello!";
+    const template = templates.get(curBranch?.value)?.content || "";
+    const subject = templates.get(curBranch?.value)?.subject || "";
     const newEditorState = EditorState.createWithContent(ContentState.createFromText(template))
 
     setEditorState(newEditorState)
@@ -91,13 +91,12 @@ const BranchTemplates: React.FC = () => {
         {
           postSubmitEmailTemplate: {
             enabled: checked,
-            subject: values.subject.value,
-            content: data?.text
+            subject: values.subject,
+            content: editorState.getCurrentContent().getPlainText()
           }
         }
       );
 
-      console.log(response.data);
       toast({
         title: "Success",
         description: "Email Template saved successfully!",

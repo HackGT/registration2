@@ -13,7 +13,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  Checkbox
+  Checkbox,
 } from "@chakra-ui/react";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -32,19 +32,18 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const BranchTemplates: React.FC = () => {
   const { hexathonId } = useParams();
-  
+
   const {
     control,
     setValue,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch
+    watch,
   } = useForm();
   const toast = useToast();
 
-  const watchSelectors = watch(["branch"])
-  const [checked, setChecked] = useState(false);
+  const branch = watch("branch");
   const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
 
   const [{ data: branches, loading, error }] = useAxios({
@@ -66,19 +65,21 @@ const BranchTemplates: React.FC = () => {
 
   const templates = new Map();
   for (let idx = 0; idx < branches?.length; idx += 1) {
-    templates.set(branches[idx]?.id, branches[idx]?.postSubmitEmailTemplate)
+    templates.set(branches[idx]?.id, branches[idx]?.postSubmitEmailTemplate);
   }
 
   useEffect(() => {
-    const curBranch = watchSelectors[0];
-    const template = templates.get(curBranch?.value)?.content || "";
-    const subject = templates.get(curBranch?.value)?.subject || "";
-    const newEditorState = EditorState.createWithContent(ContentState.createFromText(template))
+    const subject = templates.get(branch?.value)?.subject ?? "";
+    const enabled = templates.get(branch?.value)?.enabled ?? false;
+    const newEditorState = EditorState.createWithContent(
+      ContentState.createFromText(templates.get(branch?.value)?.content ?? "")
+    );
 
-    setEditorState(newEditorState)
-    setValue("subject", subject)
-  }, watchSelectors)
-  
+    setValue("subject", subject);
+    setValue("enabled", enabled);
+    setEditorState(newEditorState);
+  }, [branch]);
+
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
@@ -86,16 +87,13 @@ const BranchTemplates: React.FC = () => {
     if (!editorState) return;
 
     try {
-      const response = await axios.patch(
-        apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`),
-        {
-          postSubmitEmailTemplate: {
-            enabled: checked,
-            subject: values.subject,
-            content: editorState.getCurrentContent().getPlainText()
-          }
-        }
-      );
+      await axios.patch(apiUrl(Service.REGISTRATION, `/branches/${values.branch.value}`), {
+        postSubmitEmailTemplate: {
+          enabled: values.enabled,
+          subject: values.subject,
+          content: editorState.getCurrentContent().getPlainText(),
+        },
+      });
 
       toast({
         title: "Success",
@@ -108,8 +106,7 @@ const BranchTemplates: React.FC = () => {
       console.error(e);
       toast({
         title: "Error",
-        description:
-          "Something went wrong. Please try again.",
+        description: "Something went wrong. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -123,9 +120,10 @@ const BranchTemplates: React.FC = () => {
         <AlertIcon />
         <AlertTitle>Info</AlertTitle>
         <AlertDescription>
-          Edit post-submit email templates here! Pick a branch and edit the template that pops into the email editor,
-          or create a new one if it doesn't exist. Double check that the value of the checkbox is correct. 
-          Please reach out to someone on tech team if you have any questions about how to use this form.
+          Edit post-submit email templates here! Pick a branch and edit the template that pops into
+          the email editor, or create a new one if it doesn't exist. Double check that the value of
+          the checkbox is correct. Please reach out to someone on tech team if you have any
+          questions about how to use this form.
         </AlertDescription>
       </Alert>
       <Heading size="xl" mb="10px">
@@ -137,17 +135,12 @@ const BranchTemplates: React.FC = () => {
             control={control}
             name="branch"
             rules={{ required: "Please select a branch" }}
-            render={({
-              field: { onChange, onBlur, value, name, ref },
-              fieldState: { error: fieldError },
-            }) => (
+            render={({ field: { value, ref, ...field }, fieldState: { error: fieldError } }) => (
               <FormControl isInvalid={!!fieldError} isRequired>
                 <FormLabel>Branch</FormLabel>
                 <Select
-                  name={name}
+                  {...field}
                   ref={ref}
-                  onChange={onChange}
-                  onBlur={onBlur}
                   value={value}
                   options={branches.map((branch: any) => ({
                     label: branch.name,
@@ -158,12 +151,17 @@ const BranchTemplates: React.FC = () => {
               </FormControl>
             )}
           />
-          <Checkbox
-            checked={checked}
-            onChange={() => setChecked(!checked)}
-          >
-            Enable emails
-          </Checkbox>
+          <Controller
+            control={control}
+            name="enabled"
+            render={({ field: { value, ref, ...field }, fieldState: { error: fieldError } }) => (
+              <FormControl isInvalid={!!fieldError}>
+                <Checkbox {...field} ref={ref} isChecked={!!value}>
+                  Enable emails
+                </Checkbox>
+              </FormControl>
+            )}
+          />
           <FormControl isInvalid={Boolean(errors.subject)} isRequired>
             <FormLabel>Subject</FormLabel>
             <Input
@@ -178,7 +176,7 @@ const BranchTemplates: React.FC = () => {
               // @ts-ignore */}
           <Editor
             onEditorStateChange={newEditorState => setEditorState(newEditorState)}
-            editorState = {editorState}
+            editorState={editorState}
             editorStyle={{
               border: "1px solid #F1F1F1",
               padding: "0 10px",

@@ -11,7 +11,7 @@ const TeamDashboard: React.FC = () => {
   const { user } = useAuth();
   const { hexathonId } = useParams();
 
-  const [{ data: teams, loading, error }] = useAxios(
+  const [{ data: team, loading, error }] = useAxios(
     {
       url: apiUrl(Service.USERS, `/teams/user/${user?.uid}`),
       method: "GET",
@@ -59,8 +59,7 @@ const TeamDashboard: React.FC = () => {
           paddingBottom="30px"
         >
           <Center flexDir="column">
-            {teams.team && <OnTeam team={teams.team} members={teams.profiles} />}
-            {!teams.team && <CreateTeam />}
+            {Object.keys(team).length > 0 ? <OnTeam team={team} /> : <CreateTeam />}
           </Center>
         </Box>
       </Center>

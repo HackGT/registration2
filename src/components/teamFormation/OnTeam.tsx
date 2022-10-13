@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 interface Props {
   team: any;
-  members: any;
 }
 
 const OnTeam: React.FC<Props> = props => {
@@ -21,7 +20,6 @@ const OnTeam: React.FC<Props> = props => {
   const handleAddMember = async () => {
     try {
       await axios.post(apiUrl(Service.USERS, "/teams/add"), {
-        name,
         hexathon: hexathonId,
         email,
       });
@@ -63,7 +61,7 @@ const OnTeam: React.FC<Props> = props => {
       >
         Current members
       </Heading>
-      {props.members.map((member: any) => (
+      {props.team.members.map((member: any) => (
         <Text textAlign="center">
           {member.name.first} {member.name.last} - {member.email}
         </Text>

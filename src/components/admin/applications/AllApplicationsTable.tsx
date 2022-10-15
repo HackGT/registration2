@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import { Link, useParams } from "react-router-dom";
+import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
 import _ from "lodash";
 
@@ -39,21 +39,22 @@ const columns = [
 
 const AllApplicationsTable: React.FC = () => {
   const { hexathonId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [offset, setOffset] = useState(0);
   const [searchText, setSearchText] = useState("");
 
-  const [status, setStatus] = useState<string[]>([]);
-  const [applicationBranch, setApplicationBranch] = useState<string[]>([]);
-  const [confirmationBranch, setConfirmationBranch] = useState<string[]>([]);
+  const [labelDict, setLabelDict] = useState<Record<string, string>>(
+    JSON.parse(localStorage.getItem("labelDict") || "{}")
+  );
 
   const [{ data, error }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
       hexathon: hexathonId,
-      status,
-      applicationBranch,
-      confirmationBranch,
+      status: searchParams.get("status")?.split(","),
+      applicationBranch: searchParams.get("applicationBranch")?.split(","),
+      confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
       search: searchText,
       offset,
     },
@@ -149,6 +150,15 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={statusOptions}
             placeholder="Select status..."
+            value={
+              searchParams
+                .get("status")
+                ?.split(",")
+                .map(status => ({
+                  label: labelDict[status],
+                  value: status,
+                })) || []
+            }
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
@@ -156,8 +166,19 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               if (e !== null) {
                 const statuses: string[] = [];
-                e.map((val: any) => statuses.push(val.value));
-                setStatus(statuses);
+                e.map((val: any) => {
+                  statuses.push(val.value);
+                  labelDict[val.value] = val.label;
+                });
+                const newParams = createSearchParams(searchParams);
+
+                statuses.length > 0
+                  ? newParams.set("status", statuses.join())
+                  : newParams.delete("status");
+
+                localStorage.setItem("labelDict", JSON.stringify(labelDict));
+                setLabelDict(labelDict);
+                setSearchParams(newParams);
               }
             }}
           />
@@ -169,6 +190,15 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={applicationBranchOptions}
             placeholder="Select application branch..."
+            value={
+              searchParams
+                .get("applicationBranch")
+                ?.split(",")
+                .map(applicationBranch => ({
+                  label: labelDict[applicationBranch],
+                  value: applicationBranch,
+                })) || []
+            }
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
@@ -176,8 +206,20 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               if (e !== null) {
                 const applicationBranches: string[] = [];
-                e.map((val: any) => applicationBranches.push(val.value));
-                setApplicationBranch(applicationBranches);
+                e.map((val: any) => {
+                  applicationBranches.push(val.value);
+                  labelDict[val.value] = val.label;
+                });
+
+                const newParams = createSearchParams(searchParams);
+
+                applicationBranches.length > 0
+                  ? newParams.set("applicationBranch", applicationBranches.join())
+                  : newParams.delete("applicationBranch");
+
+                localStorage.setItem("labelDict", JSON.stringify(labelDict));
+                setLabelDict(labelDict);
+                setSearchParams(newParams);
               }
             }}
           />
@@ -189,6 +231,15 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={confirmationBranchOptions}
             placeholder="Select confirmation branch..."
+            value={
+              searchParams
+                .get("confirmationBranch")
+                ?.split(",")
+                .map(confirmationBranch => ({
+                  label: labelDict[confirmationBranch],
+                  value: confirmationBranch,
+                })) || []
+            }
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
@@ -196,8 +247,19 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               if (e !== null) {
                 const confirmationBranches: string[] = [];
-                e.map((val: any) => confirmationBranches.push(val.value));
-                setConfirmationBranch(confirmationBranches);
+                e.map((val: any) => {
+                  confirmationBranches.push(val.value);
+                  labelDict[val.value] = val.label;
+                });
+                const newParams = createSearchParams(searchParams);
+
+                confirmationBranches.length > 0
+                  ? newParams.set("confirmationBranch", confirmationBranches.join())
+                  : newParams.delete("confirmationBranch");
+
+                localStorage.setItem("labelDict", JSON.stringify(labelDict));
+                setLabelDict(labelDict);
+                setSearchParams(newParams);
               }
             }}
           />

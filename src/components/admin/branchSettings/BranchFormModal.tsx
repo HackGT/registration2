@@ -13,14 +13,21 @@ import {
   FormControl,
   FormLabel,
   Checkbox,
-  useDisclosure,
   Tooltip,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
+import QRCode from "react-qr-code";
 
 import { Branch, BranchType } from "./BranchSettings";
 import { AxiosRefetch } from "../../../util/types";
@@ -55,6 +62,7 @@ const BranchFormModal: React.FC<Props> = props => {
   const emailHelpMessage =
     "Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
   const branchType = watch("type");
+  const secret = watch("secret");
   const gradingEnabled = watch("grading.enabled");
   const automaticConfirmationEnabled = watch("automaticConfirmation.enabled");
 
@@ -179,6 +187,25 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormControl>
                   <Checkbox {...register("secret")}>Secret</Checkbox>
                 </FormControl>
+              )}
+              {branchType === "APPLICATION" && secret && (
+                <Popover>
+                  <PopoverTrigger>
+                    <Button>View QR Code</Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>QR Code</PopoverHeader>
+                    <PopoverBody>
+                      <QRCode
+                        size={256}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        value={`https://registration.hexlabs.org/${hexathonId}/application/${props.defaultValues.id}`}
+                      />
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
               )}
               {branchType === "APPLICATION" && (
                 <FormControl>

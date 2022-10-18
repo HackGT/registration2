@@ -20,7 +20,7 @@ const StartApplication = () => {
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
-  navigate(`/${hexathonId}/application/${response.data.id}`);
+  navigate(`/${hexathonId}/application/${response.id}`);
 
   return null;
 };

@@ -22,6 +22,7 @@ import Leaderboard from "./components/admin/grading/Leaderboard";
 import BranchEditor from "./components/branchEditor/BranchEditor";
 import TeamDashboard from "./components/teamFormation/TeamDashboard";
 import AppOutline from "./components/outline/AppOutline";
+import StartApplication from "./components/application/StartApplication";
 
 export const app = initializeApp({
   apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
@@ -50,6 +51,7 @@ export const App = () => {
           <Route path="" element={<SelectEvent />} />
           <Route path=":hexathonId">
             <Route path="" element={<Dashboard />} />
+            <Route path="start-application/:branchId" element={<StartApplication />} />
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
             <Route path="admin" element={<AdminControlsHome />} />
             <Route path="admin/email" element={<EmailHome />} />

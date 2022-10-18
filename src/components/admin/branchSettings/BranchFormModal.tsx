@@ -201,7 +201,7 @@ const BranchFormModal: React.FC<Props> = props => {
                       <QRCode
                         size={256}
                         style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                        value={`https://registration.hexlabs.org/${hexathonId}/application/${props.defaultValues.id}`}
+                        value={apiUrl(Service.REGISTRATION, `/${hexathonId}/start-application/${props.defaultValues.id}`)}
                       />
                     </PopoverBody>
                   </PopoverContent>

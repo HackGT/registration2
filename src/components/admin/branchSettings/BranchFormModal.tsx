@@ -205,10 +205,7 @@ const BranchFormModal: React.FC<Props> = props => {
                       </PopoverHeader>
                       <PopoverBody display="flex" justifyContent="center">
                         <QRCodeSVG
-                          value={apiUrl(
-                            Service.REGISTRATION,
-                            `/${hexathonId}/start-application/${props.defaultValues.id}`
-                          )}
+                          value={`${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`}
                           size={256}
                         />
                       </PopoverBody>
@@ -223,10 +220,7 @@ const BranchFormModal: React.FC<Props> = props => {
                   <Button
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        apiUrl(
-                          Service.REGISTRATION,
-                          `/${hexathonId}/start-application/${props.defaultValues.id}`
-                        )
+                        `${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`
                       );
                       toast({
                         title: "Success!",

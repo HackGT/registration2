@@ -108,15 +108,15 @@ const Navigation: React.FC = () => {
           <Link to={`/${currentHexathon.id}/team/dashboard`}>
             <HeaderItem>Team Management</HeaderItem>
           </Link>
-          {(role.admin || role.exec) && (
-            <Link to={`/${currentHexathon.id}/admin`}>
-              <HeaderItem>Admin Home</HeaderItem>
-            </Link>
-          )}
           {role.member && (
-            <Link to={`/${currentHexathon.id}/grading`}>
-              <HeaderItem>Grading</HeaderItem>
-            </Link>
+            <>
+              <Link to={`/${currentHexathon.id}/admin`}>
+                <HeaderItem>Admin Home</HeaderItem>
+              </Link>
+              <Link to={`/${currentHexathon.id}/grading`}>
+                <HeaderItem>Grading</HeaderItem>
+              </Link>
+            </>
           )}
         </>
       )}

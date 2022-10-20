@@ -29,6 +29,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Flex,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen, apiUrl, Service } from "@hex-labs/core";
 import axios from "axios";
@@ -121,11 +122,13 @@ const ApplicationDetailPage: React.FC = () => {
               }}
             />
           </Tag>
-          <Button onClick={onOpen} size="xs" colorScheme='messenger'>Applicant Settings</Button>
         </HStack>
-        <Heading as="h1" size="xl" fontWeight={700}>
-          {data.name}
-        </Heading>
+        <Flex>
+          <Heading as="h1" size="xl" fontWeight={700} flex={8}>
+            {data.name}
+          </Heading>
+          <Button onClick={onOpen} size="sm" colorScheme='messenger' flex={1} minWidth="-moz-initial">Applicant Settings</Button>
+        </Flex>
         <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Branch: {data.applicationBranch.name}
         </Heading>
@@ -422,7 +425,7 @@ const ApplicationDetailPage: React.FC = () => {
                     (!branch.name.includes("Confirmation") && !branch.name.includes("Accepted")) && 
                     <option value={branch.id}>{branch.name}</option>
                   ))}
-                  <option value="None">None</option>
+                  <option value={undefined}>None</option>
                 </Select>
               </FormControl>
               <FormControl>
@@ -438,7 +441,7 @@ const ApplicationDetailPage: React.FC = () => {
                     (branch.name.includes("Confirmation") || branch.name.includes("Accepted")) && 
                     <option value={branch.id}>{branch.name}</option>
                   ))}
-                  <option value="None">None</option>
+                  <option value={undefined}>None</option>
                 </Select>
               </FormControl>
               <FormControl>
@@ -453,7 +456,7 @@ const ApplicationDetailPage: React.FC = () => {
                   {applicationStatusOptions.map((status: any) => (
                     <option value={status.value}>{status.label}</option>
                   ))}
-                  <option value="None">None</option>
+                  <option value={undefined}>None</option>
                 </Select>
               </FormControl>
               <FormControl>

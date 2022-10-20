@@ -13,14 +13,24 @@ import {
   FormControl,
   FormLabel,
   Checkbox,
-  useDisclosure,
   Tooltip,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  PopoverFooter,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
+import { QRCodeSVG } from "qrcode.react";
 
 import { Branch, BranchType } from "./BranchSettings";
 import { AxiosRefetch } from "../../../util/types";
@@ -55,6 +65,7 @@ const BranchFormModal: React.FC<Props> = props => {
   const emailHelpMessage =
     "Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
   const branchType = watch("type");
+  const secret = watch("secret");
   const gradingEnabled = watch("grading.enabled");
   const automaticConfirmationEnabled = watch("automaticConfirmation.enabled");
 
@@ -179,6 +190,56 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormControl>
                   <Checkbox {...register("secret")}>Secret</Checkbox>
                 </FormControl>
+              )}
+              {branchType === "APPLICATION" && secret && props.defaultValues && (
+                <HStack display="flex" justifyContent="center">
+                  <Popover>
+                    <PopoverTrigger>
+                      <Button>View QR Code</Button>
+                    </PopoverTrigger>
+                    <PopoverContent bg="#d1d1d1">
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverHeader display="flex" justifyContent="center">
+                        QR Code
+                      </PopoverHeader>
+                      <PopoverBody display="flex" justifyContent="center">
+                        <QRCodeSVG
+                          value={apiUrl(
+                            Service.REGISTRATION,
+                            `/${hexathonId}/start-application/${props.defaultValues.id}`
+                          )}
+                          size={256}
+                        />
+                      </PopoverBody>
+                      <PopoverFooter>
+                        <Text fontSize="12px">
+                          Ask participants to scan this code to be directed to the application page
+                          for this branch
+                        </Text>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        apiUrl(
+                          Service.REGISTRATION,
+                          `/${hexathonId}/start-application/${props.defaultValues.id}`
+                        )
+                      );
+                      toast({
+                        title: "Success!",
+                        description: "Link has been copied.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                      });
+                    }}
+                  >
+                    Copy link
+                  </Button>
+                </HStack>
               )}
               {branchType === "APPLICATION" && (
                 <FormControl>

@@ -16,23 +16,84 @@ import {
   TagLabel,
   TagRightIcon,
   useToast,
+  Button,
+  Select,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+  FormControl,
+  FormLabel,
+  Input,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen, apiUrl, Service } from "@hex-labs/core";
+import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
 
-import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
+import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
+
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
   const [{ data, loading, error }] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`)
   );
+  const [{ data: branches }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: data?.hexathon,
+    },
+  });
+
+  const {
+    formState: { isSubmitting },
+    handleSubmit,
+    register,
+  } = useForm();
   const toast = useToast();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
+
+  const onSubmit = async (values: any) => {
+    try {
+      console.log(values.applicationBranch);
+
+      await axios.post(apiUrl(Service.REGISTRATION, `/${applicationId}/actions/update-application`), {
+        applicationBranch: values.applicationBranch,
+        confirmationBranch: values.confirmationBranch,
+        status: values.status,
+        applicationExtendedDeadline: values.applicationExtendedDeadline,
+        confirmationExtendedDeadline: (values.confirmationExtendedDeadline ? values.confirmationExtendedDeadline : "")
+      });
+      
+      toast({
+        title: "Success",
+        description: "Applicant settings saved successfully!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      console.error(e);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Box paddingX="30px" paddingTop="20px">
@@ -60,6 +121,7 @@ const ApplicationDetailPage: React.FC = () => {
               }}
             />
           </Tag>
+          <Button onClick={onOpen} size="xs" colorScheme='messenger'>Applicant Settings</Button>
         </HStack>
         <Heading as="h1" size="xl" fontWeight={700}>
           {data.name}
@@ -337,6 +399,94 @@ const ApplicationDetailPage: React.FC = () => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            <Heading size="lg">Edit Applicant Details</Heading>
+            <ModalCloseButton />
+          </ModalHeader>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <ModalBody>
+              <FormControl>
+                <FormLabel>Application Branch</FormLabel>
+                <Select
+                  id="applicationBranch"
+                  {...register("applicationBranch", {
+                    required: "Please enter an application branch"
+                  })}
+                  defaultValue={data.applicationBranch.id}
+                >
+                  {branches.map((branch: any) => (
+                    (!branch.name.includes("Confirmation") && !branch.name.includes("Accepted")) && 
+                    <option value={branch.id}>{branch.name}</option>
+                  ))}
+                  <option value="None">None</option>
+                </Select>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Confirmation Branch</FormLabel>
+                <Select
+                  id="confirmationBranch"
+                  {...register("confirmationBranch", {
+                    required: "Please enter an confirmation branch"
+                  })}
+                  defaultValue={data.confirmationBranch ? data.confirmationBranch.id : "None"}
+                >
+                  {branches.map((branch: any) => (
+                    (branch.name.includes("Confirmation") || branch.name.includes("Accepted")) && 
+                    <option value={branch.id}>{branch.name}</option>
+                  ))}
+                  <option value="None">None</option>
+                </Select>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  id="status"
+                  {...register("status", {
+                    required: "Please enter a status"
+                  })}
+                  defaultValue={data.status}
+                >
+                  {applicationStatusOptions.map((status: any) => (
+                    <option value={status.value}>{status.label}</option>
+                  ))}
+                  <option value="None">None</option>
+                </Select>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Application Extended Deadline</FormLabel>
+                <Input
+                  id="applicationDeadline"
+                  {...register("applicationDeadline", {
+                    required: "Please enter an application deadline"
+                  })}
+                  placeholder="mm/dd/yyyy" type="date" defaultValue={
+                  data.applicationExtendedDeadline
+                    ? (new Date(data.applicationExtendedDeadline)).toISOString().split('T')[0]
+                    : (new Date(data.applicationBranch.settings.close)).toISOString().split('T')[0]
+                }/>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Application Confirmation Deadline</FormLabel>
+                <Input 
+                  id="confirmationDeadline"
+                  {...register("confirmationDeadline")}
+                  placeholder="mm/dd/yyyy" type="date" defaultValue={
+                  data.confirmationBranch && data.confirmationExtendedDeadline
+                  ? (new Date(data.confirmationExtendedDeadline)).toISOString().split('T')[0]
+                  : ""
+                }/>
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button type="submit" isLoading={isSubmitting}>Submit</Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

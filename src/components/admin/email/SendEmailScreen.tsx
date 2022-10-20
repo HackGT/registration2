@@ -27,38 +27,8 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 
 import styles from "./email.module.css";
+import { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-const applicationStatusOptions = [
-  {
-    label: "Draft",
-    value: "DRAFT",
-  },
-  {
-    label: "Applied",
-    value: "APPLIED",
-  },
-  {
-    label: "Accepted",
-    value: "ACCEPTED",
-  },
-  {
-    label: "Waitlisted",
-    value: "WAITLISTED",
-  },
-  {
-    label: "Confirmed",
-    value: "CONFIRMED",
-  },
-  {
-    label: "Denied",
-    value: "DENIED",
-  },
-  {
-    label: "Not Attending",
-    value: "NOT_ATTENDING",
-  },
-];
 
 const EmailScreen: React.FC = () => {
   const { hexathonId } = useParams();

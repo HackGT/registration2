@@ -1,6 +1,37 @@
 import React from "react";
 import { Tag } from "@chakra-ui/react";
 
+export const applicationStatusOptions = [
+  {
+    label: "Draft",
+    value: "DRAFT",
+  },
+  {
+    label: "Applied",
+    value: "APPLIED",
+  },
+  {
+    label: "Accepted",
+    value: "ACCEPTED",
+  },
+  {
+    label: "Waitlisted",
+    value: "WAITLISTED",
+  },
+  {
+    label: "Confirmed",
+    value: "CONFIRMED",
+  },
+  {
+    label: "Denied",
+    value: "DENIED",
+  },
+  {
+    label: "Not Attending",
+    value: "NOT_ATTENDING",
+  },
+];
+
 interface Props {
   status: string;
   includeColor?: boolean;

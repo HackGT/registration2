@@ -191,7 +191,7 @@ const BranchFormModal: React.FC<Props> = props => {
                   <Checkbox {...register("secret")}>Secret</Checkbox>
                 </FormControl>
               )}
-              {branchType === "APPLICATION" && secret && (
+              {branchType === "APPLICATION" && secret && props.defaultValues && (
                 <HStack display="flex" justifyContent="center">
                   <Popover>
                     <PopoverTrigger>

@@ -151,7 +151,7 @@ const AllApplicationsTable: React.FC = () => {
     setStatusSelectValue(statuses);
     setApplicationBranchSelectValue(applicationBranches);
     setConfirmationBranchSelectValue(confirmationBranches);
-  }, []);
+  }, [searchParams]);
 
   const onPreviousClicked = () => {
     setOffset(offset - limit);
@@ -215,7 +215,6 @@ const AllApplicationsTable: React.FC = () => {
                   ? newParams.set("status", statuses.map(status => status.value).join())
                   : newParams.delete("status");
 
-                setStatusSelectValue(statuses);
                 setSearchParams(newParams);
               }
             }}
@@ -252,7 +251,6 @@ const AllApplicationsTable: React.FC = () => {
                     )
                   : newParams.delete("applicationBranch");
 
-                setApplicationBranchSelectValue(applicationBranches);
                 setSearchParams(newParams);
               }
             }}
@@ -290,7 +288,6 @@ const AllApplicationsTable: React.FC = () => {
                     )
                   : newParams.delete("confirmationBranch");
 
-                setConfirmationBranchSelectValue(confirmationBranches);
                 setSearchParams(newParams);
               }
             }}

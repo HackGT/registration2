@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
@@ -50,7 +50,7 @@ const AllApplicationsTable: React.FC = () => {
     []
   );
 
-  const [{ data, error }] = useAxios({
+  const [{ data, loading, error }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
@@ -62,7 +62,7 @@ const AllApplicationsTable: React.FC = () => {
       offset,
     },
   });
-  const [{ data: branches, error: branchesError }] = useAxios({
+  const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
@@ -130,28 +130,30 @@ const AllApplicationsTable: React.FC = () => {
       }
     });
 
-    applicationBranchOptions.map((branch: any) => {
-      if (applicationBranchValues?.includes(branch.value)) {
-        applicationBranches.push({
-          label: branch.label,
-          value: branch.value,
-        });
-      }
-    });
+    applicationBranchOptions.length > 0 &&
+      applicationBranchOptions.map((branch: any) => {
+        if (applicationBranchValues?.includes(branch.value)) {
+          applicationBranches.push({
+            label: branch.label,
+            value: branch.value,
+          });
+        }
+      });
 
-    confirmationBranchOptions.map((branch: any) => {
-      if (confirmationBranchValues?.includes(branch.value)) {
-        confirmationBranches.push({
-          label: branch.label,
-          value: branch.value,
-        });
-      }
-    });
+    confirmationBranchOptions.length > 0 &&
+      confirmationBranchOptions.map((branch: any) => {
+        if (confirmationBranchValues?.includes(branch.value)) {
+          confirmationBranches.push({
+            label: branch.label,
+            value: branch.value,
+          });
+        }
+      });
 
     setStatusSelectValue(statuses);
     setApplicationBranchSelectValue(applicationBranches);
     setConfirmationBranchSelectValue(confirmationBranches);
-  }, [searchParams]);
+  }, [searchParams, applicationBranchOptions, confirmationBranchOptions]);
 
   const onPreviousClicked = () => {
     setOffset(offset - limit);
@@ -172,7 +174,6 @@ const AllApplicationsTable: React.FC = () => {
   if (branchesError) {
     return <ErrorScreen error={branchesError} />;
   }
-
   // Filters
 
   interface GroupOption extends OptionBase {
@@ -251,6 +252,7 @@ const AllApplicationsTable: React.FC = () => {
                     )
                   : newParams.delete("applicationBranch");
 
+                setApplicationBranchSelectValue(applicationBranches);
                 setSearchParams(newParams);
               }
             }}

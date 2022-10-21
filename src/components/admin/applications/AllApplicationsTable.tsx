@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
@@ -42,9 +42,12 @@ const AllApplicationsTable: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [offset, setOffset] = useState(0);
   const [searchText, setSearchText] = useState("");
-
-  const [labelDict, setLabelDict] = useState<Record<string, string>>(
-    JSON.parse(localStorage.getItem("labelDict") || "{}")
+  const [statusSelectValue, setStatusSelectValue] = useState<GroupOption[]>([]);
+  const [applicationBranchSelectValue, setApplicationBranchSelectValue] = useState<GroupOption[]>(
+    []
+  );
+  const [confirmationBranchSelectValue, setConfirmationBranchSelectValue] = useState<GroupOption[]>(
+    []
   );
 
   const [{ data, error }] = useAxios({
@@ -66,33 +69,6 @@ const AllApplicationsTable: React.FC = () => {
       hexathon: hexathonId,
     },
   });
-
-  const onPreviousClicked = () => {
-    setOffset(offset - limit);
-  };
-
-  const onNextClicked = () => {
-    setOffset(offset + limit);
-  };
-
-  const onSearchTextChange = (event: any) => {
-    setSearchText(event.target.value);
-    setOffset(0);
-  };
-
-  if (error) {
-    return <ErrorScreen error={error} />;
-  }
-  if (branchesError) {
-    return <ErrorScreen error={branchesError} />;
-  }
-
-  // Filters
-
-  interface GroupOption extends OptionBase {
-    label: string;
-    value: string;
-  }
 
   const statusOptions = [
     {
@@ -136,6 +112,74 @@ const AllApplicationsTable: React.FC = () => {
         .map((branch: any) => ({ label: branch.name, value: branch.id }))
     : [];
 
+  useEffect(() => {
+    const statusValues = searchParams.get("status");
+    const applicationBranchValues = searchParams.get("applicationBranch");
+    const confirmationBranchValues = searchParams.get("confirmationBranch");
+
+    const statuses: GroupOption[] = [];
+    const applicationBranches: GroupOption[] = [];
+    const confirmationBranches: GroupOption[] = [];
+
+    statusOptions.map(status => {
+      if (statusValues?.includes(status.value)) {
+        statuses.push({
+          label: status.label,
+          value: status.value,
+        });
+      }
+    });
+
+    applicationBranchOptions.map((branch: any) => {
+      if (applicationBranchValues?.includes(branch.value)) {
+        applicationBranches.push({
+          label: branch.label,
+          value: branch.value,
+        });
+      }
+    });
+
+    confirmationBranchOptions.map((branch: any) => {
+      if (confirmationBranchValues?.includes(branch.value)) {
+        confirmationBranches.push({
+          label: branch.label,
+          value: branch.value,
+        });
+      }
+    });
+
+    setStatusSelectValue(statuses);
+    setApplicationBranchSelectValue(applicationBranches);
+    setConfirmationBranchSelectValue(confirmationBranches);
+  }, []);
+
+  const onPreviousClicked = () => {
+    setOffset(offset - limit);
+  };
+
+  const onNextClicked = () => {
+    setOffset(offset + limit);
+  };
+
+  const onSearchTextChange = (event: any) => {
+    setSearchText(event.target.value);
+    setOffset(0);
+  };
+
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
+  if (branchesError) {
+    return <ErrorScreen error={branchesError} />;
+  }
+
+  // Filters
+
+  interface GroupOption extends OptionBase {
+    label: string;
+    value: string;
+  }
+
   return (
     <>
       <Heading as="h5" size="sm" marginLeft={6} marginTop={6}>
@@ -150,34 +194,28 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={statusOptions}
             placeholder="Select status..."
-            value={
-              searchParams
-                .get("status")
-                ?.split(",")
-                .map(status => ({
-                  label: labelDict[status],
-                  value: status,
-                })) || []
-            }
+            value={statusSelectValue}
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
             size="sm"
             onChange={(e: any) => {
+              const statuses: GroupOption[] = [];
               if (e !== null) {
-                const statuses: string[] = [];
                 e.map((val: any) => {
-                  statuses.push(val.value);
-                  labelDict[val.value] = val.label;
+                  statuses.push({
+                    label: val.label,
+                    value: val.value,
+                  });
                 });
+
                 const newParams = createSearchParams(searchParams);
 
                 statuses.length > 0
-                  ? newParams.set("status", statuses.join())
+                  ? newParams.set("status", statuses.map(status => status.value).join())
                   : newParams.delete("status");
 
-                localStorage.setItem("labelDict", JSON.stringify(labelDict));
-                setLabelDict(labelDict);
+                setStatusSelectValue(statuses);
                 setSearchParams(newParams);
               }
             }}
@@ -190,35 +228,31 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={applicationBranchOptions}
             placeholder="Select application branch..."
-            value={
-              searchParams
-                .get("applicationBranch")
-                ?.split(",")
-                .map(applicationBranch => ({
-                  label: labelDict[applicationBranch],
-                  value: applicationBranch,
-                })) || []
-            }
+            value={applicationBranchSelectValue}
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
             size="sm"
             onChange={(e: any) => {
               if (e !== null) {
-                const applicationBranches: string[] = [];
+                const applicationBranches: GroupOption[] = [];
                 e.map((val: any) => {
-                  applicationBranches.push(val.value);
-                  labelDict[val.value] = val.label;
+                  applicationBranches.push({
+                    label: val.label,
+                    value: val.value,
+                  });
                 });
 
                 const newParams = createSearchParams(searchParams);
 
                 applicationBranches.length > 0
-                  ? newParams.set("applicationBranch", applicationBranches.join())
+                  ? newParams.set(
+                      "applicationBranch",
+                      applicationBranches.map(applicationBranch => applicationBranch.value).join()
+                    )
                   : newParams.delete("applicationBranch");
 
-                localStorage.setItem("labelDict", JSON.stringify(labelDict));
-                setLabelDict(labelDict);
+                setApplicationBranchSelectValue(applicationBranches);
                 setSearchParams(newParams);
               }
             }}
@@ -231,34 +265,32 @@ const AllApplicationsTable: React.FC = () => {
             isMulti
             options={confirmationBranchOptions}
             placeholder="Select confirmation branch..."
-            value={
-              searchParams
-                .get("confirmationBranch")
-                ?.split(",")
-                .map(confirmationBranch => ({
-                  label: labelDict[confirmationBranch],
-                  value: confirmationBranch,
-                })) || []
-            }
+            value={confirmationBranchSelectValue}
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
             size="sm"
             onChange={(e: any) => {
               if (e !== null) {
-                const confirmationBranches: string[] = [];
+                const confirmationBranches: GroupOption[] = [];
                 e.map((val: any) => {
-                  confirmationBranches.push(val.value);
-                  labelDict[val.value] = val.label;
+                  confirmationBranches.push({
+                    label: val.label,
+                    value: val.value,
+                  });
                 });
                 const newParams = createSearchParams(searchParams);
 
                 confirmationBranches.length > 0
-                  ? newParams.set("confirmationBranch", confirmationBranches.join())
+                  ? newParams.set(
+                      "confirmationBranch",
+                      confirmationBranches
+                        .map(confirmationBranch => confirmationBranch.value)
+                        .join()
+                    )
                   : newParams.delete("confirmationBranch");
 
-                localStorage.setItem("labelDict", JSON.stringify(labelDict));
-                setLabelDict(labelDict);
+                setConfirmationBranchSelectValue(confirmationBranches);
                 setSearchParams(newParams);
               }
             }}

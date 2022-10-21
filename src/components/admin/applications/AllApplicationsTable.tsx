@@ -252,7 +252,6 @@ const AllApplicationsTable: React.FC = () => {
                     )
                   : newParams.delete("applicationBranch");
 
-                setApplicationBranchSelectValue(applicationBranches);
                 setSearchParams(newParams);
               }
             }}

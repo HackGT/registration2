@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Heading,
@@ -30,8 +30,9 @@ import {
   FormLabel,
   Input,
   Flex,
+  Checkbox,
 } from "@chakra-ui/react";
-import { ErrorScreen, LoadingScreen, apiUrl, Service } from "@hex-labs/core";
+import { ErrorScreen, LoadingScreen, apiUrl, Service, handleAxiosError } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
@@ -39,14 +40,15 @@ import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
-import { QRCodeSVG } from "qrcode.react";
+import { parseDateString } from "../../../util/util";
+import { Branch, BranchType } from "../branchSettings/BranchSettings";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
   const [{ data, loading, error }] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`)
   );
-  const [{ data: branches }] = useAxios({
+  const [{ data: branches, loading: branchesLoading }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
@@ -58,29 +60,39 @@ const ApplicationDetailPage: React.FC = () => {
     formState: { isSubmitting },
     handleSubmit,
     register,
+    reset,
+    setValue,
+    watch
   } = useForm();
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const extendedDeadlines = watch("extendedDeadlines.enabled");
+  const appStatus = watch("status");
 
-  if (loading) return <LoadingScreen />;
+  useEffect(() => {
+    reset();
+  }, [data]) 
+
+  useEffect(() => {
+    if (!(["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(appStatus))) {
+      setValue("confirmationBranch", null);
+    } else {
+      setValue("confirmationBranch", data.confirmationBranch ? data.confirmationBranch.id : "")
+    }
+  }, [appStatus])
+
+  if (loading || branchesLoading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
   const onSubmit = async (values: any) => {
     try {
-      console.log(values.applicationBranch);
-
-      await axios.post(
-        apiUrl(Service.REGISTRATION, `/${applicationId}/actions/update-application`),
-        {
-          applicationBranch: values.applicationBranch,
-          confirmationBranch: values.confirmationBranch,
-          status: values.status,
-          applicationExtendedDeadline: values.applicationExtendedDeadline,
-          confirmationExtendedDeadline: values.confirmationExtendedDeadline
-            ? values.confirmationExtendedDeadline
-            : "",
-        }
-      );
+      await axios.post(apiUrl(Service.REGISTRATION, `/applications/${applicationId}/actions/update-application`), {
+        applicationBranch: values.applicationBranch || null,
+        confirmationBranch: values.confirmationBranch || null,
+        status: values.status,
+        applicationExtendedDeadline: values.extendedDeadlines.enabled ? (values.applicationDeadline || null) : null,
+        confirmationExtendedDeadline: values.extendedDeadlines.enabled ? (values.confirmationDeadline || null) : null
+      });
 
       toast({
         title: "Success",
@@ -89,15 +101,9 @@ const ApplicationDetailPage: React.FC = () => {
         duration: 5000,
         isClosable: true,
       });
+      setTimeout(() => window.location.reload(), 1000);
     } catch (e: any) {
-      console.error(e);
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      handleAxiosError(e)
     }
   };
 
@@ -142,12 +148,6 @@ const ApplicationDetailPage: React.FC = () => {
             Applicant Settings
           </Button>
         </Flex>
-        <QRCodeSVG
-          value={JSON.stringify({
-            uid: data?.userId,
-          })}
-          style={{ alignSelf: "center" }}
-        />
         <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Branch: {data.applicationBranch.name}
         </Heading>
@@ -431,89 +431,80 @@ const ApplicationDetailPage: React.FC = () => {
           </ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <ModalBody>
-              <FormControl>
-                <FormLabel>Application Branch</FormLabel>
-                <Select
-                  id="applicationBranch"
-                  {...register("applicationBranch", {
-                    required: "Please enter an application branch",
-                  })}
-                  defaultValue={data.applicationBranch.id}
-                >
-                  {branches.map(
-                    (branch: any) =>
-                      !branch.name.includes("Confirmation") &&
-                      !branch.name.includes("Accepted") && (
-                        <option value={branch.id}>{branch.name}</option>
-                      )
-                  )}
-                  <option value={undefined}>None</option>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Confirmation Branch</FormLabel>
-                <Select
-                  id="confirmationBranch"
-                  {...register("confirmationBranch", {
-                    required: "Please enter an confirmation branch",
-                  })}
-                  defaultValue={data.confirmationBranch ? data.confirmationBranch.id : "None"}
-                >
-                  {branches.map(
-                    (branch: any) =>
-                      (branch.name.includes("Confirmation") ||
-                        branch.name.includes("Accepted")) && (
-                        <option value={branch.id}>{branch.name}</option>
-                      )
-                  )}
-                  <option value={undefined}>None</option>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Status</FormLabel>
-                <Select
-                  id="status"
-                  {...register("status", {
-                    required: "Please enter a status",
-                  })}
-                  defaultValue={data.status}
-                >
-                  {applicationStatusOptions.map((status: any) => (
-                    <option value={status.value}>{status.label}</option>
-                  ))}
-                  <option value={undefined}>None</option>
-                </Select>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Application Extended Deadline</FormLabel>
-                <Input
-                  id="applicationDeadline"
-                  {...register("applicationDeadline", {
-                    required: "Please enter an application deadline",
-                  })}
-                  placeholder="mm/dd/yyyy"
-                  type="date"
-                  defaultValue={
-                    data.applicationExtendedDeadline
-                      ? new Date(data.applicationExtendedDeadline).toISOString().split("T")[0]
-                      : new Date(data.applicationBranch.settings.close).toISOString().split("T")[0]
-                  }
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Application Confirmation Deadline</FormLabel>
-                <Input
-                  id="confirmationDeadline"
-                  {...register("confirmationDeadline")}
-                  placeholder="mm/dd/yyyy"
-                  type="date"
-                  defaultValue={
-                    data.confirmationBranch && data.confirmationExtendedDeadline
-                      ? new Date(data.confirmationExtendedDeadline).toISOString().split("T")[0]
-                      : ""
-                  }
-                />
-              </FormControl>
+              <VStack spacing={3}>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    id="status"
+                    {...register("status", {
+                      required: "Please enter a status",
+                    })}
+                    defaultValue={data.status}
+                  >
+                    {applicationStatusOptions.map((status: any) => (
+                      <option value={status.value}>{status.label}</option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Application Branch</FormLabel>
+                  <Select
+                    id="applicationBranch"
+                    {...register("applicationBranch", {
+                      required: "Please enter an application branch",
+                    })}
+                    defaultValue={data.applicationBranch.id}
+                  >
+                    <option value="">None</option>
+                    {branches.filter((branch: Branch) => branch.type === BranchType.APPLICATION).map((branch: any) => (
+                      <option value={branch.id}>{branch.name}</option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Confirmation Branch</FormLabel>
+                  <Select
+                    id="confirmationBranch"
+                    {...register("confirmationBranch")}
+                    defaultValue={data.confirmationBranch ? data.confirmationBranch.id : ""}
+                  >
+                    <option value="">None</option>
+                    {branches.filter((branch: Branch) => branch.type === BranchType.CONFIRMATION).map((branch: any) => ( 
+                      <option value={branch.id}>{branch.name}</option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <Checkbox {...register("extendedDeadlines.enabled")} value={(data.applicationExtendedDeadline !== null || extendedDeadlines)}>Enable Extended Deadlines?</Checkbox>
+                </FormControl>
+                {extendedDeadlines && (
+                <FormControl>
+                  <FormLabel>Application Extended Deadline</FormLabel>
+                  <Input
+                    id="applicationDeadline"
+                    {...register("applicationDeadline")}
+                    placeholder="mm/dd/yyyy, hh:mm"
+                    defaultValue={
+                      parseDateString(data.applicationExtendedDeadline) || ""
+                    }
+                  />
+                </FormControl>
+                )}
+                {["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(appStatus) 
+                  && extendedDeadlines && (
+                <FormControl>
+                  <FormLabel>Application Confirmation Deadline</FormLabel>
+                  <Input
+                    id="confirmationDeadline"
+                    {...register("confirmationDeadline")}
+                    placeholder="mm/dd/yyyy, hh:mm"
+                    defaultValue={
+                      parseDateString(data.confirmationExtendedDeadline) || ""
+                    }
+                  />
+                </FormControl>
+                )}
+              </VStack>
             </ModalBody>
             <ModalFooter>
               <Button type="submit" isLoading={isSubmitting}>

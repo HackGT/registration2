@@ -39,7 +39,7 @@ import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
-
+import { QRCodeSVG } from "qrcode.react";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -69,14 +69,19 @@ const ApplicationDetailPage: React.FC = () => {
     try {
       console.log(values.applicationBranch);
 
-      await axios.post(apiUrl(Service.REGISTRATION, `/${applicationId}/actions/update-application`), {
-        applicationBranch: values.applicationBranch,
-        confirmationBranch: values.confirmationBranch,
-        status: values.status,
-        applicationExtendedDeadline: values.applicationExtendedDeadline,
-        confirmationExtendedDeadline: (values.confirmationExtendedDeadline ? values.confirmationExtendedDeadline : "")
-      });
-      
+      await axios.post(
+        apiUrl(Service.REGISTRATION, `/${applicationId}/actions/update-application`),
+        {
+          applicationBranch: values.applicationBranch,
+          confirmationBranch: values.confirmationBranch,
+          status: values.status,
+          applicationExtendedDeadline: values.applicationExtendedDeadline,
+          confirmationExtendedDeadline: values.confirmationExtendedDeadline
+            ? values.confirmationExtendedDeadline
+            : "",
+        }
+      );
+
       toast({
         title: "Success",
         description: "Applicant settings saved successfully!",
@@ -127,8 +132,22 @@ const ApplicationDetailPage: React.FC = () => {
           <Heading as="h1" size="xl" fontWeight={700} flex={8}>
             {data.name}
           </Heading>
-          <Button onClick={onOpen} size="sm" colorScheme='messenger' flex={1} minWidth="-moz-initial">Applicant Settings</Button>
+          <Button
+            onClick={onOpen}
+            size="sm"
+            colorScheme="messenger"
+            flex={1}
+            minWidth="-moz-initial"
+          >
+            Applicant Settings
+          </Button>
         </Flex>
+        <QRCodeSVG
+          value={JSON.stringify({
+            uid: data?.userId,
+          })}
+          style={{ alignSelf: "center" }}
+        />
         <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Branch: {data.applicationBranch.name}
         </Heading>
@@ -417,14 +436,17 @@ const ApplicationDetailPage: React.FC = () => {
                 <Select
                   id="applicationBranch"
                   {...register("applicationBranch", {
-                    required: "Please enter an application branch"
+                    required: "Please enter an application branch",
                   })}
                   defaultValue={data.applicationBranch.id}
                 >
-                  {branches.map((branch: any) => (
-                    (!branch.name.includes("Confirmation") && !branch.name.includes("Accepted")) && 
-                    <option value={branch.id}>{branch.name}</option>
-                  ))}
+                  {branches.map(
+                    (branch: any) =>
+                      !branch.name.includes("Confirmation") &&
+                      !branch.name.includes("Accepted") && (
+                        <option value={branch.id}>{branch.name}</option>
+                      )
+                  )}
                   <option value={undefined}>None</option>
                 </Select>
               </FormControl>
@@ -433,14 +455,17 @@ const ApplicationDetailPage: React.FC = () => {
                 <Select
                   id="confirmationBranch"
                   {...register("confirmationBranch", {
-                    required: "Please enter an confirmation branch"
+                    required: "Please enter an confirmation branch",
                   })}
                   defaultValue={data.confirmationBranch ? data.confirmationBranch.id : "None"}
                 >
-                  {branches.map((branch: any) => (
-                    (branch.name.includes("Confirmation") || branch.name.includes("Accepted")) && 
-                    <option value={branch.id}>{branch.name}</option>
-                  ))}
+                  {branches.map(
+                    (branch: any) =>
+                      (branch.name.includes("Confirmation") ||
+                        branch.name.includes("Accepted")) && (
+                        <option value={branch.id}>{branch.name}</option>
+                      )
+                  )}
                   <option value={undefined}>None</option>
                 </Select>
               </FormControl>
@@ -449,7 +474,7 @@ const ApplicationDetailPage: React.FC = () => {
                 <Select
                   id="status"
                   {...register("status", {
-                    required: "Please enter a status"
+                    required: "Please enter a status",
                   })}
                   defaultValue={data.status}
                 >
@@ -464,28 +489,36 @@ const ApplicationDetailPage: React.FC = () => {
                 <Input
                   id="applicationDeadline"
                   {...register("applicationDeadline", {
-                    required: "Please enter an application deadline"
+                    required: "Please enter an application deadline",
                   })}
-                  placeholder="mm/dd/yyyy" type="date" defaultValue={
-                  data.applicationExtendedDeadline
-                    ? (new Date(data.applicationExtendedDeadline)).toISOString().split('T')[0]
-                    : (new Date(data.applicationBranch.settings.close)).toISOString().split('T')[0]
-                }/>
+                  placeholder="mm/dd/yyyy"
+                  type="date"
+                  defaultValue={
+                    data.applicationExtendedDeadline
+                      ? new Date(data.applicationExtendedDeadline).toISOString().split("T")[0]
+                      : new Date(data.applicationBranch.settings.close).toISOString().split("T")[0]
+                  }
+                />
               </FormControl>
               <FormControl>
                 <FormLabel>Application Confirmation Deadline</FormLabel>
-                <Input 
+                <Input
                   id="confirmationDeadline"
                   {...register("confirmationDeadline")}
-                  placeholder="mm/dd/yyyy" type="date" defaultValue={
-                  data.confirmationBranch && data.confirmationExtendedDeadline
-                  ? (new Date(data.confirmationExtendedDeadline)).toISOString().split('T')[0]
-                  : ""
-                }/>
+                  placeholder="mm/dd/yyyy"
+                  type="date"
+                  defaultValue={
+                    data.confirmationBranch && data.confirmationExtendedDeadline
+                      ? new Date(data.confirmationExtendedDeadline).toISOString().split("T")[0]
+                      : ""
+                  }
+                />
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button type="submit" isLoading={isSubmitting}>Submit</Button>
+              <Button type="submit" isLoading={isSubmitting}>
+                Submit
+              </Button>
             </ModalFooter>
           </form>
         </ModalContent>

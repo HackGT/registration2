@@ -45,6 +45,7 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
+import { DateTime } from "luxon";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import { parseDateString } from "../../../util/util";
@@ -276,6 +277,14 @@ const ApplicationDetailPage: React.FC = () => {
                   Is 18 years old?
                 </Text>
                 {data.applicationData.adult ? "Yes" : "No"}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Date of Birth
+                </Text>
+                {data.applicationData.dateOfBirth
+                  ? DateTime.fromISO(data.applicationData.dateOfBirth).toLocaleString()
+                  : "N/A"}
               </Text>
               <Text>
                 <Text color="gray" fontSize="sm">

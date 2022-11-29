@@ -11,7 +11,6 @@ import {
   VStack,
   Stack,
   Link,
-  HStack,
   Tag,
   TagLabel,
   TagRightIcon,
@@ -31,6 +30,13 @@ import {
   Input,
   Flex,
   Checkbox,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverTrigger,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen, apiUrl, Service, handleAxiosError } from "@hex-labs/core";
 import axios from "axios";
@@ -38,11 +44,11 @@ import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
+import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import { parseDateString } from "../../../util/util";
 import { Branch, BranchType } from "../branchSettings/BranchSettings";
-import { QRCodeSVG } from "qrcode.react";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -116,11 +122,11 @@ const ApplicationDetailPage: React.FC = () => {
   };
 
   return (
-    <Box paddingX="30px" paddingTop="20px">
-      <VStack spacing="6px" align="left" paddingBottom="10px">
-        <HStack>
-          <ApplicationStatusTag status={data.status} includeColor />
-          <Tag>
+    <Box paddingX={{ base: "10px", sm: "30px" }} paddingTop="20px">
+      <VStack spacing="1px" align="left" paddingBottom="10px">
+        <Stack flexDirection={{ base: "column", sm: "row" }} gap="1.5">
+          <ApplicationStatusTag status={data.status} includeColor alignSelf="start" />
+          <Tag alignSelf="start" margin="0 !important">
             <TagLabel>{`ID: ${data.id}`}</TagLabel>
             <TagRightIcon
               as={CopyIcon}
@@ -141,27 +147,50 @@ const ApplicationDetailPage: React.FC = () => {
               }}
             />
           </Tag>
-        </HStack>
-        <Flex>
-          <Heading as="h1" size="xl" fontWeight={700} flex={8}>
-            {data.name}
-          </Heading>
-          <Button
-            onClick={onOpen}
-            size="sm"
-            colorScheme="messenger"
-            flex={1}
-            minWidth="-moz-initial"
-          >
-            Applicant Settings
-          </Button>
-        </Flex>
-        <QRCodeSVG
-          value={JSON.stringify({
-            uid: data?.userId,
-          })}
-          style={{ alignSelf: "center" }}
-        />
+        </Stack>
+        <Stack justifyContent="space-between" flexDirection={{ base: "column", md: "row" }}>
+          <Box>
+            <Heading as="h1" size="xl" fontWeight={700} flex={8}>
+              {data.name}
+            </Heading>
+          </Box>
+          <Box>
+            <Flex gap="4px" flexDirection={{ base: "column", md: "row" }}>
+              <Button onClick={onOpen} size="sm" colorScheme="blue" alignSelf="start">
+                Edit Applicant Settings
+              </Button>
+              <Popover>
+                <PopoverTrigger>
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    alignSelf="start"
+                    disabled={data.status !== "CONFIRMED"}
+                  >
+                    View Check-In QR Code
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody display="flex" justifyContent="center">
+                    <QRCodeSVG
+                      value={JSON.stringify({
+                        uid: data?.userId,
+                      })}
+                      style={{ alignSelf: "center" }}
+                    />
+                  </PopoverBody>
+                  <PopoverFooter>
+                    <Text fontSize="12px">
+                      Use this QR code to scan & check-in users when needed in an emergency.
+                    </Text>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
+            </Flex>
+          </Box>
+        </Stack>
         <Heading as="h2" size="s" fontWeight={500} color="gray">
           Application Branch: {data.applicationBranch.name}
         </Heading>

@@ -50,6 +50,7 @@ import { DateTime } from "luxon";
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import { parseDateString } from "../../../util/util";
 import { Branch, BranchType } from "../branchSettings/BranchSettings";
+import RetrieveGTIDModal from "./RetrieveGTIDModal";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -230,6 +231,16 @@ const ApplicationDetailPage: React.FC = () => {
                   School Email
                 </Text>
                 {data.applicationData.schoolEmail}
+              </Text>
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  GTID
+                </Text>
+                {data.applicationData.school === "Georgia Institute of Technology" ? (
+                  <RetrieveGTIDModal data={data} />
+                ) : (
+                  <Text>N/A</Text>
+                )}
               </Text>
             </Stack>
           </AccordionPanel>

@@ -31,11 +31,11 @@ import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
+import { InfoIcon } from "@chakra-ui/icons";
 
 import { Branch, BranchType } from "./BranchSettings";
 import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
-import { InfoIcon } from "@chakra-ui/icons";
 
 enum FormModalType {
   Create = "CREATE",

@@ -142,9 +142,9 @@ const BranchTemplates: React.FC = () => {
                   {...field}
                   ref={ref}
                   value={value}
-                  options={branches.map((branch: any) => ({
-                    label: branch.name,
-                    value: branch.id,
+                  options={branches.map((option: any) => ({
+                    label: option.name,
+                    value: option.id,
                   }))}
                 />
                 <FormErrorMessage>{fieldError && fieldError.message}</FormErrorMessage>

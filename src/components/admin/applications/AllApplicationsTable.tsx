@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, LoadingScreen, SearchableTable, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
@@ -50,7 +50,7 @@ const AllApplicationsTable: React.FC = () => {
     []
   );
 
-  const [{ data, loading, error }] = useAxios({
+  const [{ data, error }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
@@ -70,90 +70,75 @@ const AllApplicationsTable: React.FC = () => {
     },
   });
 
-  const statusOptions = [
-    {
-      label: "Draft",
-      value: "DRAFT",
-    },
-    {
-      label: "Applied",
-      value: "APPLIED",
-    },
-    {
-      label: "Accepted",
-      value: "ACCEPTED",
-    },
-    {
-      label: "Waitlisted",
-      value: "WAITLISTED",
-    },
-    {
-      label: "Confirmed",
-      value: "CONFIRMED",
-    },
-    {
-      label: "Denied",
-      value: "DENIED",
-    },
-    {
-      label: "Not Attending",
-      value: "NOT_ATTENDING",
-    },
-  ];
+  const statusOptions = useMemo(
+    () => [
+      {
+        label: "Draft",
+        value: "DRAFT",
+      },
+      {
+        label: "Applied",
+        value: "APPLIED",
+      },
+      {
+        label: "Accepted",
+        value: "ACCEPTED",
+      },
+      {
+        label: "Waitlisted",
+        value: "WAITLISTED",
+      },
+      {
+        label: "Confirmed",
+        value: "CONFIRMED",
+      },
+      {
+        label: "Denied",
+        value: "DENIED",
+      },
+      {
+        label: "Not Attending",
+        value: "NOT_ATTENDING",
+      },
+    ],
+    []
+  );
 
-  const applicationBranchOptions = branches
-    ? branches
-        .filter((branch: any) => branch.type === "APPLICATION")
-        .map((branch: any) => ({ label: branch.name, value: branch.id }))
-    : [];
-  const confirmationBranchOptions = branches
-    ? branches
-        .filter((branch: any) => branch.type === "CONFIRMATION")
-        .map((branch: any) => ({ label: branch.name, value: branch.id }))
-    : [];
+  const applicationBranchOptions: any[] = useMemo(
+    () =>
+      branches
+        ? branches
+            .filter((branch: any) => branch.type === "APPLICATION")
+            .map((branch: any) => ({ label: branch.name, value: branch.id }))
+        : [],
+    [branches]
+  );
+
+  const confirmationBranchOptions: any[] = useMemo(
+    () =>
+      branches
+        ? branches
+            .filter((branch: any) => branch.type === "CONFIRMATION")
+            .map((branch: any) => ({ label: branch.name, value: branch.id }))
+        : [],
+    [branches]
+  );
 
   useEffect(() => {
-    const statusValues = searchParams.get("status");
-    const applicationBranchValues = searchParams.get("applicationBranch");
-    const confirmationBranchValues = searchParams.get("confirmationBranch");
-
-    const statuses: GroupOption[] = [];
-    const applicationBranches: GroupOption[] = [];
-    const confirmationBranches: GroupOption[] = [];
-
-    statusOptions.map(status => {
-      if (statusValues?.includes(status.value)) {
-        statuses.push({
-          label: status.label,
-          value: status.value,
-        });
-      }
-    });
-
-    applicationBranchOptions.length > 0 &&
-      applicationBranchOptions.map((branch: any) => {
-        if (applicationBranchValues?.includes(branch.value)) {
-          applicationBranches.push({
-            label: branch.label,
-            value: branch.value,
-          });
-        }
-      });
-
-    confirmationBranchOptions.length > 0 &&
-      confirmationBranchOptions.map((branch: any) => {
-        if (confirmationBranchValues?.includes(branch.value)) {
-          confirmationBranches.push({
-            label: branch.label,
-            value: branch.value,
-          });
-        }
-      });
-
-    setStatusSelectValue(statuses);
-    setApplicationBranchSelectValue(applicationBranches);
-    setConfirmationBranchSelectValue(confirmationBranches);
-  }, [searchParams, applicationBranchOptions, confirmationBranchOptions]);
+    setStatusSelectValue(
+      statusOptions.filter(status => searchParams.get("status")?.includes(status.value))
+    );
+    setApplicationBranchSelectValue(
+      applicationBranchOptions.filter(branch =>
+        searchParams.get("applicationBranch")?.includes(branch.value)
+      )
+    );
+    setConfirmationBranchSelectValue(
+      confirmationBranchOptions.filter(branch =>
+        searchParams.get("confirmationBranch")?.includes(branch.value)
+      )
+    );
+  }, [searchParams, statusOptions, applicationBranchOptions, confirmationBranchOptions]);
 
   const onPreviousClicked = () => {
     setOffset(offset - limit);
@@ -174,8 +159,8 @@ const AllApplicationsTable: React.FC = () => {
   if (branchesError) {
     return <ErrorScreen error={branchesError} />;
   }
-  // Filters
 
+  // Filters
   interface GroupOption extends OptionBase {
     label: string;
     value: string;
@@ -203,7 +188,7 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               const statuses: GroupOption[] = [];
               if (e !== null) {
-                e.map((val: any) => {
+                e.forEach((val: any) => {
                   statuses.push({
                     label: val.label,
                     value: val.value,
@@ -229,6 +214,7 @@ const AllApplicationsTable: React.FC = () => {
             options={applicationBranchOptions}
             placeholder="Select application branch..."
             value={applicationBranchSelectValue}
+            isLoading={branchesLoading}
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
@@ -236,7 +222,7 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               if (e !== null) {
                 const applicationBranches: GroupOption[] = [];
-                e.map((val: any) => {
+                e.forEach((val: any) => {
                   applicationBranches.push({
                     label: val.label,
                     value: val.value,
@@ -265,6 +251,7 @@ const AllApplicationsTable: React.FC = () => {
             options={confirmationBranchOptions}
             placeholder="Select confirmation branch..."
             value={confirmationBranchSelectValue}
+            isLoading={branchesLoading}
             closeMenuOnSelect={false}
             selectedOptionStyle="check"
             hideSelectedOptions={false}
@@ -272,7 +259,7 @@ const AllApplicationsTable: React.FC = () => {
             onChange={(e: any) => {
               if (e !== null) {
                 const confirmationBranches: GroupOption[] = [];
-                e.map((val: any) => {
+                e.forEach((val: any) => {
                   confirmationBranches.push({
                     label: val.label,
                     value: val.value,

@@ -76,19 +76,19 @@ const ApplicationDetailPage: React.FC = () => {
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const extendedDeadlines = watch("extendedDeadlines.enabled");
-  const appStatus = watch("status");
+  const status = watch("status");
 
   useEffect(() => {
     reset();
-  }, [data]);
+  }, [data, reset]);
 
   useEffect(() => {
-    if (!["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(appStatus)) {
+    if (!["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(status)) {
       setValue("confirmationBranch", null);
     } else {
       setValue("confirmationBranch", data.confirmationBranch ? data.confirmationBranch.id : "");
     }
-  }, [appStatus]);
+  }, [status]);
 
   if (loading || branchesLoading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
@@ -504,8 +504,8 @@ const ApplicationDetailPage: React.FC = () => {
                     })}
                     defaultValue={data.status}
                   >
-                    {applicationStatusOptions.map((status: any) => (
-                      <option value={status.value}>{status.label}</option>
+                    {applicationStatusOptions.map((statusOption: any) => (
+                      <option value={statusOption.value}>{statusOption.label}</option>
                     ))}
                   </Select>
                 </FormControl>
@@ -560,7 +560,7 @@ const ApplicationDetailPage: React.FC = () => {
                     />
                   </FormControl>
                 )}
-                {["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(appStatus) &&
+                {["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(status) &&
                   extendedDeadlines && (
                     <FormControl>
                       <FormLabel>Application Confirmation Deadline</FormLabel>

@@ -11,7 +11,6 @@ interface Props {
 
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
-  const imageURL = `/events/${props.id}.jpeg`; // this is relative to public
 
   const handleClick = () => {
     // Set expiration time of one week
@@ -50,8 +49,13 @@ const EventCard: React.FC<Props> = props => {
           right="0px"
           top="0px"
           height="148px"
-          src={imageURL}
-          alt="event image"
+          src={`/events/${props.id}.jpeg`}
+          onError={(e: any) => {
+            // add fallback if no logo exists
+            e.target.onError = null;
+            e.target.src = "/events/default-event-logo.jpeg";
+          }}
+          alt="hexathon event logo"
         />
       </HStack>
     </Box>

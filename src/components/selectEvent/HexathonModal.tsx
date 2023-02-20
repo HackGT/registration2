@@ -9,7 +9,7 @@ const HexathonModal: React.FC = () => {
 
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data: any) => {
-    const response = await axios.post(
+    await axios.post(
       apiUrl(Service.HEXATHONS, `/hexathons`),
       {
           name: data.name,
@@ -21,6 +21,8 @@ const HexathonModal: React.FC = () => {
           coverImage: data.coverImage
       }
     );
+
+    onClose();
   }
 
   return (

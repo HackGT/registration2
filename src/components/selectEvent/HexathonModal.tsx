@@ -1,15 +1,27 @@
 import React from "react";
 import {Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, FormControl, FormLabel, Input, Checkbox, VStack} from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { apiUrl, Service } from "@hex-labs/core";
 
-interface Props {
-}
-
-const HexathonModal: React.FC<Props> = props => {
+const HexathonModal: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = async (data: any) => {
+    const response = await axios.post(
+      apiUrl(Service.HEXATHONS, `/hexathons`),
+      {
+          name: data.name,
+          shortCode: data.shortCode,
+          isActive: data.isActive,
+          startDate: `${data.startDate}T00:16:30.934Z`,
+          endDate: `${data.endDate}T00:16:30.934Z`,
+          emailHeaderImage: data.emailHeaderImage,
+          coverImage: data.coverImage
+      }
+    );
+  }
 
   return (
     <>

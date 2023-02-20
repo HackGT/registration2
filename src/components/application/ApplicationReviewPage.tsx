@@ -24,6 +24,7 @@ interface Props {
   hasPrevPage: boolean;
   prevPage: () => void;
   nextPage: () => void;
+  setPage: (pageNumber: number) => void;
   refetch: AxiosRefetch;
 }
 
@@ -77,7 +78,7 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           submit below.
         </Alert>
       )}
-      {props.branch.formPages.map((formPage: any) => (
+      {props.branch.formPages.map((formPage: any, index: number) => (
         <CommonForm
           schema={formPage.jsonSchema}
           uiSchema={formPage.uiSchema}
@@ -87,7 +88,12 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           disabled
           readonly
         >
-          <div />
+          <Button
+            onClick={() => props.setPage(index)}
+            marginBottom="30px"
+          >
+            Edit Response
+          </Button>
         </CommonForm>
       ))}
       <HStack justify="space-evenly">

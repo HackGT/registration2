@@ -42,6 +42,11 @@ const ApplicationContainer = () => {
   if (loading || !branch) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
+  const setPage = async (pageNumber: number) => {
+      window.scrollTo(0, 0);
+      setFormPageNumber(pageNumber);
+  };
+
   const prevPage = async () => {
     if (formPageNumber > 0) {
       window.scrollTo(0, 0);
@@ -91,6 +96,7 @@ const ApplicationContainer = () => {
           hasPrevPage={formPageNumber > 0}
           prevPage={prevPage}
           nextPage={nextPage}
+          setPage={setPage}
           refetch={refetch}
         />
       </Box>

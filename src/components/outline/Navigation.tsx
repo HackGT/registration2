@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { apiUrl, Header, HeaderItem, Service, useAuth } from "@hex-labs/core";
+import { apiUrl, Header, HeaderItem, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import axios from "axios";
+import useAxios from "axios-hooks";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -46,6 +47,20 @@ const Navigation: React.FC = () => {
 
     getRoles();
   }, [user?.uid]);
+
+  const [{ data: branches, loading: branchesLoading }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: currentHexathon?.id,
+    },
+  });
+
+  if (branchesLoading) {
+    return <LoadingScreen />
+  }
+
+  const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
 
   const rightHeaderItem = currentHexathon ? (
     <HeaderItem onMouseEnter={onOpen} onMouseLeave={onClose}>
@@ -113,9 +128,11 @@ const Navigation: React.FC = () => {
               <Link to={`/${currentHexathon.id}/admin`}>
                 <HeaderItem>Admin Home</HeaderItem>
               </Link>
-              <Link to={`/${currentHexathon.id}/grading`}>
-                <HeaderItem>Grading</HeaderItem>
-              </Link>
+              { gradingEnabled && (
+                <Link to={`/${currentHexathon.id}/grading`} state={{gradingEnabled}}>
+                  <HeaderItem>Grading</HeaderItem>
+                </Link>
+              )}
             </>
           )}
         </>

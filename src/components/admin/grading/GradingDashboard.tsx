@@ -2,8 +2,10 @@ import React from "react";
 import {
   Box,
   Button,
+  Center,
   CircularProgress,
   CircularProgressLabel,
+  Flex,
   Heading,
   Stack,
   Text,
@@ -12,6 +14,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
+import { WarningIcon } from "@chakra-ui/icons";
 
 const GradingDashboardCard: React.FC<{
   title: string;
@@ -43,7 +46,37 @@ const GradingDashboard: React.FC = () => {
     },
   });
 
+  const [{ data: branches, loading: branchesLoading }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
+
+  if (branchesLoading) {
+    return <LoadingScreen />
+  }
+
+  const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
+
   if (loading) return <LoadingScreen />;
+  if (!gradingEnabled) {
+    return (
+      <Box p="5" borderWidth="1px">
+      <Center>
+        <Flex align="baseline" mt={5}>
+          <WarningIcon w={375} h={175} />
+        </Flex>
+      </Center>
+      <Center>
+        <Text textAlign="center" fontSize="20px" fontWeight="bold">
+          Grading is currently disabled for this hexathon.
+        </Text>
+      </Center>
+    </Box>
+    )
+  }
   if (error) return <ErrorScreen error={error} />;
 
   const options = [

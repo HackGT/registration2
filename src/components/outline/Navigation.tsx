@@ -48,6 +48,20 @@ const Navigation: React.FC = () => {
     getRoles();
   }, [user?.uid]);
 
+  const [{ data: branches, loading: branchesLoading }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: currentHexathon?.id,
+    },
+  });
+
+  if (branchesLoading) {
+    return <LoadingScreen />
+  }
+
+  const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
+
   const rightHeaderItem = currentHexathon ? (
     <HeaderItem onMouseEnter={onOpen} onMouseLeave={onClose}>
       <Menu isOpen={isOpen}>
@@ -99,20 +113,6 @@ const Navigation: React.FC = () => {
     </Link>
   );
 
-  const [{ data: branches, loading: branchesLoading }] = useAxios({
-    method: "GET",
-    url: apiUrl(Service.REGISTRATION, "/branches"),
-    params: {
-      hexathon: currentHexathon?.id,
-    },
-  });
-
-  if (branchesLoading) {
-    return <LoadingScreen />
-  }
-
-  const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
-
   return (
     <Header rightItem={rightHeaderItem} rightItemMobile={rightHeaderItemMobile}>
       {currentHexathon && (
@@ -129,7 +129,7 @@ const Navigation: React.FC = () => {
                 <HeaderItem>Admin Home</HeaderItem>
               </Link>
               { gradingEnabled && (
-                <Link to={`/${currentHexathon.id}/grading`}>
+                <Link to={`/${currentHexathon.id}/grading`} state={{gradingEnabled}}>
                   <HeaderItem>Grading</HeaderItem>
                 </Link>
               )}

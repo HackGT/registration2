@@ -31,20 +31,22 @@ const Statistics: React.FC = () => {
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
-
+  // const datakeys  = Object.keys(data);
   const {
     userStatistics,
     applicationStatistics,
     confirmationStatistics,
     applicationDataStatistics,
+    confirmationDataStatistics,
   } = data;
-
+  // console.log(applicationDataStatistics);
   return (
     <Box w="100%" p={5}>
       <Stack>
         <VStack>
           <Heading as="h1">Statistics</Heading>
           <Text fontSize="lg" color="grey">
+            {/* {Object.keys(applicationDataStatistics)} */}
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
         </VStack>
@@ -130,6 +132,12 @@ const Statistics: React.FC = () => {
           <GraphAccordionSection
             name="Applied Users Detailed Stats & Graphs"
             data={applicationDataStatistics}
+            index={0}
+          />
+          <GraphAccordionSection
+            name="Confirmed Users Detailed Stats & Graphs"
+            data={confirmationDataStatistics}
+            index={1}
           />
         </Accordion>
       </Stack>

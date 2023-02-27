@@ -22,7 +22,5 @@ export const dateToServerFormat = (date?: string | null) => {
     return "";
   }
 
-  return DateTime.fromFormat(date, "f", {
-    zone: "America/New_York",
-  }).toISO();
+  return DateTime.fromJSDate(new Date(date), { zone: "America/New_York" }).toISO();
 };

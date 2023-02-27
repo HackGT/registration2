@@ -62,8 +62,6 @@ const BranchFormModal: React.FC<Props> = props => {
   } = useForm();
 
   const [emails, setEmails] = useState<any>("");
-  const emailHelpMessage =
-    "Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org";
   const branchType = watch("type");
   const secret = watch("secret");
   const gradingEnabled = watch("grading.enabled");
@@ -75,14 +73,14 @@ const BranchFormModal: React.FC<Props> = props => {
   );
 
   useEffect(() => {
-    // Manually parse open/close time into human readable formats
-    const openTime = parseDateString(props.defaultValues?.settings?.open);
-    const closeTime = parseDateString(props.defaultValues?.settings?.close);
     setEmails(
       props.defaultValues?.automaticConfirmation?.emails
         ? props.defaultValues?.automaticConfirmation?.emails.join(", ")
         : ""
     );
+    // Manually parse open/close time into human readable formats
+    const openTime = parseDateString(props.defaultValues?.settings?.open);
+    const closeTime = parseDateString(props.defaultValues?.settings?.close);
     reset({
       ...props.defaultValues,
       settings: {
@@ -261,7 +259,12 @@ const BranchFormModal: React.FC<Props> = props => {
                   <FormControl isRequired>
                     <FormLabel>
                       Emails
-                      <Tooltip hasArrow label={emailHelpMessage} bg="#d4d4d4" placement="right">
+                      <Tooltip
+                        hasArrow
+                        label="Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org"
+                        bg="#d4d4d4"
+                        placement="right"
+                      >
                         <InfoIcon marginLeft="3.5px" marginBottom="2.5px" />
                       </Tooltip>
                     </FormLabel>

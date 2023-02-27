@@ -8,7 +8,25 @@ const HexathonModal: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { register, handleSubmit } = useForm();
-  const onSubmit = async (data: any) => {
+
+  const uploadFile = async (fileData: FileList) => {
+    const file = fileData[0]
+    const multipartFormData = new FormData();
+    multipartFormData.append("file", file, file.name);
+    const response = await axios.post(apiUrl(Service.FILES, "/files/upload-cdn"), multipartFormData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.storageId;
+  }
+
+  const onSubmit = async (data: any) => {    
+    const emailHeaderImageID = await uploadFile(data.emailHeaderImage);
+    const coverImageID = await uploadFile(data.coverImage);
+    const cdnUrl = "https://storage.googleapis.com/hexlabs-public-cdn/"
+
     await axios.post(
       apiUrl(Service.HEXATHONS, `/hexathons`),
       {
@@ -17,8 +35,8 @@ const HexathonModal: React.FC = () => {
           isActive: data.isActive,
           startDate: `${data.startDate}T00:16:30.934Z`,
           endDate: `${data.endDate}T00:16:30.934Z`,
-          emailHeaderImage: data.emailHeaderImage,
-          coverImage: data.coverImage
+          emailHeaderImage: cdnUrl + emailHeaderImageID,
+          coverImage: cdnUrl + coverImageID
       }
     );
 
@@ -55,11 +73,11 @@ const HexathonModal: React.FC = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel>Email Header Image</FormLabel>
-                  <Input {...register("emailHeaderImage")} />
+                  <Input type="file" {...register("emailHeaderImage")} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Cover Image</FormLabel>
-                  <Input {...register("coverImage")} />
+                  <Input type="file" {...register("coverImage")} />
                 </FormControl>
                 <Checkbox {...register("isActive")}>Active</Checkbox>
 

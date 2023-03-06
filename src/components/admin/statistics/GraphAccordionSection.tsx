@@ -17,7 +17,6 @@ import TableView from "./graphs/TableView";
 interface IProps {
   name: string;
   data: Record<string, any>;
-  index: number;
 }
 
 function sortObjectByValue(obj: any) {
@@ -49,19 +48,15 @@ function sortObjectByKey(obj: any) {
 
 const GraphAccordionSection: React.FC<IProps> = props => {
   // console.log(props);
-  // if (props.index == 1) {
-  //   props.data.shirtSizeData = {"M": 12, "S": 2};
-  //   props.data.dietaryRestrictionsData = {"Veg": 12, "Non-veg": 2};
-  // } else {
-  //   props.data.marketingData = {"MLH": 10, "Google": 30, "Friend": 50};
-  // }
-  const isStatisticsAvailable = (props.index == 0) ? (
+  // props.data.shirtSizeData = {"M": 12, "S": 2};
+  // props.data.dietaryRestrictionsData = {"Veg": 12, "Non-veg": 2};
+  // props.data.marketingData = {"MLH": 10, "Google": 30, "Friend": 50};
+  const isStatisticsAvailable = (
     Object.keys(props.data.schoolData).length ||
     Object.keys(props.data.majorData).length ||
     Object.keys(props.data.schoolYearData).length ||
     Object.keys(props.data.genderData).length ||
-    Object.keys(props.data.marketingData).length
-  ) : (
+    Object.keys(props.data.marketingData).length ||
     Object.keys(props.data.shirtSizeData).length ||
     Object.keys(props.data.dietaryRestrictionsData).length
   );
@@ -79,39 +74,34 @@ const GraphAccordionSection: React.FC<IProps> = props => {
         </h2>
         <AccordionPanel pb={4}>
           <VStack>
-            {(props.index == 0) ? (
-              <HStack>
-                {Object.keys(props.data.schoolData).length && (
-                  <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
+            <HStack>
+              {Object.keys(props.data.schoolData).length && (
+                <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
+              )}
+              <VStack spacing={10}>
+                {Object.keys(props.data.majorData).length && (
+                  <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
                 )}
-                <VStack spacing={10}>
-                  {Object.keys(props.data.majorData).length && (
-                    <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
-                  )}
-                  {Object.keys(props.data.schoolYearData).length && (
-                    <BarGraphView
-                      heading="School Year"
-                      data={sortObjectByKey(props.data.schoolYearData)}
-                    />
-                  )}
-                  {Object.keys(props.data.genderData).length && (
-                    <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
-                  )}
-                  {Object.keys(props.data.marketingData).length && (
-                    <PieGraphView heading="Marketing Source" data={sortObjectByKey(props.data.marketingData)} />
-                  )}
-                </VStack>
-              </HStack>
-            ) : (
-              <HStack>
-              {Object.keys(props.data.shirtSizeData).length && (
+                {Object.keys(props.data.schoolYearData).length && (
+                  <BarGraphView
+                    heading="School Year"
+                    data={sortObjectByKey(props.data.schoolYearData)}
+                  />
+                )}
+                {Object.keys(props.data.genderData).length && (
+                  <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
+                )}
+                {Object.keys(props.data.marketingData).length && (
+                  <PieGraphView heading="Marketing Source" data={sortObjectByKey(props.data.marketingData)} />
+                )}
+                {Object.keys(props.data.shirtSizeData).length && (
                   <TableView heading="Shirt Size" data={sortObjectByValue(props.data.shirtSizeData)} />
                 )}
                 {Object.keys(props.data.dietaryRestrictionsData).length && (
                   <TableView heading="Dietary Restrictions" data={sortObjectByValue(props.data.dietaryRestrictionsData)} />
                 )}
-              </HStack>
-            )}
+              </VStack>
+            </HStack>
           </VStack>
         </AccordionPanel>
       </AccordionItem>

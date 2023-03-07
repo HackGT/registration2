@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Heading, HStack, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import useAxios from "axios-hooks";
 
 interface Props {
   name: string;
@@ -11,6 +13,14 @@ interface Props {
 
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
+
+  const [{ data, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, `/hexathons/${props.id}`));
+  if (loading) {
+    return <LoadingScreen />;
+  }
+  if (error) {
+    return <ErrorScreen error={error} />;
+  }
 
   const handleClick = () => {
     // Set expiration time of one week
@@ -49,7 +59,7 @@ const EventCard: React.FC<Props> = props => {
           right="0px"
           top="0px"
           height="148px"
-          src={`/events/${props.id}.jpeg`}
+          src={data.coverImage ?? "/events/default-event-logo.jpeg"}
           onError={(e: any) => {
             // add fallback if no logo exists
             e.target.onError = null;

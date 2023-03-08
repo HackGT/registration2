@@ -24,6 +24,7 @@ import {
   PopoverFooter,
   Text,
   HStack,
+  Textarea,
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -145,7 +146,7 @@ const BranchFormModal: React.FC<Props> = props => {
   };
 
   return (
-    <Modal onClose={props.onClose} isOpen={props.isOpen} isCentered>
+    <Modal onClose={props.onClose} isOpen={props.isOpen} isCentered scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{`${type === FormModalType.Edit ? "Edit" : "Create"} Branch`}</ModalHeader>
@@ -183,6 +184,13 @@ const BranchFormModal: React.FC<Props> = props => {
               <FormControl isRequired>
                 <FormLabel>Close Time</FormLabel>
                 <Input {...register("settings.close")} />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Description</FormLabel>
+                <Textarea
+                  {...register("description")}
+                  placeholder="Add information about who should apply for this branch..."
+                />
               </FormControl>
               {branchType === "APPLICATION" && (
                 <FormControl>

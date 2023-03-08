@@ -111,7 +111,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }
   }, [props.application]);
 
-  const branchDescription = useMemo(() => {
+  const submissionTimingDescription = useMemo(() => {
     if (props.application.status === "CONFIRMED") {
       return "";
     }
@@ -291,7 +291,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
             {travelReimbursementDescription}
           </Text>
           <Text fontSize="sm" color="#858585" mb="8px">
-            {branchDescription}
+            {submissionTimingDescription}
           </Text>
           {actionButtons}
         </Box>

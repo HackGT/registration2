@@ -61,7 +61,7 @@ const Tile: React.FC<Props> = props => {
     return BranchStatus.NotStarted;
   }, [currBranchHasApplication, props.currApp, openDate, closeDate, currDate]);
 
-  const branchDescription = useMemo(() => {
+  const submissionTimingDescription = useMemo(() => {
     if (currDate < openDate) {
       return `Submissions open on ${openDate.toLocaleString(DateTime.DATETIME_FULL)}`;
     }
@@ -162,12 +162,13 @@ const Tile: React.FC<Props> = props => {
       </Flex>
 
       <Box padding="20px 32px">
-        <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
+        <Heading fontSize="18px" fontWeight="semibold" marginBottom="6px" color="#212121">
           <Text>{props.branch.name}</Text>
         </Heading>
-        <Text fontSize="sm" color="#858585">
-          {branchDescription}
+        <Text fontSize="sm" color="#858585" marginBottom="10px">
+          {submissionTimingDescription}
         </Text>
+        <Text fontSize="md">{props.branch.description}</Text>
       </Box>
     </Box>
   );

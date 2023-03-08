@@ -1,12 +1,32 @@
 import { Center, Flex } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import EventCard from "./EventCard";
+import HexathonModal from "./HexathonModal";
 
 const SelectEvent: React.FC = () => {
+  const { user } = useAuth();
+  const [role, setRoles] = useState<any>({
+    member: false,
+    exec: false,
+    admin: false,
+  });
+
+  useEffect(() => {
+    const getRoles = async () => {
+      if (user?.uid) {
+        const response = await axios.get(apiUrl(Service.USERS, `/users/${user?.uid}`));
+        setRoles({ ...response.data.roles });
+      }
+    };
+
+    getRoles();
+  }, [user?.uid]);
+
   const navigate = useNavigate();
   const [{ data, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
 
@@ -38,6 +58,7 @@ const SelectEvent: React.FC = () => {
           <EventCard name={hexathon.name} id={hexathon.id} />
         </Center>
       ))}
+      {role.exec && <Center><HexathonModal /></Center>}
     </Flex>
   );
 };

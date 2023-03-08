@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
         return (
           <>
             Your application isn't submitted yet. Please ensure you finish your application before
-            the deadline!";
+            the deadline!
           </>
         );
       case "APPLIED":
@@ -138,12 +138,12 @@ const Dashboard: React.FC = () => {
         }}
       >
         <Heading size="xl" marginBottom="15px">
-          Welcome {profile.name?.first}!
+          Welcome, {profile.name?.first}!
         </Heading>
         <Text>
-          We're happy to see you here! We're currently running {currentHexathon.name} and we'd love
-          to see you there! Please reach out to{" "}
-          <Link href="mailto:hello@hexlabs.org" target="_blank">
+          Registration is currently open for {currentHexathon.name} and we'd love to see you there!
+          Please reach out to{" "}
+          <Link href="mailto:hello@hexlabs.org" target="_blank" textDecorationLine="underline">
             hello@hexlabs.org
           </Link>{" "}
           if you have any questions.
@@ -220,8 +220,8 @@ const Dashboard: React.FC = () => {
         Future Events
       </Heading>
       <Text marginX={{ base: "15px", md: 0 }}>
-        If you can't make it to {currentHexathon.name}, don't worry! We have more events planned for
-        the next year, so be on the look out :). Follow us on social media to stay in the loop!
+        If you can't make it to {currentHexathon.name}, don't worry. We have more events planned for
+        the next year, so be on the look out. Follow us on social media to stay in the loop!
       </Text>
       <Box marginX={{ base: "15px", md: 0 }}>
         <Timeline />

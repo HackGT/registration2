@@ -57,6 +57,8 @@ const ApplicationDetailPage: React.FC = () => {
   const [{ data, loading, error }] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`)
   );
+  // data.swagClaimed = false;
+  // console.log(data);
   const [{ data: branches, loading: branchesLoading }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/branches"),
@@ -113,6 +115,25 @@ const ApplicationDetailPage: React.FC = () => {
       toast({
         title: "Success",
         description: "Applicant settings saved successfully!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (e: any) {
+      handleAxiosError(e);
+    }
+  };
+
+  const swagCheck = async (values: any) => {
+    try {
+      await axios.post(
+        apiUrl(Service.REGISTRATION, `/applications/${applicationId}/actions/swag-claim`), null
+      );
+
+      toast({
+        title: "Success",
+        description: "Swag claimed successfully!",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -197,9 +218,17 @@ const ApplicationDetailPage: React.FC = () => {
           Application Branch: {data.applicationBranch.name}
         </Heading>
         {data.confirmationBranch && (
-          <Heading as="h2" size="s" fontWeight={500} color="gray">
-            Confirmation Branch: {data.confirmationBranch.name}
-          </Heading>
+          <Stack justifyContent="space-between" flexDirection={{base: "column", md: "row"}}>
+            <Heading as="h2" size="s" fontWeight={500} color="gray">
+              Confirmation Branch: {data.confirmationBranch.name}
+            </Heading>
+            <Box>
+              <Checkbox mr={5}
+                isChecked={data.swagClaimed}
+                isReadOnly={data.swagClaimed}
+                onChange={swagCheck}>Swag Claimed</Checkbox>
+            </Box>
+          </Stack>
         )}
       </VStack>
       <Accordion defaultIndex={[0, 1, 2, 3, 4]} allowMultiple>

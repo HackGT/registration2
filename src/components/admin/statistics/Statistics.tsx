@@ -75,6 +75,12 @@ const Statistics: React.FC = () => {
               </Tr>
               <Tr>
                 <Td maxW="500px" w="500px">
+                  Checked-in Users
+                </Td>
+                <Td>{userStatistics.checkedinUsers}</Td>
+              </Tr>
+              <Tr>
+                <Td maxW="500px" w="500px">
                   Denied Users
                 </Td>
                 <Td>{userStatistics.deniedUsers}</Td>

@@ -89,7 +89,7 @@ const ApplicationFormPage: React.FC<Props> = props => {
           setFormData(updatedFormData);
         }}
         onSubmit={({ formData: submittedFormData }, e) => {
-          console.log(submittedFormData);
+          // console.log(submittedFormData);
           handleNextClicked();
         }}
       >

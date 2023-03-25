@@ -45,7 +45,6 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CopyIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
-import { DateTime } from "luxon";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import { parseDateString } from "../../../util/util";
@@ -207,12 +206,12 @@ const ApplicationDetailPage: React.FC = () => {
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Text style={{ fontWeight: "bold" }}>Contact Information</Text>
+                <Text style={{ fontWeight: "bold" }}>Personal Information</Text>
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
-          <AccordionPanel pb={3}>
+          <AccordionPanel pb={0}>
             <Stack>
               <Text>
                 <Text color="gray" fontSize="sm">
@@ -226,22 +225,48 @@ const ApplicationDetailPage: React.FC = () => {
                 </Text>
                 {data.applicationData.phoneNumber}
               </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  School Email
+              {(data.applicationData.email || data.applicationData.schoolEmail) && (
+                <Text>
+                  <Text color="gray" fontSize="sm">
+                    Email
+                  </Text>
+                  {data.applicationData.email || data.applicationData.schoolEmail}
                 </Text>
-                {data.applicationData.schoolEmail}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  GTID
-                </Text>
-                {data.applicationData.school === "Georgia Institute of Technology" ? (
+              )}
+              {data.applicationData.school === "Georgia Institute of Technology" && (
+                <Text>
+                  <Text color="gray" fontSize="sm">
+                    GTID
+                  </Text>
                   <RetrieveGTIDModal data={data} />
-                ) : (
-                  <Text>N/A</Text>
-                )}
+                </Text>
+              )}
+              <Text>
+                <Text color="gray" fontSize="sm">
+                  Is 18 years old?
+                </Text>
+                {data.applicationData.adult ? "Yes" : "No"}
               </Text>
+              {data.applicationData.linkedin && (
+                <Text>
+                  <Text color="gray" fontSize="sm">
+                    LinkedIn
+                  </Text>
+                  <Link href={data.applicationData.linkedin} target="_blank">
+                    {data.applicationData.linkedin}
+                  </Link>
+                </Text>
+              )}
+              {data.applicationData.website && (
+                <Text>
+                  <Text color="gray" fontSize="sm">
+                    Website
+                  </Text>
+                  <Link href={data.applicationData.website} target="_blank">
+                    {data.applicationData.website}
+                  </Link>
+                </Text>
+              )}
             </Stack>
           </AccordionPanel>
         </AccordionItem>
@@ -250,95 +275,45 @@ const ApplicationDetailPage: React.FC = () => {
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Text style={{ fontWeight: "bold" }}>General Information</Text>
+                <Text style={{ fontWeight: "bold" }}>Application Information</Text>
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
             <Stack>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  University
-                </Text>
-                {data.applicationData.school}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Level of Study
-                </Text>
-                {data.applicationData.levelOfStudy === ""
-                  ? data.applicationData.levelOfStudy
-                  : "N/A"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  School Year
-                </Text>
-                {data.applicationData.schoolYear}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Major
-                </Text>
-                {data.applicationData.major}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Is 18 years old?
-                </Text>
-                {data.applicationData.adult ? "Yes" : "No"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Date of Birth
-                </Text>
-                {data.applicationData.dateOfBirth
-                  ? DateTime.fromISO(data.applicationData.dateOfBirth).toLocaleString()
-                  : "N/A"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Address
-                </Text>
-                {data.applicationData.address.line1
-                  ? `${data.applicationData.address.line1}  ${data.applicationData.address.city}, ${data.applicationData.address.state} ${data.applicationData.address.zip}, ${data.applicationData.address.country}`
-                  : "N/A"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Country of Residence
-                </Text>
-                {data.applicationData.countryOfResidence !== ""
-                  ? data.applicationData.countryOfResidence
-                  : "N/A"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Dietary Restrictions
-                </Text>
-                {data.applicationData.dietaryRestrictions
-                  ? data.applicationData.dietaryRestrictions.join(", ")
-                  : "None"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Allergies
-                </Text>
-                {data.applicationData.allergies || "None"}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  T-Shirt Size
-                </Text>
-                {data.applicationData.shirtSize}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Found us through
-                </Text>
-                {data.applicationData.marketing}
-              </Text>
+              {
+                Object.keys(data.applicationData).map((key) => (
+                  (!["schoolEmail", "gender", "ethnicity", "phoneNumber", "confirmChecks", "essays", "resume", "website", "adult", "linkedin", "customData"].includes(key)) && (
+                    <Text>
+                      <Text color="gray" fontSize="sm">
+                        {key}
+                      </Text>
+                      {
+                        (typeof data.applicationData[key]) !== 'object' 
+                        ? data.applicationData[key] 
+                        : JSON.stringify(data.applicationData[key])
+                      }
+                    </Text>
+                  )
+                ))
+              }
+              {
+                data.applicationData.customData && (
+                  Object.keys(data.applicationData.customData).map((key) => (
+                    <Text>
+                      <Text color="gray" fontSize="sm">
+                        {key}
+                      </Text>
+                      {
+                        (typeof data.applicationData.customData[key]) !== 'object'
+                        ? data.applicationData.customData[key]
+                        : JSON.stringify(data.applicationData.customData[key])
+                      }
+                    </Text>
+                  ))
+                )
+              }
             </Stack>
           </AccordionPanel>
         </AccordionItem>
@@ -374,97 +349,6 @@ const ApplicationDetailPage: React.FC = () => {
           <h2>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Text style={{ fontWeight: "bold" }}>Personal Information</Text>
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <Stack>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Resume
-                </Text>
-                {data.applicationData.resume?.id ? (
-                  <Link
-                    href={apiUrl(Service.FILES, `/files/${data.applicationData.resume?.id}/view`)}
-                    target="_blank"
-                    color="teal.500"
-                  >
-                    Click to View
-                  </Link>
-                ) : (
-                  <Text>No Resume Uploaded</Text>
-                )}
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  LinkedIn
-                </Text>
-                <Link href={data.applicationData.linkedin} target="_blank">
-                  {data.applicationData.linkedin}
-                </Link>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Personal Website/GitHub
-                </Text>
-                <Link href={data.applicationData.website} target="_blank">
-                  {data.applicationData.website}
-                </Link>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Travel Assistance
-                </Text>
-                <Text>
-                  {data.applicationData.travelAssistance === ""
-                    ? data.applicationData.travelAssistance
-                    : "N/A"}
-                </Text>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Past Experience
-                </Text>
-                <Text>
-                  {data.applicationData.pastExperience === ""
-                    ? data.applicationData.pastExperience
-                    : "N/A"}
-                </Text>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Skills
-                </Text>
-                <Text>
-                  {data.applicationData.skills ? "N/A" : data.applicationData.skills.join(", ")}
-                </Text>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Number of Hackathons
-                </Text>
-                <Text>
-                  {data.applicationData.travelAssistance === ""
-                    ? data.applicationData.travelAssistance
-                    : "N/A"}
-                </Text>
-              </Text>
-              <Text>
-                <Text color="gray" fontSize="sm">
-                  Extra Info
-                </Text>
-                <Text>{data.applicationData.extraInfo}</Text>
-              </Text>
-            </Stack>
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
                 <Text style={{ fontWeight: "bold" }}>Application Questions</Text>
               </Box>
               <AccordionIcon />
@@ -484,6 +368,228 @@ const ApplicationDetailPage: React.FC = () => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+
+
+
+      {/* old way we did it */}
+      {/* <AccordionItem>
+        <h2>
+          <AccordionButton>
+            <Box flex="1" textAlign="left">
+              <Text style={{ fontWeight: "bold" }}>General Information</Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <Stack>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                University
+              </Text>
+              {data.applicationData.school}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Level of Study
+              </Text>
+              {data.applicationData.levelOfStudy === ""
+                ? data.applicationData.levelOfStudy
+                : "N/A"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                School Year
+              </Text>
+              {data.applicationData.schoolYear}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Major
+              </Text>
+              {data.applicationData.major}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Is 18 years old?
+              </Text>
+              {data.applicationData.adult ? "Yes" : "No"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Date of Birth
+              </Text>
+              {data.applicationData.dateOfBirth
+                ? DateTime.fromISO(data.applicationData.dateOfBirth).toLocaleString()
+                : "N/A"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Address
+              </Text>
+              {data.applicationData.address.line1
+                ? `${data.applicationData.address.line1}  ${data.applicationData.address.city}, ${data.applicationData.address.state} ${data.applicationData.address.zip}, ${data.applicationData.address.country}`
+                : "N/A"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Country of Residence
+              </Text>
+              {data.applicationData.countryOfResidence !== ""
+                ? data.applicationData.countryOfResidence
+                : "N/A"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Dietary Restrictions
+              </Text>
+              {data.applicationData.dietaryRestrictions
+                ? data.applicationData.dietaryRestrictions.join(", ")
+                : "None"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Allergies
+              </Text>
+              {data.applicationData.allergies || "None"}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                T-Shirt Size
+              </Text>
+              {data.applicationData.shirtSize}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Found us through
+              </Text>
+              {data.applicationData.marketing}
+            </Text>
+          </Stack>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <h2>
+          <AccordionButton>
+            <Box flex="1" textAlign="left">
+              <Text style={{ fontWeight: "bold" }}>Diversity Information</Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <Stack>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Identifies as
+              </Text>
+              {data.applicationData.gender}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Ethnicity
+              </Text>
+              {data.applicationData.ethnicity}
+            </Text>
+          </Stack>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <h2>
+          <AccordionButton>
+            <Box flex="1" textAlign="left">
+              <Text style={{ fontWeight: "bold" }}>Personal Information</Text>
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <Stack>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Resume
+              </Text>
+              {data.applicationData.resume?.id ? (
+                <Link
+                  href={apiUrl(Service.FILES, `/files/${data.applicationData.resume?.id}/view`)}
+                  target="_blank"
+                  color="teal.500"
+                >
+                  Click to View
+                </Link>
+              ) : (
+                <Text>No Resume Uploaded</Text>
+              )}
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                LinkedIn
+              </Text>
+              <Link href={data.applicationData.linkedin} target="_blank">
+                {data.applicationData.linkedin}
+              </Link>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Personal Website/GitHub
+              </Text>
+              <Link href={data.applicationData.website} target="_blank">
+                {data.applicationData.website}
+              </Link>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Travel Assistance
+              </Text>
+              <Text>
+                {data.applicationData.travelAssistance === ""
+                  ? data.applicationData.travelAssistance
+                  : "N/A"}
+              </Text>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Past Experience
+              </Text>
+              <Text>
+                {data.applicationData.pastExperience === ""
+                  ? data.applicationData.pastExperience
+                  : "N/A"}
+              </Text>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Skills
+              </Text>
+              <Text>
+                {data.applicationData.skills ? "N/A" : data.applicationData.skills.join(", ")}
+              </Text>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Number of Hackathons
+              </Text>
+              <Text>
+                {data.applicationData.travelAssistance === ""
+                  ? data.applicationData.travelAssistance
+                  : "N/A"}
+              </Text>
+            </Text>
+            <Text>
+              <Text color="gray" fontSize="sm">
+                Extra Info
+              </Text>
+              <Text>{data.applicationData.extraInfo}</Text>
+            </Text>
+          </Stack>
+        </AccordionPanel>
+      </AccordionItem> */}
+
+
+
+
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

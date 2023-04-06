@@ -3,7 +3,7 @@ import { Select } from "chakra-react-select";
 import { Box, FormLabel } from "@chakra-ui/react";
 import { FieldProps } from "@rjsf/core";
 
-const SelectFieldTemplate: React.FC<FieldProps> = props => {
+const SelectField: React.FC<FieldProps> = props => {
   const options: any[] = [];
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const SelectFieldTemplate: React.FC<FieldProps> = props => {
 
   return (
     <Box>
-      <FormLabel>{props.schema.title}</FormLabel>
+      <FormLabel aria-disabled={props.disabled}>{props.schema.title}</FormLabel>
       <Select
         value={{ label: props.formData, value: props.formData }}
         options={options}
@@ -30,9 +30,10 @@ const SelectFieldTemplate: React.FC<FieldProps> = props => {
         }}
         isSearchable
         isClearable
+        isDisabled={props.disabled}
       />
     </Box>
   );
 };
 
-export default SelectFieldTemplate;
+export default SelectField;

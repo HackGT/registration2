@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useMemo } from "react";
 import {
   Box,
@@ -14,10 +13,11 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
-  useToast,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
+import axios from "axios";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 enum BranchStatus {
   NotStarted = "Not Started",
@@ -31,34 +31,22 @@ interface Props {
   branch: any;
   currApp: any;
   image?: string;
-  chooseBranch: (appBranchID: any) => Promise<string | undefined>;
 }
 
 const Tile: React.FC<Props> = props => {
+  const { hexathonId } = useParams();
   const navigate = useNavigate();
-  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
-
-  const chooseBranchAndNavigate = async () => {
-    const newAppLink = await props.chooseBranch(props.branch._id);
-    if (newAppLink) {
-      navigate(newAppLink);
-    }
-  };
-
-  const onConfirm = async () => {
-    onClose();
-    await chooseBranchAndNavigate();
-  };
 
   const openDate = DateTime.fromISO(new Date(props.branch.settings.open).toISOString());
   const closeDate = DateTime.fromISO(new Date(props.branch.settings.close).toISOString());
   const currDate = DateTime.fromISO(new Date().toISOString());
 
+  const currBranchHasApplication = props.branch.id === props.currApp?.applicationBranch?.id;
+
   const branchStatus = useMemo(() => {
-    const currBranchHasApplication = props.branch._id === props.currApp?.applicationBranch?._id;
-    if (currBranchHasApplication && props.currApp?.status === "APPLIED") {
+    if (currBranchHasApplication && props.currApp?.status !== "DRAFT") {
       return BranchStatus.Submitted;
     }
     if (currDate < openDate) {
@@ -71,16 +59,16 @@ const Tile: React.FC<Props> = props => {
       return BranchStatus.InProgress;
     }
     return BranchStatus.NotStarted;
-  }, [props.branch, props.currApp, openDate, closeDate, currDate]);
+  }, [currBranchHasApplication, props.currApp, openDate, closeDate, currDate]);
 
-  const branchDescription = useMemo(() => {
+  const submissionTimingDescription = useMemo(() => {
     if (currDate < openDate) {
-      return `Application opens on ${openDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+      return `Submissions open on ${openDate.toLocaleString(DateTime.DATETIME_FULL)}`;
     }
     if (currDate > closeDate) {
-      return `Applications closed on ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+      return `Submissions closed on ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
     }
-    return `Accepting applications until ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
+    return `Accepting submissions until ${closeDate.toLocaleString(DateTime.DATETIME_FULL)}`;
   }, [openDate, closeDate, currDate]);
 
   const tagColor = useMemo(() => {
@@ -89,6 +77,39 @@ const Tile: React.FC<Props> = props => {
     }
     return "teal";
   }, [branchStatus]);
+
+  const chooseBranchAndNavigate = async () => {
+    try {
+      const response = await axios.post(
+        apiUrl(Service.REGISTRATION, "/applications/actions/choose-application-branch"),
+        {
+          hexathon: hexathonId,
+          applicationBranch: props.branch.id,
+        }
+      );
+      navigate(`/${hexathonId}/application/${response.data.id}`);
+    } catch (error: any) {
+      handleAxiosError(error);
+    }
+  };
+
+  const onConfirm = async () => {
+    onClose();
+    await chooseBranchAndNavigate();
+  };
+
+  const openApplication = async () => {
+    // If the user has an application, ask if they want to start a new one
+    if (props.currApp && Object.keys(props.currApp).length !== 0) {
+      if (branchStatus === BranchStatus.NotStarted) {
+        onOpen();
+      } else if (branchStatus === BranchStatus.InProgress) {
+        navigate(`application/${props.currApp.id}`);
+      }
+    } else {
+      await chooseBranchAndNavigate();
+    }
+  };
 
   return (
     <Box
@@ -102,22 +123,8 @@ const Tile: React.FC<Props> = props => {
       transition="box-shadow 0.2s ease-in-out"
       style={{ cursor: "pointer" }}
       onClick={async () => {
-        if (
-          branchStatus === BranchStatus.Closed ||
-          branchStatus === BranchStatus.NotOpen ||
-          branchStatus === BranchStatus.Submitted
-        ) {
-          return;
-        }
-        // If the user has an application, ask if they want to start a new one
-        if (props.currApp && Object.keys(props.currApp).length !== 0) {
-          if (branchStatus === BranchStatus.NotStarted) {
-            onOpen();
-          } else if (branchStatus === BranchStatus.InProgress) {
-            navigate(`application/${props.currApp._id}`);
-          }
-        } else {
-          await chooseBranchAndNavigate();
+        if (branchStatus === BranchStatus.NotStarted) {
+          await openApplication();
         }
       }}
     >
@@ -145,7 +152,7 @@ const Tile: React.FC<Props> = props => {
       <Flex
         bgGradient={props.image ? "" : "linear(to-l, #33c2ff, #7b69ec)"}
         borderTopRadius="4px"
-        height="150px"
+        height="70px"
         justifyContent="flex-end"
         alignItems="flex-start"
       >
@@ -155,12 +162,13 @@ const Tile: React.FC<Props> = props => {
       </Flex>
 
       <Box padding="20px 32px">
-        <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
+        <Heading fontSize="18px" fontWeight="semibold" marginBottom="6px" color="#212121">
           <Text>{props.branch.name}</Text>
         </Heading>
-        <Text fontSize="sm" color="#858585">
-          {branchDescription}
+        <Text fontSize="sm" color="#858585" marginBottom="10px">
+          {submissionTimingDescription}
         </Text>
+        <Text fontSize="md">{props.branch.description}</Text>
       </Box>
     </Box>
   );

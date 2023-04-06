@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import {
   Button,
   Modal,
@@ -13,14 +12,30 @@ import {
   useToast,
   FormControl,
   FormLabel,
+  Checkbox,
+  Tooltip,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  PopoverFooter,
+  Text,
+  HStack,
+  Textarea,
 } from "@chakra-ui/react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
+import { useParams } from "react-router-dom";
+import { QRCodeSVG } from "qrcode.react";
+import { InfoIcon } from "@chakra-ui/icons";
 
-import { Branch } from "./BranchSettings";
-import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
-import { AxiosRefetch } from "../../../types/helper";
+import { Branch, BranchType } from "./BranchSettings";
+import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
 
 enum FormModalType {
@@ -33,27 +48,40 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   refetch: AxiosRefetch;
+  branches: any;
 }
 
 const BranchFormModal: React.FC<Props> = props => {
+  const { hexathonId } = useParams();
+  const toast = useToast();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     reset,
+    watch,
   } = useForm();
 
+  const [emails, setEmails] = useState<any>("");
+  const branchType = watch("type");
+  const secret = watch("secret");
+  const gradingEnabled = watch("grading.enabled");
+  const automaticConfirmationEnabled = watch("automaticConfirmation.enabled");
+
   const type = useMemo(
-    () => (props.defaultValues === undefined ? FormModalType.Create : FormModalType.Edit),
+    () => (props.defaultValues ? FormModalType.Edit : FormModalType.Create),
     [props.defaultValues]
   );
 
   useEffect(() => {
-    console.log(props.defaultValues);
+    setEmails(
+      props.defaultValues?.automaticConfirmation?.emails
+        ? props.defaultValues?.automaticConfirmation?.emails.join(", ")
+        : ""
+    );
     // Manually parse open/close time into human readable formats
     const openTime = parseDateString(props.defaultValues?.settings?.open);
     const closeTime = parseDateString(props.defaultValues?.settings?.close);
-
     reset({
       ...props.defaultValues,
       settings: {
@@ -63,24 +91,32 @@ const BranchFormModal: React.FC<Props> = props => {
     });
   }, [props.defaultValues, reset]);
 
-  const { currentHexathon } = useCurrentHexathon();
-  const toast = useToast();
+  const handleEmailInput = (e: any) => setEmails(e.target.value);
 
   const handleFormSubmit = async (values: any) => {
     const formData = {
+      ...(type === FormModalType.Create && { hexathon: hexathonId }),
       ...values,
       settings: {
         open: dateToServerFormat(values.settings.open),
         close: dateToServerFormat(values.settings.close),
       },
-      ...(type === FormModalType.Create && { hexathon: currentHexathon._id }),
+      grading: {
+        enabled: gradingEnabled,
+        group: gradingEnabled ? values.grading.group : undefined,
+      },
+      automaticConfirmation: {
+        enabled: automaticConfirmationEnabled,
+        confirmationBranch: automaticConfirmationEnabled
+          ? values.automaticConfirmation.confirmationBranch
+          : undefined,
+        emails: automaticConfirmationEnabled ? emails.replace(/ /g, "").split(",") : undefined,
+      },
     };
-
-    console.log(formData);
 
     try {
       if (type === FormModalType.Create) {
-        await axios.post(`https://registration.api.hexlabs.org/branches/`, FormData);
+        await axios.post(apiUrl(Service.REGISTRATION, "/branches"), formData);
         toast({
           title: "Success!",
           description: "The branch has successfully been created.",
@@ -90,7 +126,7 @@ const BranchFormModal: React.FC<Props> = props => {
         });
       } else {
         await axios.patch(
-          `https://registration.api.hexlabs.org/branches/${props.defaultValues._id}`,
+          apiUrl(Service.REGISTRATION, `/branches/${props.defaultValues.id}`),
           formData
         );
       }
@@ -103,20 +139,14 @@ const BranchFormModal: React.FC<Props> = props => {
         isClosable: true,
       });
     } catch (e: any) {
-      toast({
-        title: "Error!",
-        description: "One or more entries are invalid. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      handleAxiosError(e);
     } finally {
       props.onClose();
     }
   };
 
   return (
-    <Modal onClose={props.onClose} isOpen={props.isOpen} isCentered>
+    <Modal onClose={props.onClose} isOpen={props.isOpen} isCentered scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{`${type === FormModalType.Edit ? "Edit" : "Create"} Branch`}</ModalHeader>
@@ -129,11 +159,22 @@ const BranchFormModal: React.FC<Props> = props => {
                 <Input {...register("name")} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Name</FormLabel>
-                <Select {...register("type")}>
-                  <option value="">Select branch type</option>
+                <FormLabel>Type</FormLabel>
+                <Select {...register("type")} placeholder="Select option">
                   <option value="APPLICATION">Application</option>
                   <option value="CONFIRMATION">Confirmation</option>
+                </Select>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Application Group</FormLabel>
+                <Select {...register("applicationGroup")} placeholder="Select option">
+                  <option value="PARTICIPANT">Participant</option>
+                  <option value="JUDGE">Judge</option>
+                  <option value="MENTOR">Mentor</option>
+                  <option value="VOLUNTEER">Volunteer</option>
+                  <option value="SPONSOR">Sponsor</option>
+                  <option value="PARTNER">Partner</option>
+                  <option value="STAFF">Staff</option>
                 </Select>
               </FormControl>
               <FormControl isRequired>
@@ -144,6 +185,115 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormLabel>Close Time</FormLabel>
                 <Input {...register("settings.close")} />
               </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Description</FormLabel>
+                <Textarea
+                  {...register("description")}
+                  placeholder="Add information about who should apply for this branch..."
+                />
+              </FormControl>
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("secret")}>Secret</Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && secret && props.defaultValues && (
+                <HStack display="flex" justifyContent="center">
+                  <Popover>
+                    <PopoverTrigger>
+                      <Button>View QR Code</Button>
+                    </PopoverTrigger>
+                    <PopoverContent bg="#d1d1d1">
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverHeader display="flex" justifyContent="center">
+                        QR Code
+                      </PopoverHeader>
+                      <PopoverBody display="flex" justifyContent="center">
+                        <QRCodeSVG
+                          value={`${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`}
+                          size={256}
+                        />
+                      </PopoverBody>
+                      <PopoverFooter>
+                        <Text fontSize="12px">
+                          Ask participants to scan this code to be directed to the application page
+                          for this branch
+                        </Text>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`
+                      );
+                      toast({
+                        title: "Success!",
+                        description: "Link has been copied.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                      });
+                    }}
+                  >
+                    Copy link
+                  </Button>
+                </HStack>
+              )}
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("automaticConfirmation.enabled")}>
+                    Enable Auto-Confirmation?
+                  </Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && automaticConfirmationEnabled && (
+                <>
+                  <FormControl isRequired>
+                    <FormLabel>Confirmation Branch</FormLabel>
+                    <Select
+                      {...register("automaticConfirmation.confirmationBranch")}
+                      placeholder="Select option"
+                    >
+                      {props.branches &&
+                        props.branches
+                          .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+                          .map((branch: Branch) => (
+                            <option value={branch.id}>{branch.name}</option>
+                          ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>
+                      Emails
+                      <Tooltip
+                        hasArrow
+                        label="Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org"
+                        bg="#d4d4d4"
+                        placement="right"
+                      >
+                        <InfoIcon marginLeft="3.5px" marginBottom="2.5px" />
+                      </Tooltip>
+                    </FormLabel>
+                    <Input value={emails} onChange={handleEmailInput} />
+                  </FormControl>
+                </>
+              )}
+              {branchType === "APPLICATION" && (
+                <FormControl>
+                  <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>
+                </FormControl>
+              )}
+              {branchType === "APPLICATION" && gradingEnabled && (
+                <FormControl isRequired>
+                  <FormLabel>Grading Group</FormLabel>
+                  <Select {...register("grading.group")} placeholder="Select option">
+                    <option value="generalGroup">General Group</option>
+                    <option value="emergingGroup">Emerging Group</option>
+                  </Select>
+                </FormControl>
+              )}
               <Button colorScheme="purple" isLoading={isSubmitting} type="submit">
                 {type === FormModalType.Edit ? "Save" : "Create"}
               </Button>

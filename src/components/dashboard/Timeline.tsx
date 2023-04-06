@@ -1,26 +1,28 @@
 import React from "react";
 import { Stack, Box } from "@chakra-ui/react";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
+import useAxios from "axios-hooks";
 
 import Hex from "./hex";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-interface Props {
-  hexathons: any[];
-}
-
-const Timeline: React.FC<Props> = props => {
+const Timeline: React.FC = () => {
+  const [{ data: hexathons, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
   const { currentHexathon } = useCurrentHexathon();
 
-  const currentHexathonIndex = props.hexathons.findIndex(
-    (hexathon: any) => hexathon._id === currentHexathon._id
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen error={error} />;
+
+  const currentHexathonIndex = hexathons.findIndex(
+    (hexathon: any) => hexathon.id === currentHexathon.id
   );
-  const filteredHexathons = props.hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
+  const filteredHexathons = hexathons.slice(currentHexathonIndex, currentHexathonIndex + 3);
 
   return (
     <Stack
       margin="auto"
       direction={{ base: "column", md: "row" }}
-      width={{ base: "300px", md: `${(filteredHexathons.length + 1) * 25}%` }}
+      width={{ base: "200px", md: `${(filteredHexathons.length + 1) * 25}%` }}
       height={{ base: `${filteredHexathons.length * 150 + 120}px`, md: "220px" }}
       spacing="0"
       paddingY={{ base: "30px", md: 0 }}

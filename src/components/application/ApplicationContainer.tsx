@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
-import axios from "axios";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
+import ApplicationReviewPage from "./ApplicationReviewPage";
 
 /** Manually modify essays to fit frontend data display */
 export const getFrontendFormattedFormData = (data: any) => {
@@ -22,67 +22,87 @@ export const getFrontendFormattedFormData = (data: any) => {
 };
 
 const ApplicationContainer = () => {
-  const { applicationId } = useParams();
+  const { hexathonId, applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
 
-  const [{ data, loading, error }] = useAxios(
-    `https://registration.api.hexlabs.org/applications/${applicationId}`
+  const [{ data: application, loading, error }, refetch] = useAxios(
+    apiUrl(Service.REGISTRATION, `/applications/${applicationId}`),
+    { useCache: false }
   );
   const [branch, setBranch] = useState<any>(undefined);
 
   useEffect(() => {
-    if (data?.applicationBranch) {
-      setBranch(data.applicationBranch);
+    if (application?.confirmationBranch && application.status === "ACCEPTED") {
+      setBranch(application.confirmationBranch);
+    } else if (application?.applicationBranch) {
+      setBranch(application.applicationBranch);
     }
-  }, [data]);
+  }, [application]);
 
-  if (loading || !branch) return <Loading />;
-
+  if (loading || !branch) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
-  const submitApplication = async () => {
-    const response = await axios.post(
-      `https://registration.api.hexlabs.org/applications/${applicationId}/actions/submit-application`
-    );
-    setFormPageNumber(branch.formPages.length);
+  const setPage = async (pageNumber: number) => {
+      window.scrollTo(0, 0);
+      setFormPageNumber(pageNumber);
   };
 
-  const prevPage = () => {
+  const prevPage = async () => {
     if (formPageNumber > 0) {
+      window.scrollTo(0, 0);
       setFormPageNumber(formPageNumber - 1);
     }
   };
 
-  const nextPage = () => {
-    if (formPageNumber < branch.formPages.length) {
+  const nextPage = async () => {
+    // If last page, refetch data before review page
+    if (formPageNumber === branch.formPages.length - 1) {
+      await refetch();
+    }
+    if (formPageNumber <= branch.formPages.length) {
+      window.scrollTo(0, 0);
       setFormPageNumber(formPageNumber + 1);
     }
   };
 
-  const defaultFormData = getFrontendFormattedFormData(data);
+  const defaultFormData = getFrontendFormattedFormData(application);
 
-  return (
-    <Box>
-      {formPageNumber < branch.formPages.length ? (
-        <Box maxWidth="700px" margin="auto">
-          <ApplicationFormPage
-            defaultFormData={defaultFormData}
-            formPage={branch.formPages[formPageNumber]}
-            formPageNumber={formPageNumber}
-            commonDefinitionsSchema={branch.commonDefinitionsSchema}
-            applicationId={applicationId}
-            lastPage={formPageNumber === branch.formPages.length - 1}
-            submitApplication={submitApplication}
-            hasPrevPage={formPageNumber > 0}
-            prevPage={prevPage}
-            nextPage={nextPage}
-          />
-        </Box>
-      ) : (
-        <ApplicationSubmittedPage />
-      )}
-    </Box>
-  );
+  if (application.status === "NOT_ATTENDING" || application.status === "CONFIRMED") {
+    return <Navigate to={`/${hexathonId}`} />;
+  }
+
+  if (formPageNumber < branch.formPages.length) {
+    return (
+      <Box maxWidth="700px" marginX="auto" marginTop="15px">
+        <ApplicationFormPage
+          defaultFormData={defaultFormData}
+          branch={branch}
+          formPageNumber={formPageNumber}
+          applicationId={applicationId}
+          hasPrevPage={formPageNumber > 0}
+          prevPage={prevPage}
+          nextPage={nextPage}
+        />
+      </Box>
+    );
+  }
+  if (formPageNumber === branch.formPages.length) {
+    return (
+      <Box maxWidth="700px" marginX="auto" marginTop="15px">
+        <ApplicationReviewPage
+          defaultFormData={defaultFormData}
+          branch={branch}
+          applicationId={applicationId}
+          hasPrevPage={formPageNumber > 0}
+          prevPage={prevPage}
+          nextPage={nextPage}
+          setPage={setPage}
+          refetch={refetch}
+        />
+      </Box>
+    );
+  }
+  return <ApplicationSubmittedPage />;
 };
 
 export default ApplicationContainer;

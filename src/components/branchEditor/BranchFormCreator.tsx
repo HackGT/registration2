@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import {
   Alert,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
   AlertDescription,
   AlertIcon,
   AlertTitle,
@@ -10,6 +16,7 @@ import {
   Stack,
   useToast,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
@@ -22,6 +29,8 @@ interface Props {
   formPage: any;
   formPageIndex: number;
   handleSaveFormPage: (updatedFormPage: any, formPageIndex: number) => Promise<void>;
+  handleDeleteFormPage: (formPageIndex: number) => Promise<void>;
+  handleEditFormPage: (formPageIndex: number) => Promise<void>;
   commonDefinitionsSchema: string;
 }
 
@@ -36,6 +45,8 @@ const BranchFormCreator: React.FC<Props> = props => {
   const [loading, setLoading] = useState(false);
   const [schemaErrors, setSchemaErrors] = useState<any>({});
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSaveFormPage = async () => {
     // If JSON schema or UI schema have errors, don't save
@@ -65,11 +76,53 @@ const BranchFormCreator: React.FC<Props> = props => {
     setLoading(false);
   };
 
+  const handleEditFormPage = async () => {
+    setLoading(true);
+    props.handleEditFormPage(props.formPageIndex);
+    setLoading(false);
+  };
+
+  const handleDeleteFormPage = async () => {
+    onClose();
+    setLoading(true);
+    await props.handleDeleteFormPage(props.formPageIndex);
+    setLoading(false);
+  };
+
   return (
     <>
-      <Button onClick={handleSaveFormPage} colorScheme="purple" isLoading={loading}>
-        Save Form Page
-      </Button>
+      <Stack direction={{ base: "column", sm: "row" }}>
+        <Button onClick={handleSaveFormPage} isLoading={loading}>
+          Save Form
+        </Button>
+        <Button isLoading={loading} onClick={handleEditFormPage}>
+          Edit Name
+        </Button>
+        <Button isLoading={loading} onClick={onOpen}>
+          Delete
+        </Button>
+      </Stack>
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Form Page
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure? This will not delete any existing application data, but it will remove
+              this form page from the user view.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleDeleteFormPage} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
       <Box marginTop="20px">
         <Stack
           width={{ base: "100%", md: "55%" }}

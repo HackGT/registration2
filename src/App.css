@@ -2,3 +2,8 @@
 .rjsf {
   width: 100%;
 }
+
+/* Reduce spacing in email editor */
+.public-DraftStyleDefault-block {
+  margin: 0.5em 0 !important;
+}

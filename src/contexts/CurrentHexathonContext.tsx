@@ -1,5 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-import React, { useContext, createContext, useMemo } from "react";
+import React, { useContext, createContext, useMemo, PropsWithChildren } from "react";
 import { useParams } from "react-router-dom";
 
 const initialState = {
@@ -16,11 +15,11 @@ interface Props {
   hexathons: any[];
 }
 
-const CurrentHexathonProvider: React.FC<Props> = ({ children, hexathons }) => {
+const CurrentHexathonProvider: React.FC<PropsWithChildren<Props>> = ({ children, hexathons }) => {
   const { hexathonId } = useParams();
 
   const value = useMemo(
-    () => ({ currentHexathon: hexathons.find((hexathon: any) => hexathon._id === hexathonId) }),
+    () => ({ currentHexathon: hexathons.find((hexathon: any) => hexathon.id === hexathonId) }),
     [hexathons, hexathonId]
   );
 

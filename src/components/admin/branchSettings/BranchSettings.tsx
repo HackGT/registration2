@@ -1,7 +1,15 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState } from "react";
-import { Alert, AlertIcon, Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/react";
-import { ErrorScreen, Loading } from "@hex-labs/core";
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Heading,
+  SimpleGrid,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
@@ -14,42 +22,56 @@ export enum BranchType {
 }
 
 export interface Branch {
-  _id: string;
+  id: string;
   name: string;
   hexathon: string;
   type: BranchType;
+  applicationGroup: any;
   settings: {
     open: string;
     close: string;
   };
   formPages: {
-    _id: string;
+    id: string;
     title: string;
     jsonSchema: string;
     uiSchema: string;
   }[];
+  automaticConfirmation?: {
+    enabled: boolean;
+    confirmationBranch?: any;
+    emails: Array<string>;
+  };
+  grading?: {
+    enabled: boolean;
+    group?: string;
+  };
 }
 
 const BranchSettings: React.FC = () => {
   const { hexathonId } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [currentBranchData, setCurrentBranchData] = useState<any>({});
+  const [currentBranchData, setCurrentBranchData] = useState<any>(null);
 
-  const [{ data: branches, loading, error }, refetch] = useAxios(
-    `https://registration.api.hexlabs.org/branches/?hexathon=${hexathonId}`
-  );
+  const [{ data: branches, loading, error }, refetch] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
+    params: {
+      hexathon: hexathonId,
+    },
+  });
 
-  const handleModalOpen = (defaultValues: Partial<Branch>) => {
+  const handleModalOpen = (defaultValues: Partial<Branch> | null) => {
     setCurrentBranchData(defaultValues);
     onOpen();
   };
 
   const handleModalClose = () => {
-    setCurrentBranchData({});
+    setCurrentBranchData(null);
     onClose();
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
 
   return (
@@ -59,14 +81,25 @@ const BranchSettings: React.FC = () => {
           <AlertIcon />
           All times are shown in America/New_York time zone
         </Alert>
-        <Button onClick={() => handleModalOpen({})} marginBottom="20px">
+        <Button onClick={() => handleModalOpen(null)} marginBottom="20px">
           Create Branch
         </Button>
-        <Stack>
+        <Stack gap="15px">
+          <Heading size="lg">Application Branches</Heading>
           <SimpleGrid columns={[1, 1, 2, 3, 4]} spacing="25px">
-            {branches.map((branch: Branch) => (
-              <BranchCard openModal={handleModalOpen} branch={branch} />
-            ))}
+            {branches
+              .filter((branch: Branch) => branch.type === BranchType.APPLICATION)
+              .map((branch: Branch) => (
+                <BranchCard openModal={handleModalOpen} branch={branch} />
+              ))}
+          </SimpleGrid>
+          <Heading size="lg">Confirmation Branches</Heading>
+          <SimpleGrid columns={[1, 1, 2, 3, 4]} spacing="25px">
+            {branches
+              .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+              .map((branch: Branch) => (
+                <BranchCard openModal={handleModalOpen} branch={branch} />
+              ))}
           </SimpleGrid>
         </Stack>
       </Box>
@@ -75,6 +108,7 @@ const BranchSettings: React.FC = () => {
         isOpen={isOpen}
         onClose={handleModalClose}
         refetch={refetch}
+        branches={branches}
       />
     </>
   );

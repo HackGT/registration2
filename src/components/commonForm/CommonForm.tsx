@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { FormProps } from "@rjsf/core";
 import React, { useMemo } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -6,22 +7,31 @@ import { JSONSchema7 } from "json-schema";
 import Form from "@rjsf/chakra-ui";
 
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
-import SelectFieldTemplate from "./SelectFieldTemplate";
-import FileUploadFieldTemplate from "./FileUploadFieldTemplate";
+import SelectField from "./fields/SelectField";
+import FileUploadField from "./fields/FileUploadField";
+import CheckboxWidget from "./widgets/CheckboxWidget";
+import EssayWidget from "./widgets/EssayWidget";
+import DateWidget from "./widgets/DateWidget";
 
 function transformErrors(errors: any[]) {
-  const updatedErrors = [...errors];
   return errors.map((error: any) => {
     if (
       error.message === "should be equal to constant" ||
-      error.message === "should match exactly one schema in oneOf"
+      error.message === "should match exactly one schema in oneOf" ||
+      error.message === "should match some schema in anyOf"
     ) {
       error.message = "";
     } else if (
-      error.message === "should be number" ||
-      error.message === "should be equal to one of the allowed values"
+      error.message === "should be equal to one of the allowed values" ||
+      error.message === "is a required property"
     ) {
-      error.message = "This is a required field";
+      error.message = "Please fill out this field";
+    } else if (error.message === "should NOT be shorter than 10 characters") {
+      error.message = "This field must be at least 10 characters long";
+    } else if (error.message === `should match format "email"`) {
+      error.message = "Please enter a valid email address";
+    } else if (error.message === `should match format "uri"`) {
+      error.message = "Please enter a valid URL";
     }
     return error;
   });
@@ -80,7 +90,12 @@ const CommonForm: React.FC<Props> = props => {
         schema={combinedSchema}
         uiSchema={uiSchema}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        fields={{ select: SelectFieldTemplate, file: FileUploadFieldTemplate }}
+        fields={{ select: SelectField, file: FileUploadField }}
+        widgets={{
+          checkbox: CheckboxWidget,
+          essay: EssayWidget,
+          date: DateWidget,
+        }}
         noHtml5Validate
         showErrorList={false}
         transformErrors={transformErrors}

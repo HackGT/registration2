@@ -74,7 +74,7 @@ const CommonForm: React.FC<Props> = props => {
         s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
         const curWordCount = s.split(" ").filter((str: string) => str !== "").length;
 
-        const topicWordCount = schema.properties.essays.properties[topic].wordCount;
+        const topicWordCount = schema.properties.essays?.properties[topic].wordCount || 100;
         if (curWordCount > topicWordCount) {
           errors.essays[topic].addError(`Essay cannot be over ${topicWordCount} words`);
         }

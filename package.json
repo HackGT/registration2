@@ -36,7 +36,6 @@
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "firebase": "^9.6.7",
-    "framer-motion": "^4.0.0",
     "hammerjs": "^2.0.8",
     "json-schema": "^0.4.0",
     "lodash": "^4.17.21",

@@ -283,36 +283,67 @@ const ApplicationDetailPage: React.FC = () => {
           <AccordionPanel pb={4}>
             <Stack>
               {
-                Object.keys(data.applicationData).map((key) => (
-                  (!["schoolEmail", "gender", "ethnicity", "phoneNumber", "confirmChecks", "essays", "resume", "website", "adult", "linkedin", "customData"].includes(key)) && (
-                    <Text>
+                Object.keys(data.applicationData).map((key) => {
+                  let output = <></>
+                  if (!["schoolEmail", "gender", "ethnicity", "phoneNumber", "confirmChecks", "essays", "resume", "website", "adult", "linkedin", "customData"].includes(key)) {
+                    if (data.applicationData[key] != null && data.applicationData[key].length > 0) {
+                      output = <Text>
                       <Text color="gray" fontSize="sm">
                         {key}
                       </Text>
-                      {
+                      { 
                         (typeof data.applicationData[key]) !== 'object' 
                         ? data.applicationData[key] 
-                        : JSON.stringify(data.applicationData[key])
+                        : data.applicationData[key].map((e: any, index: any) => {
+                          let output = ""
+                          if (index == data.applicationData[key].length - 1) {
+                            output = String(e)
+                          } else {
+                            output = String(e).concat(", ")
+                          }
+                          return output
+                        }
+                        )
+                          
                       }
                     </Text>
-                  )
-                ))
+                    }
+                  }
+                  return output
+                  })
               }
               {
                 data.applicationData.customData && (
-                  Object.keys(data.applicationData.customData).map((key) => (
-                    <Text>
-                      <Text color="gray" fontSize="sm">
-                        {key}
-                      </Text>
-                      {
-                        (typeof data.applicationData.customData[key]) !== 'object'
-                        ? data.applicationData.customData[key]
-                        : JSON.stringify(data.applicationData.customData[key])
-                      }
-                    </Text>
-                  ))
-                )
+                  Object.keys(data.applicationData.customData).map(key => { 
+                    let output = <></>
+                    console.log(data.applicationData.customData[key].length)
+                    if (data.applicationData.customData[key] != null && data.applicationData.customData[key].length > 0) {
+                      output = (
+                        <Text>
+                          <Text color="gray" fontSize="sm">
+                            { key }
+                          </Text>
+                          { 
+                            (typeof data.applicationData.customData[key]) !== 'object'
+                            ? data.applicationData.customData[key]
+                            : data.applicationData.customData[key].map((e: any, index: any) => {
+                              let output = ""
+                              if (index == data.applicationData.customData[key].length - 1) {
+                                output = String(e)
+                              } else {
+                                output = String(e).concat(", ")
+                              }
+                              return output
+                            }
+                            )
+                              
+                          }
+                        </Text>
+                      )
+                    } 
+                    return output;
+
+                  }))
               }
             </Stack>
           </AccordionPanel>

@@ -68,7 +68,7 @@ const Navigation: React.FC = () => {
         <MenuButton>
           <Box display="flex" alignItems="center" role="group">
             <Image
-              src={`/events/${currentHexathon.id}.jpeg`}
+              src={currentHexathon.coverImage ?? "/events/default-event-logo.jpeg"}
               borderRadius="full"
               boxSize="30px"
               padding="1px"

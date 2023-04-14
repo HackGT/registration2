@@ -285,11 +285,17 @@ const ApplicationDetailPage: React.FC = () => {
               {
                 Object.keys(data.applicationData).map((key) => {
                   let output = <></>
+                  let formattedKey: string|undefined = key
+                    if (key != null) {
+                      formattedKey = key.match(/([A-Z]?[^A-Z]*)/g)?.slice(0,-1).join(" ")
+                      formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1)
+                    }
                   if (!["schoolEmail", "gender", "ethnicity", "phoneNumber", "confirmChecks", "essays", "resume", "website", "adult", "linkedin", "customData"].includes(key)) {
                     if (data.applicationData[key] != null && data.applicationData[key].length > 0) {
                       output = <Text>
+                        
                       <Text color="gray" fontSize="sm">
-                        {key}
+                        {formattedKey}
                       </Text>
                       { 
                         (typeof data.applicationData[key]) !== 'object' 
@@ -303,25 +309,43 @@ const ApplicationDetailPage: React.FC = () => {
                           }
                           return output
                         }
-                        )
-                          
+                        )  
                       }
                     </Text>
+                    } else if(data.applicationData[key] != null) {
+                      output = <Text>
+                      <Text color="gray" fontSize="sm">
+                        {formattedKey}
+                      </Text>
+                        <Tag colorScheme="red">
+                        None
+                        </Tag>
+                       
+                    </Text>
                     }
-                  }
-                  return output
+                    
+                    
+                    }
+                    return output;
+                  
                   })
               }
               {
                 data.applicationData.customData && (
                   Object.keys(data.applicationData.customData).map(key => { 
                     let output = <></>
-                    console.log(data.applicationData.customData[key].length)
+                    let formattedKey: string|undefined = key
+                    if (key != null) {
+                      formattedKey = key.match(/([A-Z]?[^A-Z]*)/g)?.slice(0,-1).join(" ")
+                      formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1)
+                      
+                    }
+                    
                     if (data.applicationData.customData[key] != null && data.applicationData.customData[key].length > 0) {
                       output = (
                         <Text>
                           <Text color="gray" fontSize="sm">
-                            { key }
+                            { formattedKey }
                           </Text>
                           { 
                             (typeof data.applicationData.customData[key]) !== 'object'
@@ -334,13 +358,25 @@ const ApplicationDetailPage: React.FC = () => {
                                 output = String(e).concat(", ")
                               }
                               return output
+                              
+  
                             }
                             )
                               
                           }
                         </Text>
                       )
-                    } 
+                    } else if (data.applicationData.customData[key] != null) {
+                      <Text>
+                          <Text color="gray" fontSize="sm">
+                            { formattedKey }
+                          </Text>
+                          <Tag colorScheme="red">
+                          None
+                          </Tag>
+                        </Text>
+
+                    }
                     return output;
 
                   }))

@@ -3,8 +3,14 @@ import {Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, Service } from "@hex-labs/core";
+import { EditIcon } from "@chakra-ui/icons";
 
-const HexathonModal: React.FC = () => {
+interface Props {
+  num: number;
+  hexathon: any;
+}
+
+const HexathonModal: React.FC<Props> = props => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { register, handleSubmit } = useForm();
@@ -24,10 +30,10 @@ const HexathonModal: React.FC = () => {
 
   const onSubmit = async (data: any) => {    
     const emailHeaderImageID = await uploadFile(data.emailHeaderImage);
-    const coverImageID = await uploadFile(data.coverImage);
+    const coverImageID = (props.num == 0) && await uploadFile(data.coverImage);
     const cdnUrl = "https://storage.googleapis.com/hexlabs-public-cdn/"
 
-    await axios.post(
+    const createOrEdit = (props.num == 0) ? await axios.post(
       apiUrl(Service.HEXATHONS, `/hexathons`),
       {
           name: data.name,
@@ -38,48 +44,65 @@ const HexathonModal: React.FC = () => {
           emailHeaderImage: cdnUrl + emailHeaderImageID,
           coverImage: cdnUrl + coverImageID
       }
+    ) : await axios.put(
+      apiUrl(Service.HEXATHONS, `/hexathons/${props.hexathon.id}`),
+      {
+          name: data.name,
+          shortCode: data.shortCode,
+          isActive: data.isActive,
+          startDate: `${data.startDate}T00:16:30.934Z`,
+          endDate: `${data.endDate}T00:16:30.934Z`,
+          emailHeaderImage: cdnUrl + emailHeaderImageID,
+      }
     );
 
     onClose();
   }
 
+  let button;
+  if (props.num === 0) {
+    button = <Button onClick={onOpen}>Create Hexathon</Button>;
+  } else {
+    button = <Button onClick={onOpen}><EditIcon /></Button>;
+  }
+
   return (
     <>
-      <Button onClick={onOpen}>Create Hexathon</Button>
+      {button}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Hexathon</ModalHeader>
+          <ModalHeader>{props.num == 0 ? "Create Hexathon" : "Edit Hexathon"}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack spacing={3}>
                 <FormControl isRequired>
                   <FormLabel>Name</FormLabel>
-                  <Input {...register("name")} />
+                  <Input defaultValue={props.hexathon?.name} {...register("name")} />
                 </FormControl>
                 <FormControl isRequired>
                   <FormLabel>Short Code</FormLabel>
-                  <Input {...register("shortCode")} />
+                  <Input defaultValue={props.hexathon?.shortCode} {...register("shortCode")} />
                 </FormControl>
                 <FormControl isRequired>
                   <FormLabel>Start Date</FormLabel>
-                  <Input type="date" {...register("startDate")} />
+                  <Input defaultValue={props.hexathon?.startDate.split("T")[0]} type="date" {...register("startDate")} />
                 </FormControl>
                 <FormControl isRequired>
                   <FormLabel>End Date</FormLabel>
-                  <Input type="date" {...register("endDate")} />
+                  <Input defaultValue={props.hexathon?.endDate.split("T")[0]} type="date" {...register("endDate")} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Email Header Image</FormLabel>
                   <Input type="file" {...register("emailHeaderImage")} />
                 </FormControl>
-                <FormControl>
+                {(props.num == 0) && <FormControl>
                   <FormLabel>Cover Image</FormLabel>
                   <Input type="file" {...register("coverImage")} />
-                </FormControl>
-                <Checkbox {...register("isActive")}>Active</Checkbox>
+                </FormControl>}
+                <Checkbox defaultChecked {...register("isActive")}>Active</Checkbox>
 
                 <Button colorScheme="green" type="submit">Submit</Button>
               </VStack>

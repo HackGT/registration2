@@ -6,7 +6,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import { EditIcon } from "@chakra-ui/icons";
 
 interface Props {
-  num: number;
+  action: 'CREATE' | 'EDIT';
   hexathon: any;
 }
 
@@ -30,10 +30,10 @@ const HexathonModal: React.FC<Props> = props => {
 
   const onSubmit = async (data: any) => {    
     const emailHeaderImageID = await uploadFile(data.emailHeaderImage);
-    const coverImageID = (props.num == 0) && await uploadFile(data.coverImage);
+    const coverImageID = (props.action == 'CREATE') && await uploadFile(data.coverImage);
     const cdnUrl = "https://storage.googleapis.com/hexlabs-public-cdn/"
 
-    const createOrEdit = (props.num == 0) ? await axios.post(
+    const createOrEdit = (props.action == 'CREATE') ? await axios.post(
       apiUrl(Service.HEXATHONS, `/hexathons`),
       {
           name: data.name,
@@ -60,10 +60,10 @@ const HexathonModal: React.FC<Props> = props => {
   }
 
   let button;
-  if (props.num === 0) {
+  if (props.action === 'CREATE') {
     button = <Button onClick={onOpen}>Create Hexathon</Button>;
   } else {
-    button = <Button onClick={onOpen}><EditIcon /></Button>;
+    button = <Button onClick={onOpen} height="148px"><EditIcon /></Button>;
   }
 
   return (
@@ -73,7 +73,7 @@ const HexathonModal: React.FC<Props> = props => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{props.num == 0 ? "Create Hexathon" : "Edit Hexathon"}</ModalHeader>
+          <ModalHeader>{props.action == 'CREATE' ? "Create Hexathon" : "Edit Hexathon"}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -98,7 +98,7 @@ const HexathonModal: React.FC<Props> = props => {
                   <FormLabel>Email Header Image</FormLabel>
                   <Input type="file" {...register("emailHeaderImage")} />
                 </FormControl>
-                {(props.num == 0) && <FormControl>
+                {(props.action == 'CREATE') && <FormControl>
                   <FormLabel>Cover Image</FormLabel>
                   <Input type="file" {...register("coverImage")} />
                 </FormControl>}

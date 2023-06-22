@@ -56,10 +56,10 @@ const SelectEvent: React.FC = () => {
       {data.map((hexathon: any) => (
         <Flex key={hexathon.id} justifyContent="space-around">
           <EventCard name={hexathon.name} id={hexathon.id} />
-          {role.admin && <HexathonModal action='EDIT' hexathon={hexathon}/>}
+          {role.exec && <HexathonModal action='EDIT' hexathon={hexathon}/>}
         </Flex>
       ))}
-      {role.admin && <Center><HexathonModal action='CREATE' hexathon={null}/></Center>}
+      {role.exec && <Center><HexathonModal action='CREATE' hexathon={null}/></Center>}
     </Flex>
   );
 };

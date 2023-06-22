@@ -1,4 +1,4 @@
-import { Center, Flex } from "@chakra-ui/react";
+import { Button, Center, Flex } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import axios from "axios";
@@ -54,11 +54,12 @@ const SelectEvent: React.FC = () => {
   return (
     <Flex paddingY={{ base: "32px", md: "32px" }} direction="column" justify="center">
       {data.map((hexathon: any) => (
-        <Center key={hexathon.id}>
+        <Flex key={hexathon.id} justifyContent="space-around">
           <EventCard name={hexathon.name} id={hexathon.id} />
-        </Center>
+          {role.exec && <HexathonModal action='EDIT' hexathon={hexathon}/>}
+        </Flex>
       ))}
-      {role.exec && <Center><HexathonModal /></Center>}
+      {role.exec && <Center><HexathonModal action='CREATE' hexathon={null}/></Center>}
     </Flex>
   );
 };

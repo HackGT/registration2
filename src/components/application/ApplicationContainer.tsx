@@ -116,22 +116,6 @@ const ApplicationContainer = () => {
       </Flex>
     );
   }
-  // if (formPageNumber === branch.formPages.length) {
-  //   return (
-  //     <Box maxWidth="700px" marginX="auto" marginTop="15px">
-  //       <ApplicationReviewPage
-  //         defaultFormData={defaultFormData}
-  //         branch={branch}
-  //         applicationId={applicationId}
-  //         hasPrevPage={formPageNumber > 0}
-  //         prevPage={prevPage}
-  //         nextPage={nextPage}
-  //         setPage={setPage}
-  //         refetch={refetch}
-  //       />
-  //     </Box>
-  //   );
-  // }
   return <ApplicationSubmittedPage />;
 };
 

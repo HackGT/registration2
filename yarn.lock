@@ -1129,9 +1129,9 @@
     "@chakra-ui/react-children-utils" "2.0.4"
     "@chakra-ui/react-context" "2.0.5"
 
-"@chakra-ui/breakpoint-utils@2.0.5":
+"@chakra-ui/breakpoint-utils@2.0.8":
   version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@chakra-ui/breakpoint-utils/-/breakpoint-utils-2.0.5.tgz#55b571038b66e9f6d41633c102ea904c679dac5c"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/breakpoint-utils/-/breakpoint-utils-2.0.8.tgz#55b571038b66e9f6d41633c102ea904c679dac5c"
   integrity sha512-8uhrckMwoR/powlAhxiFZPM0s8vn0B2yEyEaRcwpy5NmRAJSTEotC2WkSyQl/Cjysx9scredumB5g+fBX7IqGQ==
 
 "@chakra-ui/button@2.0.13":
@@ -1301,7 +1301,7 @@
   resolved "https://registry.yarnpkg.com/@chakra-ui/layout/-/layout-2.1.11.tgz#6b0005dd897a901f2fded99c19fe47f60db80cb3"
   integrity sha512-UP19V8EeI/DEODbWrZlqC0sg248bpFaWpMiM/+g9Bsxs9aof3yexpMD/7gb0yrfbIrkdvSBrcQeqxXGzbfoopw==
   dependencies:
-    "@chakra-ui/breakpoint-utils" "2.0.5"
+    "@chakra-ui/breakpoint-utils" "2.0.8"
     "@chakra-ui/icon" "3.0.13"
     "@chakra-ui/object-utils" "2.0.5"
     "@chakra-ui/react-children-utils" "2.0.4"
@@ -1323,7 +1323,7 @@
   resolved "https://registry.yarnpkg.com/@chakra-ui/media-query/-/media-query-3.2.8.tgz#7d5feccb7ac52891426c060dd2ed1df37420956d"
   integrity sha512-djmEg/eJ5Qrjn7SArTqjsvlwF6mNeMuiawrTwnU+0EKq9Pq/wVSb7VaIhxdQYJLA/DbRhE/KPMogw1LNVKa4Rw==
   dependencies:
-    "@chakra-ui/breakpoint-utils" "2.0.5"
+    "@chakra-ui/breakpoint-utils" "2.0.8"
     "@chakra-ui/react-env" "2.0.11"
 
 "@chakra-ui/menu@2.1.5":

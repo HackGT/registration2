@@ -91,7 +91,7 @@ const BranchTemplates: React.FC = () => {
         postSubmitEmailTemplate: {
           enabled: values.enabled,
           subject: values.subject,
-          content: editorState.getCurrentContent().getPlainText(),
+          content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         },
       });
 

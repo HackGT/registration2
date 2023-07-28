@@ -144,7 +144,7 @@ const BranchFormCreator: React.FC<Props> = props => {
                 You can use common definitions to reuse shared dropdown options between forms (like
                 school, ethnicity, etc.). Click{" "}
                 <Link
-                  href="https://github.com/HackGT/api/blob/main/services/registration/src/common/commonDefinitions.ts"
+                  href="https://github.com/HackGT/api/blob/main/common/src/commonDefinitions.ts"
                   target="_blank"
                   rel="noreferrer"
                   isExternal

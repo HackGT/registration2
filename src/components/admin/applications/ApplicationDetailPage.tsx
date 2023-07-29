@@ -37,13 +37,14 @@ import {
   PopoverContent,
   PopoverFooter,
   PopoverTrigger,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen, apiUrl, Service, handleAxiosError } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
@@ -716,6 +717,13 @@ const ApplicationDetailPage: React.FC = () => {
                     value={data.applicationExtendedDeadline !== null || extendedDeadlines}
                   >
                     Enable Extended Deadlines?
+                    <Tooltip
+                      label="If selected, this user will have custom deadlines for their application that override the branch deadlines. This allows you to give certain users more time to apply or confirm their attendance. For example, use this if someone emails and is having trouble submitting right before a deadline."
+                      placement="auto-start"
+                      hasArrow
+                    >
+                      <QuestionIcon ml="1" mb="1" />
+                    </Tooltip>
                   </Checkbox>
                 </FormControl>
                 {extendedDeadlines && (

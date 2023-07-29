@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   Box,
   Button,
@@ -79,7 +80,7 @@ const BranchSettings: React.FC = () => {
       <Box padding="20px">
         <Alert status="info" marginBottom="20px">
           <AlertIcon />
-          All times are shown in America/New_York time zone
+          <AlertDescription>All times are shown in America/New_York time zone</AlertDescription>
         </Alert>
         <Button onClick={() => handleModalOpen(null)} marginBottom="20px">
           Create Branch

@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import CreateTeamSection from "./CreateTeamSection";
 import OnTeamSection from "./OnTeamSection";
 
-const TeamDashboard: React.FC = () => {
+const TeamManagementPage: React.FC = () => {
   const { user } = useAuth();
   const { hexathonId } = useParams();
 
@@ -37,7 +37,7 @@ const TeamDashboard: React.FC = () => {
         marginBottom="5px"
       >
         <Heading size="lg" lineHeight="inherit">
-          Team Management Portal
+          Team Management
         </Heading>
       </Flex>
       <Text textAlign="center">
@@ -67,4 +67,4 @@ const TeamDashboard: React.FC = () => {
   );
 };
 
-export default TeamDashboard;
+export default TeamManagementPage;

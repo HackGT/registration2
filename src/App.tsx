@@ -20,7 +20,7 @@ import GradingDashboardPage from "./components/admin/grading/GradingDashboardPag
 import GradingQuestionPage from "./components/admin/grading/GradingQuestionPage";
 import GradingLeaderboardPage from "./components/admin/grading/GradingLeaderboardPage";
 import BranchEditorPage from "./components/admin/branchSettings/branchEditor/BranchEditorPage";
-import TeamDashboard from "./components/teamFormation/TeamDashboard";
+import TeamManagementPage from "./components/teamManagement/TeamManagementPage";
 import AppOutline from "./components/outline/AppOutline";
 import StartApplication from "./components/application/StartApplication";
 
@@ -64,7 +64,7 @@ export const App = () => {
             <Route path="grading" element={<GradingDashboardPage />} />
             <Route path="grading/:gradingGroup/question" element={<GradingQuestionPage />} />
             <Route path="grading/leaderboard" element={<GradingLeaderboardPage />} />
-            <Route path="team/dashboard" element={<TeamDashboard />} />
+            <Route path="team-management" element={<TeamManagementPage />} />
           </Route>
         </Route>
       </Routes>

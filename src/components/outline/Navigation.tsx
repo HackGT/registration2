@@ -57,7 +57,7 @@ const Navigation: React.FC = () => {
   });
 
   if (branchesLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
@@ -120,7 +120,7 @@ const Navigation: React.FC = () => {
           <Link to={`/${currentHexathon.id}`}>
             <HeaderItem>Dashboard</HeaderItem>
           </Link>
-          <Link to={`/${currentHexathon.id}/team/dashboard`}>
+          <Link to={`/${currentHexathon.id}/team-management`}>
             <HeaderItem>Team Management</HeaderItem>
           </Link>
           {role.member && (
@@ -128,8 +128,8 @@ const Navigation: React.FC = () => {
               <Link to={`/${currentHexathon.id}/admin`}>
                 <HeaderItem>Admin Home</HeaderItem>
               </Link>
-              { gradingEnabled && (
-                <Link to={`/${currentHexathon.id}/grading`} state={{gradingEnabled}}>
+              {gradingEnabled && (
+                <Link to={`/${currentHexathon.id}/grading`} state={{ gradingEnabled }}>
                   <HeaderItem>Grading</HeaderItem>
                 </Link>
               )}

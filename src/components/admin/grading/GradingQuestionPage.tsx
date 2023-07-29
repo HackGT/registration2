@@ -28,7 +28,7 @@ import { apiUrl, handleAxiosError, LoadingScreen, Service } from "@hex-labs/core
 import ApplicantAnswer from "./ApplicantAnswer";
 import ScoreButton from "./ScoreButton";
 
-const GradeQuestion: React.FC = () => {
+const GradingQuestionPage: React.FC = () => {
   const { hexathonId, gradingGroup } = useParams();
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState<ApplicantAnswer>({
@@ -279,4 +279,4 @@ const GradeQuestion: React.FC = () => {
   );
 };
 
-export default GradeQuestion;
+export default GradingQuestionPage;

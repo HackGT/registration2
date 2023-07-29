@@ -19,7 +19,7 @@ import { useParams } from "react-router-dom";
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 import PastEmailPreviewModal from "./PastEmailPreviewModal";
 
-const PastEmailsScreen: React.FC = () => {
+const PastEmailsTab: React.FC = () => {
   const { hexathonId } = useParams();
   const [{ data, loading, error }] = useAxios({
     method: "GET",
@@ -98,4 +98,4 @@ const PastEmailsScreen: React.FC = () => {
   );
 };
 
-export default PastEmailsScreen;
+export default PastEmailsTab;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex, Stack, Heading } from "@chakra-ui/react";
 
-import AdminWidget from "./AdminWidget";
+import AdminMenuCard from "./AdminMenuCard";
 
 const AdminControlsHome: React.FC = () => (
   <Flex
@@ -33,21 +33,29 @@ const AdminControlsHome: React.FC = () => (
       </Box>
     </Flex>
     <Stack spacing={4} marginX={{ base: 4, md: 0 }}>
-      <AdminWidget
+      <AdminMenuCard
         title="Statistics"
-        description="View statistics about the event"
+        description="View application statistics in tables & graphs"
         href="statistics"
       />
-      <AdminWidget
+      <AdminMenuCard
         title="Applications"
-        description="View information about all of the applicants and data"
+        description="View detailed applicant information with filter & search tools"
         href="applications"
       />
-      <AdminWidget title="Emailing" description="Email participants" href="email" />
-      <AdminWidget title="Branch Templates" description="Edit Post-apply and Post-confirmation branch templates" href="templates" />
-      <AdminWidget
+      <AdminMenuCard
+        title="Send Emails"
+        description="Send one-off emails and view past emails sent"
+        href="email"
+      />
+      <AdminMenuCard
+        title="Branch Email Templates"
+        description="Edit automatic post-apply and post-confirmation email templates"
+        href="branch-email-templates"
+      />
+      <AdminMenuCard
         title="Branch Settings"
-        description="Update application settings"
+        description="Update application form questions & branch settings"
         href="branch-settings"
       />
     </Stack>

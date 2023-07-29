@@ -33,7 +33,7 @@ interface Props {
   image?: string;
 }
 
-const Tile: React.FC<Props> = props => {
+const BranchTile: React.FC<Props> = props => {
   const { hexathonId } = useParams();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -174,4 +174,4 @@ const Tile: React.FC<Props> = props => {
   );
 };
 
-export default Tile;
+export default BranchTile;

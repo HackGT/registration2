@@ -8,7 +8,7 @@ interface Props {
   team: any;
 }
 
-const OnTeam: React.FC<Props> = props => {
+const OnTeamSection: React.FC<Props> = props => {
   const { hexathonId } = useParams();
   const { name } = props.team;
   const [email, setEmail] = useState("");
@@ -94,4 +94,4 @@ const OnTeam: React.FC<Props> = props => {
   );
 };
 
-export default OnTeam;
+export default OnTeamSection;

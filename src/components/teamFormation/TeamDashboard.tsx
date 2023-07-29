@@ -4,8 +4,8 @@ import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import CreateTeam from "./CreateTeam";
-import OnTeam from "./OnTeam";
+import CreateTeamSection from "./CreateTeamSection";
+import OnTeamSection from "./OnTeamSection";
 
 const TeamDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -59,7 +59,7 @@ const TeamDashboard: React.FC = () => {
           paddingBottom="30px"
         >
           <Center flexDir="column">
-            {Object.keys(team).length > 0 ? <OnTeam team={team} /> : <CreateTeam />}
+            {Object.keys(team).length > 0 ? <OnTeamSection team={team} /> : <CreateTeamSection />}
           </Center>
         </Box>
       </Center>

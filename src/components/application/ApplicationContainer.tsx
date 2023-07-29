@@ -7,7 +7,7 @@ import { Navigate, useParams } from "react-router-dom";
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 import ApplicationReviewPage from "./ApplicationReviewPage";
-import { Branch } from "../admin/branchSettings/BranchSettings";
+import { Branch } from "../admin/branchSettings/BranchSettingsPage";
 
 /** Manually modify essays to fit frontend data display */
 export const getFrontendFormattedFormData = (data: any) => {
@@ -44,8 +44,8 @@ const ApplicationContainer = () => {
   if (error) return <ErrorScreen error={error} />;
 
   const setPage = async (pageNumber: number) => {
-      window.scrollTo(0, 0);
-      setFormPageNumber(pageNumber);
+    window.scrollTo(0, 0);
+    setFormPageNumber(pageNumber);
   };
 
   const prevPage = async () => {
@@ -79,16 +79,28 @@ const ApplicationContainer = () => {
         <Flex alignItems="center" justifyContent="center" width="100%" my="20px">
           {branch.formPages.map((title, index) => (
             <Flex flexDir="column" justifyContent="start" width={flexWidth} marginX="1%">
-              <Box sx={{bg: `${(index <= formPageNumber) ? "purple.500" : "purple.100"}`, h: "8px", rounded: "md"}} />
+              <Box
+                sx={{
+                  bg: `${index <= formPageNumber ? "purple.500" : "purple.100"}`,
+                  h: "8px",
+                  rounded: "md",
+                }}
+              />
               <Text>{JSON.parse(branch.formPages[index].jsonSchema).title}</Text>
             </Flex>
           ))}
           <Flex flexDir="column" justifyContent="start" width={flexWidth} marginX="1%">
-            <Box sx={{bg: `${(formPageNumber === branch.formPages.length) ? "purple.500" : "purple.100"}`, h: "8px", rounded: "md"}} />
+            <Box
+              sx={{
+                bg: `${formPageNumber === branch.formPages.length ? "purple.500" : "purple.100"}`,
+                h: "8px",
+                rounded: "md",
+              }}
+            />
             <Text>Review Submission</Text>
           </Flex>
         </Flex>
-        {formPageNumber < branch.formPages.length ?
+        {formPageNumber < branch.formPages.length ? (
           <Box maxWidth="700px" marginX="auto" marginTop="15px">
             <ApplicationFormPage
               defaultFormData={defaultFormData}
@@ -99,7 +111,8 @@ const ApplicationContainer = () => {
               prevPage={prevPage}
               nextPage={nextPage}
             />
-          </Box> : 
+          </Box>
+        ) : (
           <Box maxWidth="700px" marginX="auto" marginTop="15px">
             <ApplicationReviewPage
               defaultFormData={defaultFormData}
@@ -112,7 +125,7 @@ const ApplicationContainer = () => {
               refetch={refetch}
             />
           </Box>
-        }
+        )}
       </Flex>
     );
   }

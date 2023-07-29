@@ -37,7 +37,7 @@ const GradingDashboardCard: React.FC<{
   </Box>
 );
 
-const GradingDashboard: React.FC = () => {
+const GradingDashboardPage: React.FC = () => {
   const { hexathonId } = useParams();
   const [{ data, loading, error }] = useAxios({
     url: apiUrl(Service.REGISTRATION, "/grading/grading-status"),
@@ -55,7 +55,7 @@ const GradingDashboard: React.FC = () => {
   });
 
   if (branchesLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
@@ -64,18 +64,18 @@ const GradingDashboard: React.FC = () => {
   if (!gradingEnabled) {
     return (
       <Box p="5" borderWidth="1px">
-      <Center>
-        <Flex align="baseline" mt={5}>
-          <WarningIcon w={375} h={175} />
-        </Flex>
-      </Center>
-      <Center>
-        <Text textAlign="center" fontSize="20px" fontWeight="bold">
-          Grading is currently disabled for this hexathon.
-        </Text>
-      </Center>
-    </Box>
-    )
+        <Center>
+          <Flex align="baseline" mt={5}>
+            <WarningIcon w={375} h={175} />
+          </Flex>
+        </Center>
+        <Center>
+          <Text textAlign="center" fontSize="20px" fontWeight="bold">
+            Grading is currently disabled for this hexathon.
+          </Text>
+        </Center>
+      </Box>
+    );
   }
   if (error) return <ErrorScreen error={error} />;
 
@@ -143,4 +143,4 @@ const GradingDashboard: React.FC = () => {
   );
 };
 
-export default GradingDashboard;
+export default GradingDashboardPage;

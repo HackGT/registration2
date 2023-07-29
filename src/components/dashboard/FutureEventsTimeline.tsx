@@ -6,7 +6,7 @@ import useAxios from "axios-hooks";
 import Hex from "./hex";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 
-const Timeline: React.FC = () => {
+const FutureEventsTimeline: React.FC = () => {
   const [{ data: hexathons, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
   const { currentHexathon } = useCurrentHexathon();
 
@@ -110,4 +110,4 @@ const Timeline: React.FC = () => {
   );
 };
 
-export default Timeline;
+export default FutureEventsTimeline;

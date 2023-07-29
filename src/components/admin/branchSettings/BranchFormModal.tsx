@@ -34,7 +34,7 @@ import { useParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { InfoIcon } from "@chakra-ui/icons";
 
-import { Branch, BranchType } from "./BranchSettings";
+import { Branch, BranchType } from "./BranchSettingsPage";
 import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
 

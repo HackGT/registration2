@@ -48,7 +48,7 @@ import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import { parseDateString } from "../../../util/util";
-import { Branch, BranchType } from "../branchSettings/BranchSettings";
+import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import RetrieveGTIDModal from "./RetrieveGTIDModal";
 
 const ApplicationDetailPage: React.FC = () => {
@@ -282,105 +282,107 @@ const ApplicationDetailPage: React.FC = () => {
           </h2>
           <AccordionPanel pb={4}>
             <Stack>
-              {
-                Object.keys(data.applicationData).map((key) => {
-                  let output = <></>
-                  let formattedKey: string|undefined = key
-                    if (key != null) {
-                      formattedKey = key.match(/([A-Z]?[^A-Z]*)/g)?.slice(0,-1).join(" ")
-                      formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1)
-                    }
-                  if (!["schoolEmail", "gender", "ethnicity", "phoneNumber", "confirmChecks", "essays", "resume", "website", "adult", "linkedin", "customData"].includes(key)) {
-                    if (data.applicationData[key] != null && data.applicationData[key].length > 0) {
-                      output = <Text>
-                        
-                      <Text color="gray" fontSize="sm">
-                        {formattedKey}
-                      </Text>
-                      { 
-                        (typeof data.applicationData[key]) !== 'object' 
-                        ? data.applicationData[key] 
-                        : data.applicationData[key].map((e: any, index: any) => {
-                          let output = ""
-                          if (index == data.applicationData[key].length - 1) {
-                            output = String(e)
-                          } else {
-                            output = String(e).concat(", ")
-                          }
-                          return output
-                        }
-                        )  
-                      }
-                    </Text>
-                    } else if(data.applicationData[key] != null) {
-                      output = <Text>
-                      <Text color="gray" fontSize="sm">
-                        {formattedKey}
-                      </Text>
-                        <Tag colorScheme="red">
-                        None
-                        </Tag>
-                       
-                    </Text>
-                    }
-                    
-                    
-                    }
-                    return output;
-                  
-                  })
-              }
-              {
-                data.applicationData.customData && (
-                  Object.keys(data.applicationData.customData).map(key => { 
-                    let output = <></>
-                    let formattedKey: string|undefined = key
-                    if (key != null) {
-                      formattedKey = key.match(/([A-Z]?[^A-Z]*)/g)?.slice(0,-1).join(" ")
-                      formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1)
-                      
-                    }
-                    
-                    if (data.applicationData.customData[key] != null && data.applicationData.customData[key].length > 0) {
-                      output = (
-                        <Text>
-                          <Text color="gray" fontSize="sm">
-                            { formattedKey }
-                          </Text>
-                          { 
-                            (typeof data.applicationData.customData[key]) !== 'object'
-                            ? data.applicationData.customData[key]
-                            : data.applicationData.customData[key].map((e: any, index: any) => {
-                              let output = ""
-                              if (index == data.applicationData.customData[key].length - 1) {
-                                output = String(e)
-                              } else {
-                                output = String(e).concat(", ")
-                              }
-                              return output
-                              
-  
-                            }
-                            )
-                              
-                          }
-                        </Text>
-                      )
-                    } else if (data.applicationData.customData[key] != null) {
+              {Object.keys(data.applicationData).map(key => {
+                let output = <></>;
+                let formattedKey: string | undefined = key;
+                if (key != null) {
+                  formattedKey = key
+                    .match(/([A-Z]?[^A-Z]*)/g)
+                    ?.slice(0, -1)
+                    .join(" ");
+                  formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1);
+                }
+                if (
+                  ![
+                    "schoolEmail",
+                    "gender",
+                    "ethnicity",
+                    "phoneNumber",
+                    "confirmChecks",
+                    "essays",
+                    "resume",
+                    "website",
+                    "adult",
+                    "linkedin",
+                    "customData",
+                  ].includes(key)
+                ) {
+                  if (data.applicationData[key] != null && data.applicationData[key].length > 0) {
+                    output = (
                       <Text>
-                          <Text color="gray" fontSize="sm">
-                            { formattedKey }
-                          </Text>
-                          <Tag colorScheme="red">
-                          None
-                          </Tag>
+                        <Text color="gray" fontSize="sm">
+                          {formattedKey}
                         </Text>
+                        {typeof data.applicationData[key] !== "object"
+                          ? data.applicationData[key]
+                          : data.applicationData[key].map((e: any, index: any) => {
+                              let output = "";
+                              if (index == data.applicationData[key].length - 1) {
+                                output = String(e);
+                              } else {
+                                output = String(e).concat(", ");
+                              }
+                              return output;
+                            })}
+                      </Text>
+                    );
+                  } else if (data.applicationData[key] != null) {
+                    output = (
+                      <Text>
+                        <Text color="gray" fontSize="sm">
+                          {formattedKey}
+                        </Text>
+                        <Tag colorScheme="red">None</Tag>
+                      </Text>
+                    );
+                  }
+                }
+                return output;
+              })}
+              {data.applicationData.customData &&
+                Object.keys(data.applicationData.customData).map(key => {
+                  let output = <></>;
+                  let formattedKey: string | undefined = key;
+                  if (key != null) {
+                    formattedKey = key
+                      .match(/([A-Z]?[^A-Z]*)/g)
+                      ?.slice(0, -1)
+                      .join(" ");
+                    formattedKey = formattedKey!.charAt(0).toUpperCase() + formattedKey!.slice(1);
+                  }
 
-                    }
-                    return output;
-
-                  }))
-              }
+                  if (
+                    data.applicationData.customData[key] != null &&
+                    data.applicationData.customData[key].length > 0
+                  ) {
+                    output = (
+                      <Text>
+                        <Text color="gray" fontSize="sm">
+                          {formattedKey}
+                        </Text>
+                        {typeof data.applicationData.customData[key] !== "object"
+                          ? data.applicationData.customData[key]
+                          : data.applicationData.customData[key].map((e: any, index: any) => {
+                              let output = "";
+                              if (index == data.applicationData.customData[key].length - 1) {
+                                output = String(e);
+                              } else {
+                                output = String(e).concat(", ");
+                              }
+                              return output;
+                            })}
+                      </Text>
+                    );
+                  } else if (data.applicationData.customData[key] != null) {
+                    <Text>
+                      <Text color="gray" fontSize="sm">
+                        {formattedKey}
+                      </Text>
+                      <Tag colorScheme="red">None</Tag>
+                    </Text>;
+                  }
+                  return output;
+                })}
             </Stack>
           </AccordionPanel>
         </AccordionItem>
@@ -435,8 +437,6 @@ const ApplicationDetailPage: React.FC = () => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-
-
 
       {/* old way we did it */}
       {/* <AccordionItem>
@@ -653,10 +653,6 @@ const ApplicationDetailPage: React.FC = () => {
           </Stack>
         </AccordionPanel>
       </AccordionItem> */}
-
-
-
-
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

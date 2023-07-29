@@ -4,13 +4,13 @@ import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 
-interface leaderboardEntry {
+interface LeaderboardEntry {
   rank?: number;
   name: string;
   numGraded: number;
 }
 
-const Leaderboard: React.FC = () => {
+const GradingLeaderboardPage: React.FC = () => {
   const { hexathonId } = useParams();
   const { user } = useAuth();
   const [{ data, loading, error }] = useAxios({
@@ -51,7 +51,7 @@ const Leaderboard: React.FC = () => {
           </Thead>
           <Tbody>
             {data.leaderboard.map(
-              (entry: leaderboardEntry, index: number, entries: leaderboardEntry[]) => {
+              (entry: LeaderboardEntry, index: number, entries: LeaderboardEntry[]) => {
                 if (index === 0 || entry.numGraded === entries[index - 1].numGraded) {
                   offset += 1;
                 } else {
@@ -77,4 +77,4 @@ const Leaderboard: React.FC = () => {
   );
 };
 
-export default Leaderboard;
+export default GradingLeaderboardPage;

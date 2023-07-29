@@ -8,7 +8,7 @@ interface Props {
   href: string;
 }
 
-const AdminWidget: React.FC<Props> = props => (
+const AdminMenuCard: React.FC<Props> = props => (
   <Link to={props.href}>
     <Box
       borderRadius="4px"
@@ -32,4 +32,4 @@ const AdminWidget: React.FC<Props> = props => (
   </Link>
 );
 
-export default AdminWidget;
+export default AdminMenuCard;

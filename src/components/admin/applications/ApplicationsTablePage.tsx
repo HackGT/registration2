@@ -37,7 +37,7 @@ const columns = [
   },
 ];
 
-const AllApplicationsTable: React.FC = () => {
+const ApplicationsTablePage: React.FC = () => {
   const { hexathonId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [offset, setOffset] = useState(0);
@@ -297,4 +297,4 @@ const AllApplicationsTable: React.FC = () => {
   );
 };
 
-export default AllApplicationsTable;
+export default ApplicationsTablePage;

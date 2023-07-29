@@ -27,10 +27,10 @@ import { LoadingScreen, ErrorScreen, Service, apiUrl } from "@hex-labs/core";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 
-import styles from "./email.module.css";
+import styles from "../email/email.module.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-const BranchTemplates: React.FC = () => {
+const BranchEmailTemplates: React.FC = () => {
   const { hexathonId } = useParams();
 
   const {
@@ -196,4 +196,4 @@ const BranchTemplates: React.FC = () => {
   );
 };
 
-export default BranchTemplates;
+export default BranchEmailTemplates;

@@ -21,7 +21,7 @@ import {
 
 import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
 import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
-import CommonForm from "../commonForm/CommonForm";
+import CommonForm from "../../../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
 

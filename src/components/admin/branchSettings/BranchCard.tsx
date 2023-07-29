@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 
-import { Branch } from "./BranchSettings";
+import { Branch } from "./BranchSettingsPage";
 import { parseDateString } from "../../../util/util";
 
 export interface Props {

@@ -1,9 +1,10 @@
-import { Button, Center, Flex } from "@chakra-ui/react";
+import { Button, Flex, useDisclosure } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { EditIcon } from "@chakra-ui/icons";
 
 import EventCard from "./EventCard";
 import HexathonModal from "./HexathonModal";
@@ -28,7 +29,24 @@ const SelectEvent: React.FC = () => {
   }, [user?.uid]);
 
   const navigate = useNavigate();
-  const [{ data, loading, error }] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
+  const [{ data, loading, error }, refetch] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
+
+  const {
+    isOpen: isEditHexathonOpen,
+    onOpen: onEditHexathonOpen,
+    onClose: onEditHexathonClose,
+  } = useDisclosure();
+  const [currentHexathonData, setCurrentHexathonData] = useState<any>(null);
+
+  const handleModalOpen = (defaultValues: any) => {
+    setCurrentHexathonData(defaultValues);
+    onEditHexathonOpen();
+  };
+
+  const handleModalClose = () => {
+    setCurrentHexathonData(null);
+    onEditHexathonClose();
+  };
 
   if (loading) {
     return <LoadingScreen />;
@@ -52,15 +70,32 @@ const SelectEvent: React.FC = () => {
   }
 
   return (
-    <Flex paddingY={{ base: "32px", md: "32px" }} direction="column" justify="center">
-      {data.map((hexathon: any) => (
-        <Flex key={hexathon.id} justifyContent="space-around">
-          <EventCard name={hexathon.name} id={hexathon.id} />
-          {role.exec && <HexathonModal action='EDIT' hexathon={hexathon}/>}
-        </Flex>
-      ))}
-      {role.exec && <Center><HexathonModal action='CREATE' hexathon={null}/></Center>}
-    </Flex>
+    <>
+      <Flex paddingY={{ base: "32px", md: "32px" }} direction="column" justify="center">
+        {data.map((hexathon: any) => (
+          <Flex key={hexathon.id} justifyContent="space-around">
+            <EventCard name={hexathon.name} id={hexathon.id} />
+            {role.exec && (
+              <Button onClick={() => handleModalOpen(hexathon)} h="150px">
+                <EditIcon />
+              </Button>
+            )}
+          </Flex>
+        ))}
+        {role.exec && (
+          <Button onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
+            Create Hexathon
+          </Button>
+        )}
+      </Flex>
+
+      <HexathonModal
+        defaultValues={currentHexathonData}
+        isOpen={isEditHexathonOpen}
+        onClose={handleModalClose}
+        refetch={refetch}
+      />
+    </>
   );
 };
 

@@ -14,6 +14,17 @@ export const parseDateTimeString = (date?: string | null) => {
 };
 
 /**
+ * Parse date string from backend to human readable date format.
+ */
+export const parseDateString = (date?: string | null) => {
+  if (date === undefined || date === null) {
+    return "";
+  }
+
+  return DateTime.fromISO(date, { zone: "America/New_York" }).toFormat("yyyy-MM-dd");
+};
+
+/**
  * Parse date string from human readable format to backend format
  * while keeping the time zone consistent.
  */

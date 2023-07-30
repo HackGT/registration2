@@ -1,10 +1,10 @@
 import { Tabs, TabList, Tab, TabPanel, TabPanels } from "@chakra-ui/react";
 import React from "react";
 
-import PastEmailsScreen from "./PastEmailsScreen";
-import SendEmailScreen from "./SendEmailScreen";
+import PastEmailsTab from "./PastEmailsTab";
+import SendEmailTab from "./SendEmailTab";
 
-const EmailHome: React.FC = () => (
+const EmailPage: React.FC = () => (
   <Tabs paddingX="15px" paddingTop="15px" isFitted align="center">
     <TabList maxWidth="700px">
       <Tab>Send Batch Email</Tab>
@@ -13,13 +13,13 @@ const EmailHome: React.FC = () => (
 
     <TabPanels textAlign="left">
       <TabPanel>
-        <SendEmailScreen />
+        <SendEmailTab />
       </TabPanel>
       <TabPanel>
-        <PastEmailsScreen />
+        <PastEmailsTab />
       </TabPanel>
     </TabPanels>
   </Tabs>
 );
 
-export default EmailHome;
+export default EmailPage;

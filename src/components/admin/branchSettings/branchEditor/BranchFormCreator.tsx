@@ -21,7 +21,7 @@ import {
 
 import defaultJsonSchema from "./defaultSchemas/defaultJsonSchema.json";
 import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
-import CommonForm from "../commonForm/CommonForm";
+import CommonForm from "../../../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
 
@@ -131,9 +131,18 @@ const BranchFormCreator: React.FC<Props> = props => {
         >
           <Alert status="info">
             <AlertIcon />
-            <AlertTitle>Tip</AlertTitle>
+            <AlertTitle>Editing Help</AlertTitle>
             <AlertDescription>
-              Right click inside the editor for more tools like JSON formatting.
+              Registration uses{" "}
+              <Link
+                href="https://rjsf-team.github.io/react-jsonschema-form/docs/"
+                isExternal
+                textDecoration="underline"
+              >
+                react-jsonschema-form
+              </Link>{" "}
+              to automatically generate a React form based on a JSON Schema. Please read the
+              documentation for detailed help.
             </AlertDescription>
           </Alert>
           <Alert status="info">
@@ -145,8 +154,6 @@ const BranchFormCreator: React.FC<Props> = props => {
                 school, ethnicity, etc.). Click{" "}
                 <Link
                   href="https://github.com/HackGT/api/blob/main/common/src/commonDefinitions.ts"
-                  target="_blank"
-                  rel="noreferrer"
                   isExternal
                   textDecorationLine="underline"
                 >
@@ -154,6 +161,13 @@ const BranchFormCreator: React.FC<Props> = props => {
                 </Link>{" "}
                 to view the current list.
               </Text>
+            </AlertDescription>
+          </Alert>
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>Tip</AlertTitle>
+            <AlertDescription>
+              Right click inside the editor for more tools like JSON formatting.
             </AlertDescription>
           </Alert>
           <SchemaInput

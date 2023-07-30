@@ -22,7 +22,7 @@ import { useParams } from "react-router-dom";
 import BranchFormCreator from "./BranchFormCreator";
 import FormPageModal from "./FormPageModal";
 
-const BranchEditor: React.FC = () => {
+const BranchEditorPage: React.FC = () => {
   const { branchId } = useParams();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -145,4 +145,4 @@ const BranchEditor: React.FC = () => {
   );
 };
 
-export default BranchEditor;
+export default BranchEditorPage;

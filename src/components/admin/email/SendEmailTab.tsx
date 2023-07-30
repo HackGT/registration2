@@ -30,7 +30,7 @@ import styles from "./email.module.css";
 import { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-const EmailScreen: React.FC = () => {
+const SendEmailTab: React.FC = () => {
   const { hexathonId } = useParams();
   const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
   const [{ data: branches, loading, error }] = useAxios({
@@ -195,4 +195,4 @@ const EmailScreen: React.FC = () => {
   );
 };
 
-export default EmailScreen;
+export default SendEmailTab;

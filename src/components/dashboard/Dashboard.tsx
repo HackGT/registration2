@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 
-import Timeline from "./Timeline";
+import FutureEventsTimeline from "./FutureEventsTimeline";
 import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import ApplicationStatusTag from "../../util/ApplicationStatusTag";
@@ -224,7 +224,7 @@ const Dashboard: React.FC = () => {
         the next year, so be on the look out. Follow us on social media to stay in the loop!
       </Text>
       <Box marginX={{ base: "15px", md: 0 }}>
-        <Timeline />
+        <FutureEventsTimeline />
       </Box>
     </Flex>
   );

@@ -32,9 +32,9 @@ import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { InfoIcon } from "@chakra-ui/icons";
+import { QuestionIcon } from "@chakra-ui/icons";
 
-import { Branch, BranchType } from "./BranchSettings";
+import { Branch, BranchType } from "./BranchSettingsPage";
 import { AxiosRefetch } from "../../../util/types";
 import { dateToServerFormat, parseDateString } from "../../../util/util";
 
@@ -146,7 +146,13 @@ const BranchFormModal: React.FC<Props> = props => {
   };
 
   return (
-    <Modal onClose={props.onClose} isOpen={props.isOpen} isCentered scrollBehavior="inside">
+    <Modal
+      onClose={props.onClose}
+      isOpen={props.isOpen}
+      isCentered
+      scrollBehavior="inside"
+      size="lg"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{`${type === FormModalType.Edit ? "Edit" : "Create"} Branch`}</ModalHeader>
@@ -178,15 +184,42 @@ const BranchFormModal: React.FC<Props> = props => {
                 </Select>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Open Time</FormLabel>
+                <FormLabel>
+                  Open Time
+                  <Tooltip
+                    label="The application form will not be available to users until this time."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </FormLabel>
                 <Input {...register("settings.open")} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Close Time</FormLabel>
+                <FormLabel>
+                  Close Time
+                  <Tooltip
+                    label="After this time, new submissions will not be allowed unless an applicant has an individual extended deadline."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </FormLabel>
                 <Input {...register("settings.close")} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>
+                  Description
+                  <Tooltip
+                    label="The short description that will be displayed on the application dashboard page."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </FormLabel>
                 <Textarea
                   {...register("description")}
                   placeholder="Add information about who should apply for this branch..."
@@ -194,7 +227,16 @@ const BranchFormModal: React.FC<Props> = props => {
               </FormControl>
               {branchType === "APPLICATION" && (
                 <FormControl>
-                  <Checkbox {...register("secret")}>Secret</Checkbox>
+                  <Checkbox {...register("secret")}>
+                    Secret
+                    <Tooltip
+                      label="If selected, this branch will be hidden from the application dashboard. The only way to start this application is through either the QR code or copy link below. This feature is intended for uses like sponsor/staff applications that shouldn't be public."
+                      placement="auto-start"
+                      hasArrow
+                    >
+                      <QuestionIcon ml="1" mb="1" />
+                    </Tooltip>
+                  </Checkbox>
                 </FormControl>
               )}
               {branchType === "APPLICATION" && secret && props.defaultValues && (
@@ -203,7 +245,7 @@ const BranchFormModal: React.FC<Props> = props => {
                     <PopoverTrigger>
                       <Button>View QR Code</Button>
                     </PopoverTrigger>
-                    <PopoverContent bg="#d1d1d1">
+                    <PopoverContent borderWidth="3px" borderColor="darkgray">
                       <PopoverArrow />
                       <PopoverCloseButton />
                       <PopoverHeader display="flex" justifyContent="center">
@@ -212,13 +254,13 @@ const BranchFormModal: React.FC<Props> = props => {
                       <PopoverBody display="flex" justifyContent="center">
                         <QRCodeSVG
                           value={`${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`}
-                          size={256}
+                          size={200}
                         />
                       </PopoverBody>
                       <PopoverFooter>
-                        <Text fontSize="12px">
-                          Ask participants to scan this code to be directed to the application page
-                          for this branch
+                        <Text fontSize="sm">
+                          Ask users to scan this code to be directed to the application page for
+                          this branch.
                         </Text>
                       </PopoverFooter>
                     </PopoverContent>
@@ -229,8 +271,7 @@ const BranchFormModal: React.FC<Props> = props => {
                         `${window.location.origin}/${hexathonId}/start-application/${props.defaultValues.id}`
                       );
                       toast({
-                        title: "Success!",
-                        description: "Link has been copied.",
+                        description: "Application link copied",
                         status: "success",
                         duration: 3000,
                         isClosable: true,
@@ -245,13 +286,29 @@ const BranchFormModal: React.FC<Props> = props => {
                 <FormControl>
                   <Checkbox {...register("automaticConfirmation.enabled")}>
                     Enable Auto-Confirmation?
+                    <Tooltip
+                      label="If selected, applicants will automatically be confirmed when they submit if their email matches below. This should be used for sponsor/staff branches based on sponsor domains/admin domains to reduce manual confirmation need."
+                      placement="auto-start"
+                      hasArrow
+                    >
+                      <QuestionIcon ml="1" mb="1" />
+                    </Tooltip>
                   </Checkbox>
                 </FormControl>
               )}
               {branchType === "APPLICATION" && automaticConfirmationEnabled && (
                 <>
                   <FormControl isRequired>
-                    <FormLabel>Confirmation Branch</FormLabel>
+                    <FormLabel>
+                      Confirmation Branch
+                      <Tooltip
+                        label="The confirmation branch to place the user on. Every confirmed user must be on a confirmation branch."
+                        placement="auto-start"
+                        hasArrow
+                      >
+                        <QuestionIcon ml="1" mb="1" />
+                      </Tooltip>
+                    </FormLabel>
                     <Select
                       {...register("automaticConfirmation.confirmationBranch")}
                       placeholder="Select option"
@@ -268,12 +325,11 @@ const BranchFormModal: React.FC<Props> = props => {
                     <FormLabel>
                       Emails
                       <Tooltip
+                        label="Separate each email by a comma. Enter '*' to autoconfirm all emails and use an email domain to confirm all emails with that domain (ex. @hexlabs.org)."
+                        placement="auto-start"
                         hasArrow
-                        label="Separate each email by a comma. Enter '*' to autoconfirm all emails and don't forget the '@' for domains, ex: @hexlabs.org"
-                        bg="#d4d4d4"
-                        placement="right"
                       >
-                        <InfoIcon marginLeft="3.5px" marginBottom="2.5px" />
+                        <QuestionIcon ml="1" mb="1" />
                       </Tooltip>
                     </FormLabel>
                     <Input value={emails} onChange={handleEmailInput} />
@@ -282,12 +338,30 @@ const BranchFormModal: React.FC<Props> = props => {
               )}
               {branchType === "APPLICATION" && (
                 <FormControl>
-                  <Checkbox {...register("grading.enabled")}>Enable Grading?</Checkbox>
+                  <Checkbox {...register("grading.enabled")}>
+                    Enable Grading?
+                    <Tooltip
+                      label="If selected, this branch will be enabled for grading by HexLabs members. Manual configuration for each hexathon still needs to be added in code for grading to work properly. Only used for participant branches."
+                      placement="auto-start"
+                      hasArrow
+                    >
+                      <QuestionIcon ml="1" mb="1" />
+                    </Tooltip>
+                  </Checkbox>
                 </FormControl>
               )}
               {branchType === "APPLICATION" && gradingEnabled && (
                 <FormControl isRequired>
-                  <FormLabel>Grading Group</FormLabel>
+                  <FormLabel>
+                    Grading Group
+                    <Tooltip
+                      label="Specify which group this branch belongs to for grading."
+                      placement="auto-start"
+                      hasArrow
+                    >
+                      <QuestionIcon ml="1" mb="1" />
+                    </Tooltip>
+                  </FormLabel>
                   <Select {...register("grading.group")} placeholder="Select option">
                     <option value="generalGroup">General Group</option>
                     <option value="emergingGroup">Emerging Group</option>

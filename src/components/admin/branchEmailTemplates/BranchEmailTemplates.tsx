@@ -14,6 +14,7 @@ import {
   AlertDescription,
   AlertTitle,
   Checkbox,
+  Tooltip,
 } from "@chakra-ui/react";
 import { convertToRaw, EditorState, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -26,11 +27,12 @@ import { Select } from "chakra-react-select";
 import { LoadingScreen, ErrorScreen, Service, apiUrl } from "@hex-labs/core";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
+import { QuestionIcon } from "@chakra-ui/icons";
 
-import styles from "./email.module.css";
+import styles from "../email/email.module.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-const BranchTemplates: React.FC = () => {
+const BranchEmailTemplates: React.FC = () => {
   const { hexathonId } = useParams();
 
   const {
@@ -120,10 +122,10 @@ const BranchTemplates: React.FC = () => {
         <AlertIcon />
         <AlertTitle>Info</AlertTitle>
         <AlertDescription>
-          Edit post-submit email templates here! Pick a branch and edit the template that pops into
-          the email editor, or create a new one if it doesn't exist. Double check that the value of
-          the checkbox is correct. Please reach out to someone on tech team if you have any
-          questions about how to use this form.
+          Use this page to edit emails that are automatically sent after a person submits their
+          application or confirms their attendance. First, choose a branch and then edit the email
+          template in the editor. Finally, enable the emails with the checkbox. Please reach out to
+          someone on tech team if you have any questions.
         </AlertDescription>
       </Alert>
       <Heading size="xl" mb="10px">
@@ -137,7 +139,16 @@ const BranchTemplates: React.FC = () => {
             rules={{ required: "Please select a branch" }}
             render={({ field: { value, ref, ...field }, fieldState: { error: fieldError } }) => (
               <FormControl isInvalid={!!fieldError} isRequired>
-                <FormLabel>Branch</FormLabel>
+                <FormLabel>
+                  Branch
+                  <Tooltip
+                    label="Select a branch to edit the email template for that branch. For application branches, this email will be sent after a person submits their application. For confirmation branches, this email will be sent when a person confirms their attendance."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </FormLabel>
                 <Select
                   {...field}
                   ref={ref}
@@ -157,7 +168,14 @@ const BranchTemplates: React.FC = () => {
             render={({ field: { value, ref, ...field }, fieldState: { error: fieldError } }) => (
               <FormControl isInvalid={!!fieldError}>
                 <Checkbox {...field} ref={ref} isChecked={!!value}>
-                  Enable emails
+                  Enable emails for this branch
+                  <Tooltip
+                    label="After editing the email template, check this box to enable sending emails for this branch. You can disable emails at any time by unchecking this box, but the email template will still be saved."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
                 </Checkbox>
               </FormControl>
             )}
@@ -196,4 +214,4 @@ const BranchTemplates: React.FC = () => {
   );
 };
 
-export default BranchTemplates;
+export default BranchEmailTemplates;

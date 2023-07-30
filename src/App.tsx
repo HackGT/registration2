@@ -8,19 +8,19 @@ import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 import "./App.css";
 import ApplicationContainer from "./components/application/ApplicationContainer";
 import Dashboard from "./components/dashboard/Dashboard";
-import EmailHome from "./components/admin/email/EmailHome";
-import BranchTemplates from "./components/admin/email/BranchTemplates";
+import EmailPage from "./components/admin/email/EmailPage";
+import BranchEmailTemplatesPage from "./components/admin/branchEmailTemplates/BranchEmailTemplates";
 import SelectEvent from "./components/selectEvent/SelectEvent";
 import ApplicationDetailPage from "./components/admin/applications/ApplicationDetailPage";
-import BranchSettings from "./components/admin/branchSettings/BranchSettings";
-import Statistics from "./components/admin/statistics/Statistics";
-import AllApplicationsTable from "./components/admin/applications/AllApplicationsTable";
+import BranchSettingsPage from "./components/admin/branchSettings/BranchSettingsPage";
+import StatisticsPage from "./components/admin/statistics/StatisticsPage";
+import ApplicationsTablePage from "./components/admin/applications/ApplicationsTablePage";
 import AdminControlsHome from "./components/admin/AdminControlsHome";
-import GradingDashboard from "./components/admin/grading/GradingDashboard";
-import GradeQuestion from "./components/admin/grading/GradeQuestion";
-import Leaderboard from "./components/admin/grading/Leaderboard";
-import BranchEditor from "./components/branchEditor/BranchEditor";
-import TeamDashboard from "./components/teamFormation/TeamDashboard";
+import GradingDashboardPage from "./components/admin/grading/GradingDashboardPage";
+import GradingQuestionPage from "./components/admin/grading/GradingQuestionPage";
+import GradingLeaderboardPage from "./components/admin/grading/GradingLeaderboardPage";
+import BranchEditorPage from "./components/admin/branchSettings/branchEditor/BranchEditorPage";
+import TeamManagementPage from "./components/teamManagement/TeamManagementPage";
 import AppOutline from "./components/outline/AppOutline";
 import StartApplication from "./components/application/StartApplication";
 
@@ -54,17 +54,17 @@ export const App = () => {
             <Route path="start-application/:branchId" element={<StartApplication />} />
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
             <Route path="admin" element={<AdminControlsHome />} />
-            <Route path="admin/email" element={<EmailHome />} />
-            <Route path="admin/templates" element={<BranchTemplates />} />
-            <Route path="admin/branch-settings" element={<BranchSettings />} />
-            <Route path="admin/branch-settings/:branchId" element={<BranchEditor />} />
-            <Route path="admin/applications" element={<AllApplicationsTable />} />
+            <Route path="admin/email" element={<EmailPage />} />
+            <Route path="admin/branch-email-templates" element={<BranchEmailTemplatesPage />} />
+            <Route path="admin/branch-settings" element={<BranchSettingsPage />} />
+            <Route path="admin/branch-settings/:branchId" element={<BranchEditorPage />} />
+            <Route path="admin/applications" element={<ApplicationsTablePage />} />
             <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
-            <Route path="admin/statistics" element={<Statistics />} />
-            <Route path="grading" element={<GradingDashboard />} />
-            <Route path="grading/:gradingGroup/question" element={<GradeQuestion />} />
-            <Route path="grading/leaderboard" element={<Leaderboard />} />
-            <Route path="team/dashboard" element={<TeamDashboard />} />
+            <Route path="admin/statistics" element={<StatisticsPage />} />
+            <Route path="grading" element={<GradingDashboardPage />} />
+            <Route path="grading/:gradingGroup/question" element={<GradingQuestionPage />} />
+            <Route path="grading/leaderboard" element={<GradingLeaderboardPage />} />
+            <Route path="team-management" element={<TeamManagementPage />} />
           </Route>
         </Route>
       </Routes>

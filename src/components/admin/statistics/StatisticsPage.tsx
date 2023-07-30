@@ -19,7 +19,7 @@ import useAxios from "axios-hooks";
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 
-const Statistics: React.FC = () => {
+const StatisticsPage: React.FC = () => {
   const { hexathonId } = useParams();
   const [{ data, loading, error }] = useAxios({
     method: "GET",
@@ -141,4 +141,4 @@ const Statistics: React.FC = () => {
   );
 };
 
-export default Statistics;
+export default StatisticsPage;

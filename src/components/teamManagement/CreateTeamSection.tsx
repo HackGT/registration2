@@ -4,7 +4,7 @@ import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 
-const CreateTeam: React.FC = () => {
+const CreateTeamSection: React.FC = () => {
   const [teamName, setTeamName] = useState("");
   const { hexathonId } = useParams();
 
@@ -47,4 +47,4 @@ const CreateTeam: React.FC = () => {
   );
 };
 
-export default CreateTeam;
+export default CreateTeamSection;

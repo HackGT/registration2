@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 
 import { Branch } from "./BranchSettingsPage";
-import { parseDateString } from "../../../util/util";
+import { parseDateTimeString } from "../../../util/util";
 
 export interface Props {
   branch: Branch;
@@ -38,8 +38,8 @@ const BranchCard: React.FC<Props> = props => {
             <Text fontSize="lg" fontWeight="medium">
               {props.branch.name}
             </Text>
-            <Text>{`Opens at: ${parseDateString(props.branch.settings.open)}`}</Text>
-            <Text>{`Closes at: ${parseDateString(props.branch.settings.close)}`}</Text>
+            <Text>{`Opens at: ${parseDateTimeString(props.branch.settings.open)}`}</Text>
+            <Text>{`Closes at: ${parseDateTimeString(props.branch.settings.close)}`}</Text>
           </Stack>
           <Stack direction={{ base: "column", md: "row" }} spacing="3">
             <Button size="sm" onClick={() => props.openModal(props.branch)}>

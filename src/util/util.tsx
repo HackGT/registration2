@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 
 /**
- * Parse date string from backend to human readable format.
+ * Parse date string from backend to human readable date/time format.
  */
-export const parseDateString = (date?: string | null) => {
+export const parseDateTimeString = (date?: string | null) => {
   if (date === undefined || date === null) {
     return "";
   }

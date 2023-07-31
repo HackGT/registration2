@@ -75,14 +75,14 @@ const SelectEvent: React.FC = () => {
         {data.map((hexathon: any) => (
           <Flex key={hexathon.id} justifyContent="space-around">
             <EventCard name={hexathon.name} id={hexathon.id} />
-            {role.exec && (
+            {role.admin && (
               <Button onClick={() => handleModalOpen(hexathon)} h="150px">
                 <EditIcon />
               </Button>
             )}
           </Flex>
         ))}
-        {role.exec && (
+        {role.admin && (
           <Button onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
             Create Hexathon
           </Button>

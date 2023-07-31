@@ -204,6 +204,18 @@ const HexathonModal: React.FC<Props> = props => {
                   </Tooltip>
                 </Checkbox>
               </FormControl>
+              <FormControl>
+                <Checkbox {...register("isTeamBased")}>
+                  Team Based
+                  <Tooltip
+                    label="Select if this hexathon is team based. This will enable team management features in registration and other applications."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </Checkbox>
+              </FormControl>
               <Button type="submit" isLoading={formSubmitLoading}>
                 Submit
               </Button>

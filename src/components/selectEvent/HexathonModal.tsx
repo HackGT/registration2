@@ -193,7 +193,16 @@ const HexathonModal: React.FC<Props> = props => {
                 <Input type="file" {...register("coverImage")} padding="4px" />
               </FormControl>
               <FormControl>
-                <Checkbox {...register("isActive")}>Active</Checkbox>
+                <Checkbox {...register("isActive")}>
+                  Active
+                  <Tooltip
+                    label="Only hexathons selected as active will be displayed publicly to all users. HexLabs members can always access all hexathons."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </Checkbox>
               </FormControl>
               <Button type="submit" isLoading={formSubmitLoading}>
                 Submit

@@ -36,7 +36,7 @@ import { QuestionIcon } from "@chakra-ui/icons";
 
 import { Branch, BranchType } from "./BranchSettingsPage";
 import { AxiosRefetch } from "../../../util/types";
-import { dateToServerFormat, parseDateString } from "../../../util/util";
+import { dateToServerFormat, parseDateTimeString } from "../../../util/util";
 
 enum FormModalType {
   Create = "CREATE",
@@ -80,8 +80,8 @@ const BranchFormModal: React.FC<Props> = props => {
         : ""
     );
     // Manually parse open/close time into human readable formats
-    const openTime = parseDateString(props.defaultValues?.settings?.open);
-    const closeTime = parseDateString(props.defaultValues?.settings?.close);
+    const openTime = parseDateTimeString(props.defaultValues?.settings?.open);
+    const closeTime = parseDateTimeString(props.defaultValues?.settings?.close);
     reset({
       ...props.defaultValues,
       settings: {
@@ -129,15 +129,15 @@ const BranchFormModal: React.FC<Props> = props => {
           apiUrl(Service.REGISTRATION, `/branches/${props.defaultValues.id}`),
           formData
         );
+        toast({
+          title: "Success!",
+          description: "The branch has successfully been edited.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       }
       await props.refetch();
-      toast({
-        title: "Success!",
-        description: "The branch has successfully been edited.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
     } catch (e: any) {
       handleAxiosError(e);
     } finally {

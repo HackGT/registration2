@@ -48,7 +48,7 @@ import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
-import { parseDateString } from "../../../util/util";
+import { parseDateTimeString } from "../../../util/util";
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import RetrieveGTIDModal from "./RetrieveGTIDModal";
 
@@ -733,7 +733,7 @@ const ApplicationDetailPage: React.FC = () => {
                       id="applicationDeadline"
                       {...register("applicationDeadline")}
                       placeholder="mm/dd/yyyy, hh:mm"
-                      defaultValue={parseDateString(data.applicationExtendedDeadline) || ""}
+                      defaultValue={parseDateTimeString(data.applicationExtendedDeadline) || ""}
                     />
                   </FormControl>
                 )}
@@ -745,7 +745,7 @@ const ApplicationDetailPage: React.FC = () => {
                         id="confirmationDeadline"
                         {...register("confirmationDeadline")}
                         placeholder="mm/dd/yyyy, hh:mm"
-                        defaultValue={parseDateString(data.confirmationExtendedDeadline) || ""}
+                        defaultValue={parseDateTimeString(data.confirmationExtendedDeadline) || ""}
                       />
                     </FormControl>
                   )}

@@ -42,7 +42,6 @@ const EventCard: React.FC<Props> = props => {
       color="black"
       border="1px"
       borderColor="gray.200"
-      borderRadius="md"
       shadow="sm"
       h="150px"
       cursor="pointer"

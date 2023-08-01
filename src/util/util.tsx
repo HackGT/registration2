@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 
 /**
- * Parse date string from backend to human readable format.
+ * Parse date string from backend to human readable date/time format.
  */
-export const parseDateString = (date?: string | null) => {
+export const parseDateTimeString = (date?: string | null) => {
   if (date === undefined || date === null) {
     return "";
   }
@@ -11,6 +11,17 @@ export const parseDateString = (date?: string | null) => {
   return DateTime.fromISO(date, { zone: "America/New_York" }).toLocaleString(
     DateTime.DATETIME_SHORT
   );
+};
+
+/**
+ * Parse date string from backend to human readable date format.
+ */
+export const parseDateString = (date?: string | null) => {
+  if (date === undefined || date === null) {
+    return "";
+  }
+
+  return DateTime.fromISO(date, { zone: "America/New_York" }).toFormat("yyyy-MM-dd");
 };
 
 /**

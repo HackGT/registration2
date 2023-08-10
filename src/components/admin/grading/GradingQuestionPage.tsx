@@ -100,6 +100,7 @@ const GradingQuestionPage: React.FC = () => {
     async (payload: {
       applicationId?: string;
       essayId: string;
+      criteria: string;
       score: number;
       isCalibrationQuestion: boolean;
     }) => {
@@ -135,6 +136,7 @@ const GradingQuestionPage: React.FC = () => {
           submitReview({
             applicationId: questionData?.applicationId,
             essayId: questionData?.essayId,
+            criteria: questionData?.criteria,
             score: parseInt(score),
             isCalibrationQuestion: questionData?.isCalibrationQuestion,
           });
@@ -267,6 +269,7 @@ const GradingQuestionPage: React.FC = () => {
             submitReview({
               applicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
+              criteria: questionData?.criteria,
               score: parseInt(score),
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
             })

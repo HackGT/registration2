@@ -315,8 +315,12 @@ const BranchFormModal: React.FC<Props> = props => {
                     >
                       {props.branches &&
                         props.branches
-                          .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
-                          .filter((branch: Branch) => branch.formPages.length === 0) // Only allow branches with no form pages
+                          .filter(
+                            // Only allow confirmation branches with no form pages
+                            (branch: Branch) =>
+                              branch.type === BranchType.CONFIRMATION &&
+                              branch.formPages.length === 0
+                          )
                           .map((branch: Branch) => (
                             <option value={branch.id}>{branch.name}</option>
                           ))}

@@ -302,7 +302,7 @@ const BranchFormModal: React.FC<Props> = props => {
                     <FormLabel>
                       Confirmation Branch
                       <Tooltip
-                        label="The confirmation branch to place the user on. Every confirmed user must be on a confirmation branch."
+                        label="The confirmation branch to place the user on. Every confirmed user must be on a confirmation branch. Only branches with no form pages are allowed, since the user can't fill out any forms after being automatically confirmed."
                         placement="auto-start"
                         hasArrow
                       >
@@ -315,7 +315,12 @@ const BranchFormModal: React.FC<Props> = props => {
                     >
                       {props.branches &&
                         props.branches
-                          .filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+                          .filter(
+                            // Only allow confirmation branches with no form pages
+                            (branch: Branch) =>
+                              branch.type === BranchType.CONFIRMATION &&
+                              branch.formPages.length === 0
+                          )
                           .map((branch: Branch) => (
                             <option value={branch.id}>{branch.name}</option>
                           ))}

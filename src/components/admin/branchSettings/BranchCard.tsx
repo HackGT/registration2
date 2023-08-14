@@ -31,6 +31,11 @@ const BranchCard: React.FC<Props> = props => {
                   Grading Enabled
                 </Tag>
               )}
+              {props.branch.secret && (
+                <Tag mr="8px" colorScheme="red">
+                  Secret
+                </Tag>
+              )}
               {props.branch.applicationGroup && (
                 <Tag>{_.capitalize(props.branch.applicationGroup)}</Tag>
               )}

@@ -47,6 +47,7 @@ export interface Branch {
     enabled: boolean;
     group?: string;
   };
+  secret?: boolean;
 }
 
 const BranchSettings: React.FC = () => {

@@ -25,6 +25,11 @@ interface Props {
   application: any;
 }
 
+export enum ApplicationFormStatus {
+  CONTINUE = "CONTINUE",
+  EDIT = "EDIT",
+}
+
 const CurrentApplicationTile: React.FC<Props> = props => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -181,8 +186,8 @@ const CurrentApplicationTile: React.FC<Props> = props => {
   );
 
   const actionButtons = useMemo(() => {
-    const openApplication = async () => {
-      navigate(`application/${props.application.id}`);
+    const openApplication = async (formStatus: ApplicationFormStatus) => {
+      navigate(`application/${props.application.id}`, { state: { formStatus } });
     };
 
     if (
@@ -192,7 +197,12 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           dates.currentDate < dates.applicationExtendedDeadline))
     ) {
       return (
-        <Button onClick={openApplication} variant="outline" width="100%" colorScheme="purple">
+        <Button
+          onClick={() => openApplication(ApplicationFormStatus.CONTINUE)}
+          variant="outline"
+          width="100%"
+          colorScheme="purple"
+        >
           Continue Application
         </Button>
       );
@@ -204,7 +214,12 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           dates.currentDate < dates.applicationExtendedDeadline))
     ) {
       return (
-        <Button onClick={openApplication} variant="outline" width="100%" colorScheme="purple">
+        <Button
+          onClick={() => openApplication(ApplicationFormStatus.EDIT)}
+          variant="outline"
+          width="100%"
+          colorScheme="purple"
+        >
           Edit Application
         </Button>
       );
@@ -220,7 +235,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           <Button
             onClick={() => {
               if (props.application.confirmationBranch?.formPages?.length > 0) {
-                openApplication();
+                openApplication(ApplicationFormStatus.CONTINUE);
               } else {
                 updateStatus("CONFIRMED");
               }

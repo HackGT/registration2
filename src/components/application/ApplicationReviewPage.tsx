@@ -16,11 +16,13 @@ import { apiUrl, Service } from "@hex-labs/core";
 
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../util/types";
+import { ApplicationFormStatus } from "../dashboard/CurrentApplicationTile";
 
 interface Props {
   defaultFormData: any;
   branch: any;
   applicationId?: string;
+  formStatus: ApplicationFormStatus;
   hasPrevPage: boolean;
   prevPage: () => void;
   nextPage: () => void;
@@ -57,6 +59,18 @@ const ApplicationReviewPage: React.FC<Props> = props => {
     }
   };
 
+  const handleEdit = async () => {
+    toast({
+      title: "Success",
+      description: "Application has been successfully edited.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+    props.refetch();
+    props.nextPage();
+  };
+
   const handlePreviousClicked = async () => {
     props.prevPage();
   };
@@ -88,10 +102,7 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           disabled
           readonly
         >
-          <Button
-            onClick={() => props.setPage(index)}
-            marginBottom="30px"
-          >
+          <Button onClick={() => props.setPage(index)} marginBottom="30px">
             Edit Response
           </Button>
         </CommonForm>
@@ -106,7 +117,10 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           <ArrowBackIcon />
           {isDesktop && <Text marginLeft="2">Back</Text>}
         </Button>
-        <Button colorScheme="purple" onClick={handleSubmit}>
+        <Button
+          colorScheme="purple"
+          onClick={props.formStatus === ApplicationFormStatus.CONTINUE ? handleSubmit : handleEdit}
+        >
           Submit!
         </Button>
         <Button colorScheme="purple" variant="outline" visibility="hidden">

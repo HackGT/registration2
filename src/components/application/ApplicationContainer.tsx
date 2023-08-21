@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Flex, Box, Text } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 
 import ApplicationFormPage from "./ApplicationFormPage";
 import ApplicationSubmittedPage from "./ApplicationSubmittedPage";
 import ApplicationReviewPage from "./ApplicationReviewPage";
 import { Branch } from "../admin/branchSettings/BranchSettingsPage";
+import { ApplicationFormStatus } from "../dashboard/CurrentApplicationTile";
 
 /** Manually modify essays to fit frontend data display */
 export const getFrontendFormattedFormData = (data: any) => {
@@ -25,6 +26,8 @@ export const getFrontendFormattedFormData = (data: any) => {
 const ApplicationContainer = () => {
   const { hexathonId, applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
+  const { state } = useLocation();
+  const { formStatus } = state;
 
   const [{ data: application, loading, error }, refetch] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`),
@@ -118,6 +121,7 @@ const ApplicationContainer = () => {
               defaultFormData={defaultFormData}
               branch={branch}
               applicationId={applicationId}
+              formStatus={formStatus}
               hasPrevPage={formPageNumber > 0}
               prevPage={prevPage}
               nextPage={nextPage}
@@ -129,7 +133,10 @@ const ApplicationContainer = () => {
       </Flex>
     );
   }
-  return <ApplicationSubmittedPage />;
+  if (formStatus === ApplicationFormStatus.CONTINUE) {
+    return <ApplicationSubmittedPage />;
+  }
+  return <Navigate to={`/${hexathonId}`} />;
 };
 
 export default ApplicationContainer;

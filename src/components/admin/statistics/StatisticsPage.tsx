@@ -42,7 +42,6 @@ const StatisticsPage: React.FC = () => {
     eventInteractionStatistics,
   } = data;
 
-  console.log("ei: ", eventInteractionStatistics);
   return (
     <Box w="100%" p={5}>
       <Stack>
@@ -140,7 +139,8 @@ const StatisticsPage: React.FC = () => {
           <AccordionSection name="Event Interactions">
             <Alert status="info">
               <AlertIcon />
-              Numbers displayed here are generally underestimates given issues with badge scanning, but can be used as a reference point.
+              Numbers displayed here are generally underestimates given issues with badge scanning,
+              but can be used as a reference point.
             </Alert>
             <TreeMapView data={eventInteractionStatistics} />
           </AccordionSection>

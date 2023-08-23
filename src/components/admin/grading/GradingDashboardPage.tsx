@@ -83,29 +83,17 @@ const GradingDashboardPage: React.FC = () => {
     {
       title: "Grade a Question",
       description:
-        "Score a random applicant's question and score their answer based on the provided rubric! Select a group below to get started.",
+        "Score a random applicant's question and score their answer based on the provided rubric!",
       endpoint: `/${hexathonId}/grading/question`,
       buttons: (
-        <>
-          <VStack>
-            <Text fontWeight="bold">General Group</Text>
-            <CircularProgress value={data.generalGroup}>
-              <CircularProgressLabel>{data.generalGroup}%</CircularProgressLabel>
-            </CircularProgress>
-            <Link to="generalGroup/question" style={{ width: "100%" }}>
-              <Button w="100%">Grade General</Button>
-            </Link>
-          </VStack>
-          <VStack>
-            <Text fontWeight="bold">Emerging Group</Text>
-            <CircularProgress value={data.emergingGroup}>
-              <CircularProgressLabel>{data.emergingGroup}%</CircularProgressLabel>
-            </CircularProgress>
-            <Link to="emergingGroup/question" style={{ width: "100%" }}>
-              <Button w="100%">Grade Emerging</Button>
-            </Link>
-          </VStack>
-        </>
+        <VStack>
+          <CircularProgress value={data.generalGroup}>
+            <CircularProgressLabel>{data.generalGroup}%</CircularProgressLabel>
+          </CircularProgress>
+          <Link to="generalGroup/question" style={{ width: "100%" }}>
+            <Button w="100%">Start Grading</Button>
+          </Link>
+        </VStack>
       ),
     },
     {

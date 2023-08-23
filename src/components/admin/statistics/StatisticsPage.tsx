@@ -1,6 +1,8 @@
 import React from "react";
 import {
   Accordion,
+  Alert,
+  AlertIcon,
   Box,
   Heading,
   Stack,
@@ -18,6 +20,7 @@ import useAxios from "axios-hooks";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
+import TreeMapView from "./graphs/TreeMapView";
 
 const StatisticsPage: React.FC = () => {
   const { hexathonId } = useParams();
@@ -36,7 +39,10 @@ const StatisticsPage: React.FC = () => {
     applicationStatistics,
     confirmationStatistics,
     applicationDataStatistics,
+    eventInteractionStatistics,
   } = data;
+
+  console.log("ei: ", eventInteractionStatistics);
   return (
     <Box w="100%" p={5}>
       <Stack>
@@ -130,6 +136,13 @@ const StatisticsPage: React.FC = () => {
                 </Tr>
               ))}
             </Tbody>
+          </AccordionSection>
+          <AccordionSection name="Event Interactions">
+            <Alert status="info">
+              <AlertIcon />
+              Numbers displayed here are generally underestimates given issues with badge scanning, but can be used as a reference point.
+            </Alert>
+            <TreeMapView data={eventInteractionStatistics} />
           </AccordionSection>
           <GraphAccordionSection
             name="Users Detailed Stats & Graphs"

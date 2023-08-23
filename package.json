@@ -9,6 +9,7 @@
     "@emotion/styled": "^11.0.0",
     "@hex-labs/core": "^1.0.49",
     "@monaco-editor/react": "^4.4.1",
+    "@nivo/treemap": "^0.83.0",
     "@progress/kendo-charts": "^1.24.0",
     "@progress/kendo-drawing": "^1.16.3",
     "@progress/kendo-licensing": "^1.2.2",

@@ -46,23 +46,26 @@ const getTreeData = (data: any) => {
 };
 
 const TreeMapView: React.FC<any> = props => (
-  <Box height="80vh" width="95vw">
+  <Box height="1000px" width="4200px">
     <ResponsiveTreeMap
       data={getTreeData(props.data)}
       identity="name"
       value="loc"
       margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+      labelSkipSize={12}
       labelTextColor={{
         from: "color",
         modifiers: [["darker", 1.2]],
       }}
+      parentLabelPadding={5}
       parentLabelTextColor={{
         from: "color",
-        modifiers: [["darker", 2]],
+        modifiers: [["darker", 5]],
       }}
+      parentLabelSize={35}
       borderColor={{
         from: "color",
-        modifiers: [["darker", 0.1]],
+        modifiers: [["darker", 1]],
       }}
     />
   </Box>

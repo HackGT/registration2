@@ -136,7 +136,7 @@ const StatisticsPage: React.FC = () => {
               ))}
             </Tbody>
           </AccordionSection>
-          <AccordionSection name="Event Interactions">
+          <AccordionSection name="Event Detailed Stats">
             <Alert status="info">
               <AlertIcon />
               Numbers displayed here are generally underestimates given issues with badge scanning,

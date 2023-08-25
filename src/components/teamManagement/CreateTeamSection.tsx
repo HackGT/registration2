@@ -14,7 +14,7 @@ const CreateTeamSection: React.FC = () => {
 
   const handleCreateTeam = async () => {
     try {
-      await axios.post(apiUrl(Service.USERS, "/teams/"), {
+      await axios.post(apiUrl(Service.HEXATHONS, "/teams/"), {
         name: teamName,
         hexathon: hexathonId,
         description: "This is a team.",

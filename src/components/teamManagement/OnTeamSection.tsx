@@ -19,7 +19,7 @@ const OnTeamSection: React.FC<Props> = props => {
 
   const handleAddMember = async () => {
     try {
-      await axios.post(apiUrl(Service.USERS, "/teams/add"), {
+      await axios.post(apiUrl(Service.HEXATHONS, "/teams/add"), {
         hexathon: hexathonId,
         email,
       });
@@ -31,7 +31,7 @@ const OnTeamSection: React.FC<Props> = props => {
 
   const handleRemoveSelf = async () => {
     try {
-      await axios.post(apiUrl(Service.USERS, "/teams/leave"), {
+      await axios.post(apiUrl(Service.HEXATHONS, "/teams/leave"), {
         name,
         hexathon: hexathonId,
       });

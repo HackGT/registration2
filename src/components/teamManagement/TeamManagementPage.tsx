@@ -13,7 +13,7 @@ const TeamManagementPage: React.FC = () => {
 
   const [{ data: team, loading, error }] = useAxios(
     {
-      url: apiUrl(Service.USERS, `/teams/user/${user?.uid}`),
+      url: apiUrl(Service.HEXATHONS, `/teams/user/${user?.uid}`),
       method: "GET",
       params: {
         hexathon: hexathonId,

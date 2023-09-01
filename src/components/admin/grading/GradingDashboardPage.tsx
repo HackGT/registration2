@@ -87,8 +87,8 @@ const GradingDashboardPage: React.FC = () => {
       endpoint: `/${hexathonId}/grading/question`,
       buttons: (
         <VStack>
-          <CircularProgress value={data.generalGroup}>
-            <CircularProgressLabel>{data.generalGroup}%</CircularProgressLabel>
+          <CircularProgress size='75px' value={data.generalGroup}>
+            <CircularProgressLabel fontSize='13.5px'>{data.generalGroup}%</CircularProgressLabel>
           </CircularProgress>
           <Link to="generalGroup/question" style={{ width: "100%" }}>
             <Button w="100%">Start Grading</Button>

@@ -27,7 +27,14 @@ const ApplicationContainer = () => {
   const { hexathonId, applicationId } = useParams();
   const [formPageNumber, setFormPageNumber] = useState(0);
   const { state } = useLocation();
-  const { formStatus } = state;
+
+  // Default to starting/continuing the application
+  let formStatus;
+  if (!state) {
+    formStatus = ApplicationFormStatus.CONTINUE;
+  } else {
+    formStatus = state.formStatus;
+  }
 
   const [{ data: application, loading, error }, refetch] = useAxios(
     apiUrl(Service.REGISTRATION, `/applications/${applicationId}`),

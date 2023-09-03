@@ -15,15 +15,12 @@ import {
 import { FiFile } from "react-icons/fi";
 import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
 const FileUploadField: React.FC<FieldProps> = props => {
   const inputRef = useRef<any>();
   const [fileName, setFileName] = React.useState<any>(props.formData?.name ?? "");
   const [fileUploadLoading, setFileUploadLoading] = React.useState(false);
-
-  const { currentHexathon } = useCurrentHexathon();
 
   // Manually create error message since empty object ({}) are still considered valid
   const errorMessage = useMemo(() => {
@@ -45,9 +42,6 @@ const FileUploadField: React.FC<FieldProps> = props => {
       const response = await axios.post(apiUrl(Service.FILES, "/files/upload"), multipartFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
-        },
-        params: {
-          hexathonCode: currentHexathon.shortCode,
         },
       });
       props.onChange(response.data);

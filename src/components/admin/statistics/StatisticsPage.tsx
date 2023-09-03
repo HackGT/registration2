@@ -80,6 +80,18 @@ const StatisticsPage: React.FC = () => {
               </Tr>
               <Tr>
                 <Td maxW="500px" w="500px">
+                  Waitlisted Users
+                </Td>
+                <Td>{userStatistics.waitlistedUsers}</Td>
+              </Tr>
+              <Tr>
+                <Td maxW="500px" w="500px">
+                  Withdrawn Users
+                </Td>
+                <Td>{userStatistics.withdrawnUsers}</Td>
+              </Tr>
+              <Tr>
+                <Td maxW="500px" w="500px">
                   Checked-in Users
                 </Td>
                 <Td>{userStatistics.checkedinUsers}</Td>

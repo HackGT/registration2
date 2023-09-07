@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Text, Button, Input, Heading, VStack } from "@chakra-ui/react";
 import axios from "axios";
-import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
+import { apiUrl, handleAxiosError, Service, useAuth } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 
 const CreateTeamSection: React.FC = () => {
   const [teamName, setTeamName] = useState("");
   const { hexathonId } = useParams();
+  const { user } = useAuth();
 
   const changeTeamName = (e: any) => {
     setTeamName(e.target.value);
@@ -17,6 +18,7 @@ const CreateTeamSection: React.FC = () => {
       await axios.post(apiUrl(Service.HEXATHONS, "/teams/"), {
         name: teamName,
         hexathon: hexathonId,
+        email: user?.email,
         description: "This is a team.",
         publicTeam: true,
       });

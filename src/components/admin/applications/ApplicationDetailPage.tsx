@@ -48,7 +48,7 @@ import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
-import { parseDateTimeString } from "../../../util/util";
+import { dateToServerFormat, parseDateTimeForm } from "../../../util/util";
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import RetrieveGTIDModal from "./RetrieveGTIDModal";
 
@@ -102,10 +102,10 @@ const ApplicationDetailPage: React.FC = () => {
           confirmationBranch: values.confirmationBranch || null,
           status: values.status,
           applicationExtendedDeadline: values.extendedDeadlines.enabled
-            ? values.applicationDeadline || null
+            ? dateToServerFormat(values.applicationDeadline) || null
             : null,
           confirmationExtendedDeadline: values.extendedDeadlines.enabled
-            ? values.confirmationDeadline || null
+            ? dateToServerFormat(values.confirmationDeadline) || null
             : null,
         }
       );
@@ -731,9 +731,9 @@ const ApplicationDetailPage: React.FC = () => {
                     <FormLabel>Application Extended Deadline</FormLabel>
                     <Input
                       id="applicationDeadline"
+                      type="datetime-local"
                       {...register("applicationDeadline")}
-                      placeholder="mm/dd/yyyy, hh:mm"
-                      defaultValue={parseDateTimeString(data.applicationExtendedDeadline) || ""}
+                      defaultValue={parseDateTimeForm(data.applicationExtendedDeadline) || ""}
                     />
                   </FormControl>
                 )}
@@ -743,9 +743,9 @@ const ApplicationDetailPage: React.FC = () => {
                       <FormLabel>Application Confirmation Deadline</FormLabel>
                       <Input
                         id="confirmationDeadline"
+                        type="datetime-local"
                         {...register("confirmationDeadline")}
-                        placeholder="mm/dd/yyyy, hh:mm"
-                        defaultValue={parseDateTimeString(data.confirmationExtendedDeadline) || ""}
+                        defaultValue={parseDateTimeForm(data.confirmationExtendedDeadline) || ""}
                       />
                     </FormControl>
                   )}

@@ -36,7 +36,7 @@ import { QuestionIcon } from "@chakra-ui/icons";
 
 import { Branch, BranchType } from "./BranchSettingsPage";
 import { AxiosRefetch } from "../../../util/types";
-import { dateToServerFormat, parseDateTimeString } from "../../../util/util";
+import { dateToServerFormat, parseDateTimeForm, parseDateTimeString } from "../../../util/util";
 
 enum FormModalType {
   Create = "CREATE",
@@ -79,9 +79,9 @@ const BranchFormModal: React.FC<Props> = props => {
         ? props.defaultValues?.automaticConfirmation?.emails.join(", ")
         : ""
     );
-    // Manually parse open/close time into human readable formats
-    const openTime = parseDateTimeString(props.defaultValues?.settings?.open);
-    const closeTime = parseDateTimeString(props.defaultValues?.settings?.close);
+    // Manually parse open/close time into form required format
+    const openTime = parseDateTimeForm(props.defaultValues?.settings?.open);
+    const closeTime = parseDateTimeForm(props.defaultValues?.settings?.close);
     reset({
       ...props.defaultValues,
       settings: {
@@ -194,7 +194,7 @@ const BranchFormModal: React.FC<Props> = props => {
                     <QuestionIcon ml="1" mb="1" />
                   </Tooltip>
                 </FormLabel>
-                <Input {...register("settings.open")} />
+                <Input type="datetime-local" {...register("settings.open")}/>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>
@@ -207,7 +207,7 @@ const BranchFormModal: React.FC<Props> = props => {
                     <QuestionIcon ml="1" mb="1" />
                   </Tooltip>
                 </FormLabel>
-                <Input {...register("settings.close")} />
+                <Input type="datetime-local" {...register("settings.close")}/>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>

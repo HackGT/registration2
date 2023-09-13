@@ -20,6 +20,7 @@ import { convertToRaw, EditorState, ContentState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 // @ts-ignore
 import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
 import { Letter } from "react-letter";
@@ -48,7 +49,7 @@ const BranchEmailTemplates: React.FC = () => {
   const branch = watch("branch");
   const [editorState, setEditorState] = useState<EditorState | undefined>(undefined);
 
-  const [{ data: branches, loading, error }] = useAxios({
+  const [{ data: branches, loading, error }, refetch] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
@@ -73,9 +74,10 @@ const BranchEmailTemplates: React.FC = () => {
   useEffect(() => {
     const subject = templates.get(branch?.value)?.subject ?? "";
     const enabled = templates.get(branch?.value)?.enabled ?? false;
-    const newEditorState = EditorState.createWithContent(
-      ContentState.createFromText(templates.get(branch?.value)?.content ?? "")
-    );
+    const blocksFromHtml = htmlToDraft(templates.get(branch?.value)?.content ?? "");
+    const { contentBlocks, entityMap } = blocksFromHtml;
+    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+    const newEditorState = EditorState.createWithContent(contentState);
 
     setValue("subject", subject);
     setValue("enabled", enabled);
@@ -96,7 +98,7 @@ const BranchEmailTemplates: React.FC = () => {
           content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         },
       });
-
+      await refetch();
       toast({
         title: "Success",
         description: "Email Template saved successfully!",

@@ -60,7 +60,6 @@ const Navigation: React.FC = () => {
     return <LoadingScreen />;
   }
 
-  const teamBased = currentHexathon.isTeamBased;
   const gradingEnabled = branches?.map((branch: any) => branch.grading.enabled).includes(true);
 
   const rightHeaderItem = currentHexathon ? (
@@ -121,11 +120,9 @@ const Navigation: React.FC = () => {
           <Link to={`/${currentHexathon.id}`}>
             <HeaderItem>Dashboard</HeaderItem>
           </Link>
-          {teamBased && (
-            <Link to={`/${currentHexathon.id}/team-management`}>
-              <HeaderItem>Team Management</HeaderItem>
-            </Link>
-          )}
+          <Link to={`/${currentHexathon.id}/team-management`}>
+            <HeaderItem>Team Management</HeaderItem>
+          </Link>
           {role.member && (
             <>
               <Link to={`/${currentHexathon.id}/admin`}>

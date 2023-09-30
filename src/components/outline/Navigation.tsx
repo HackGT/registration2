@@ -10,6 +10,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Link as ChakraLink,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -120,9 +121,9 @@ const Navigation: React.FC = () => {
           <Link to={`/${currentHexathon.id}`}>
             <HeaderItem>Dashboard</HeaderItem>
           </Link>
-          <Link to={`/${currentHexathon.id}/team-management`}>
+          <ChakraLink href="https://match.hexlabs.org" isExternal>
             <HeaderItem>Team Management</HeaderItem>
-          </Link>
+          </ChakraLink>
           {role.member && (
             <>
               <Link to={`/${currentHexathon.id}/admin`}>

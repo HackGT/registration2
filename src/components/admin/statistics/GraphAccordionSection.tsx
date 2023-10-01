@@ -4,8 +4,9 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Grid,
+  GridItem,
   Heading,
-  HStack,
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
@@ -68,51 +69,63 @@ const GraphAccordionSection: React.FC<IProps> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <VStack>
-          <HStack>
+        <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(3, 1fr)" gap={7} overflowX="auto"mt={5} justifyItems="center">
+          <GridItem>
             {Object.keys(props.data.schoolData).length && (
               <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
             )}
-            <VStack spacing={10}>
-              {Object.keys(props.data.majorData).length && (
-                <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
-              )}
-              {Object.keys(props.data.schoolYearData).length && (
-                <BarGraphView
-                  heading="School Year"
-                  data={sortObjectByKey(props.data.schoolYearData)}
-                />
-              )}
-              {Object.keys(props.data.genderData).length && (
-                <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
-              )}
-              {Object.keys(props.data.trackPreferenceData).length && (
-                <PieGraphView
-                  heading="Track Preference"
-                  data={sortObjectByKey(props.data.trackPreferenceData)}
-                />
-              )}
-              {Object.keys(props.data.marketingData).length && (
-                <PieGraphView
-                  heading="Marketing Source"
-                  data={sortObjectByKey(props.data.marketingData)}
-                />
-              )}
-              {Object.keys(props.data.shirtSizeData).length && (
-                <TableView
-                  heading="Shirt Size"
-                  data={sortObjectByValue(props.data.shirtSizeData)}
-                />
-              )}
-              {Object.keys(props.data.dietaryRestrictionsData).length && (
-                <TableView
-                  heading="Dietary Restrictions"
-                  data={sortObjectByValue(props.data.dietaryRestrictionsData)}
-                />
-              )}
-            </VStack>
-          </HStack>
-        </VStack>
+          </GridItem>
+          <GridItem>
+            {Object.keys(props.data.majorData).length && (
+              <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
+            )}
+          </GridItem>
+          <GridItem alignSelf="center">
+            {Object.keys(props.data.schoolYearData).length && (
+              <BarGraphView
+                heading="School Year"
+                data={sortObjectByKey(props.data.schoolYearData)}
+              />
+            )}
+          </GridItem>
+          <GridItem pt={10}>
+            {Object.keys(props.data.shirtSizeData).length && (
+              <TableView
+                heading="Shirt Size"
+                data={sortObjectByValue(props.data.shirtSizeData)}
+              />
+            )}
+          </GridItem>
+          <GridItem pt={10}>
+            {Object.keys(props.data.marketingData).length && (
+              <PieGraphView
+                heading="Marketing Source"
+                data={sortObjectByKey(props.data.marketingData)}
+              />
+            )}
+          </GridItem>
+          <GridItem rowSpan={2} pt={10}>
+            {Object.keys(props.data.genderData).length && (
+              <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
+            )}
+          </GridItem>
+          <GridItem>
+            {Object.keys(props.data.dietaryRestrictionsData).length && (
+              <TableView
+                heading="Dietary Restrictions"
+                data={sortObjectByValue(props.data.dietaryRestrictionsData)}
+              />
+            )}
+          </GridItem>
+          <GridItem>
+            {Object.keys(props.data.trackPreferenceData).length && (
+              <PieGraphView
+                heading="Track Preference"
+                data={sortObjectByKey(props.data.trackPreferenceData)}
+              />
+            )}
+          </GridItem>
+        </Grid>
       </AccordionPanel>
     </AccordionItem>
   ) : (

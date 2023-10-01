@@ -7,8 +7,9 @@ interface IProps {
 }
 
 const TableView: React.FC<IProps> = props => (
-  <TableContainer overflowY="auto" maxH="500px">
-    <Heading style={{ textAlign: "center", fontSize: "25px" }}>{props.heading}</Heading>
+  <>
+  <Heading style={{ textAlign: "center", fontSize: "25px" }}>{props.heading}</Heading>
+  <TableContainer overflowY="auto" maxHeight="500px">
     <Table variant="simple">
       <Tbody>
         {Object.keys(props.data).map(key => (
@@ -20,6 +21,7 @@ const TableView: React.FC<IProps> = props => (
       </Tbody>
     </Table>
   </TableContainer>
+  </>
 );
 
 export default TableView;

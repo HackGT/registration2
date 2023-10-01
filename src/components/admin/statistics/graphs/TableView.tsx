@@ -8,7 +8,7 @@ interface IProps {
 
 const TableView: React.FC<IProps> = props => (
   <>
-  <Heading style={{ textAlign: "center", fontSize: "25px" }}>{props.heading}</Heading>
+  <Heading style={{ textAlign: "center", fontSize: "25px", marginTop: "20px"}}>{props.heading}</Heading>
   <TableContainer overflowY="auto" maxHeight="500px">
     <Table variant="simple">
       <Tbody>

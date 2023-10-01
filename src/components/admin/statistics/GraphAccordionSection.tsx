@@ -8,6 +8,7 @@ import {
   GridItem,
   Heading,
   VStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -48,6 +49,7 @@ function sortObjectByKey(obj: any) {
 }
 
 const GraphAccordionSection: React.FC<IProps> = props => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const isStatisticsAvailable =
     Object.keys(props.data.schoolData).length ||
     Object.keys(props.data.majorData).length ||
@@ -69,7 +71,48 @@ const GraphAccordionSection: React.FC<IProps> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(3, 1fr)" gap={7} overflowX="auto"mt={5} justifyItems="center">
+        {isMobile ? <VStack>
+          {Object.keys(props.data.schoolData).length && (
+            <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
+          )}
+          {Object.keys(props.data.majorData).length && (
+            <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
+          )}
+          {Object.keys(props.data.schoolYearData).length && (
+            <BarGraphView
+              heading="School Year"
+              data={sortObjectByKey(props.data.schoolYearData)}
+            />
+          )}
+          {Object.keys(props.data.shirtSizeData).length && (
+            <TableView
+              heading="Shirt Size"
+              data={sortObjectByValue(props.data.shirtSizeData)}
+            />
+          )}
+          {Object.keys(props.data.dietaryRestrictionsData).length && (
+            <TableView
+              heading="Dietary Restrictions"
+              data={sortObjectByValue(props.data.dietaryRestrictionsData)}
+            />
+          )}
+          {Object.keys(props.data.marketingData).length && (
+            <PieGraphView
+              heading="Marketing Source"
+              data={sortObjectByKey(props.data.marketingData)}
+            />
+          )}
+          {Object.keys(props.data.trackPreferenceData).length && (
+            <PieGraphView
+              heading="Track Preference"
+              data={sortObjectByKey(props.data.trackPreferenceData)}
+            />
+          )}
+          {Object.keys(props.data.genderData).length && (
+            <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
+          )}
+        </VStack>
+        : <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(3, 1fr)" gap={7} overflowX="auto" mt={5} justifyItems="center">
           <GridItem>
             {Object.keys(props.data.schoolData).length && (
               <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
@@ -125,7 +168,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
               />
             )}
           </GridItem>
-        </Grid>
+        </Grid>}
       </AccordionPanel>
     </AccordionItem>
   ) : (

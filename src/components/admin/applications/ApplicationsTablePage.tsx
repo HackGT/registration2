@@ -309,18 +309,21 @@ const ApplicationsTablePage: React.FC = () => {
             }}
           />
         </Box>
-        <Button
-          onClick={(e: any) =>
-            generateCSV(
-              hexathonId,
-              searchParams.get("status")?.split(","),
-              searchParams.get("applicationBranch")?.split(","),
-              searchParams.get("confirmationBranch")?.split(",")
-            )
-          }
-        >
-          Generate CSV
-        </Button>
+        <Box p={4} w="80">
+          <br />
+          <Button
+            onClick={(e: any) =>
+              generateCSV(
+                hexathonId,
+                searchParams.get("status")?.split(","),
+                searchParams.get("applicationBranch")?.split(","),
+                searchParams.get("confirmationBranch")?.split(",")
+              )
+            }
+          >
+            Generate CSV
+          </Button>
+        </Box>
       </Stack>
       <SearchableTable
         title="Applications"

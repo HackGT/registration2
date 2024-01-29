@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Link as ChakraLink, Stack, Text, Button } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
 import _ from "lodash";
+import axios from "axios";
 
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
 
@@ -36,6 +37,33 @@ const columns = [
     accessor: (row: any) => <ApplicationStatusTag status={row.status} includeColor />,
   },
 ];
+
+const generateCSV = async (
+  hexathonId: any,
+  status: any,
+  applicationBranch: any,
+  confirmationBranch: any
+) => {
+  await axios
+    .get(apiUrl(Service.REGISTRATION, `applications/generate-csv`), {
+      params: { hexathon: hexathonId, status, applicationBranch, confirmationBranch },
+      responseType: "blob",
+    })
+    .then(response => {
+      const href = URL.createObjectURL(response.data);
+
+      // create "a" HTML element with href to file & click
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "Applications.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
+};
 
 const ApplicationsTablePage: React.FC = () => {
   const { hexathonId } = useParams();
@@ -281,6 +309,18 @@ const ApplicationsTablePage: React.FC = () => {
             }}
           />
         </Box>
+        <Button
+          onClick={(e: any) =>
+            generateCSV(
+              hexathonId,
+              searchParams.get("status")?.split(","),
+              searchParams.get("applicationBranch")?.split(","),
+              searchParams.get("confirmationBranch")?.split(",")
+            )
+          }
+        >
+          Generate CSV
+        </Button>
       </Stack>
       <SearchableTable
         title="Applications"

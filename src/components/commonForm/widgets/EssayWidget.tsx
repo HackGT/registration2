@@ -21,9 +21,6 @@ const getWordCount = (value?: string) => {
   return curWordCount;
 };
 
-// TODO: Make this a dynamic value
-const WORD_COUNT_LIMIT = 100;
-
 const EssayWidget: React.FC<WidgetProps> = props => {
   const _onChange = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) =>
     props.onChange(value === "" ? props.options.emptyValue : value);
@@ -33,6 +30,7 @@ const EssayWidget: React.FC<WidgetProps> = props => {
     props.onFocus(props.id, value);
 
   const wordCount = getWordCount(props.value);
+  const wordCountLimit = (props.schema as any).wordCount || 100;
 
   return (
     <FormControl
@@ -55,8 +53,8 @@ const EssayWidget: React.FC<WidgetProps> = props => {
         onBlur={_onBlur}
         onFocus={_onFocus}
       />
-      <Text color={wordCount > WORD_COUNT_LIMIT ? "red" : "gray"} marginTop="5px">
-        {wordCount} / {WORD_COUNT_LIMIT} words
+      <Text color={wordCount > wordCountLimit ? "red" : "gray"} marginTop="5px">
+        {wordCount} / {wordCountLimit} words
       </Text>
     </FormControl>
   );

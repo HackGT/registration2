@@ -79,8 +79,8 @@ const ApplicationDetailPage: React.FC = () => {
   const status = watch("status");
 
   const addHttpsIfNeed = (url: string) => {
-    if (!url.startsWith("https://") || !url.startsWith("http://")) {
-      return "https://" + url;
+    if (!url.startsWith("https://") && !url.startsWith("http://")) {
+      return `https://${url}`;
     }
 
     return url;

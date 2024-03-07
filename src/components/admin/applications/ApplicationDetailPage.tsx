@@ -78,6 +78,14 @@ const ApplicationDetailPage: React.FC = () => {
   const extendedDeadlines = watch("extendedDeadlines.enabled");
   const status = watch("status");
 
+  const addHttpsIfNeed = (url: string) => {
+    if (!url.startsWith("https://") && !url.startsWith("http://")) {
+      return `https://${url}`;
+    }
+
+    return url;
+  };
+
   useEffect(() => {
     reset();
   }, [data, reset]);
@@ -253,7 +261,7 @@ const ApplicationDetailPage: React.FC = () => {
                   <Text color="gray" fontSize="sm">
                     LinkedIn
                   </Text>
-                  <Link href={data.applicationData.linkedin} target="_blank">
+                  <Link href={addHttpsIfNeed(data.applicationData.linkedin)} target="_blank">
                     {data.applicationData.linkedin}
                   </Link>
                 </Text>
@@ -263,7 +271,7 @@ const ApplicationDetailPage: React.FC = () => {
                   <Text color="gray" fontSize="sm">
                     Website
                   </Text>
-                  <Link href={data.applicationData.website} target="_blank">
+                  <Link href={addHttpsIfNeed(data.applicationData.website)} target="_blank">
                     {data.applicationData.website}
                   </Link>
                 </Text>

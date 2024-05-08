@@ -23,8 +23,8 @@ const PieGraphView: React.FC<IProps> = props => {
   };
 
   return (
-    <div className="col-12 col-sm-6">
-      <Box style={{ width: "300px", maxWidth: "300px", display: "inline-block" }}>
+    <div className="col-12 col-sm-6" style={{overflow: "auto"}}>
+      <Box style={{ width: "300px", maxWidth: "300px", display: "inline-block" , marginTop: "20px"}}>
         <Heading style={{ textAlign: "center", fontSize: "25px" }}>{props.heading}</Heading>
         <Pie style={{ width: "300px" }} data={data} />
       </Box>

@@ -4,9 +4,11 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Grid,
+  GridItem,
   Heading,
-  HStack,
   VStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -47,6 +49,7 @@ function sortObjectByKey(obj: any) {
 }
 
 const GraphAccordionSection: React.FC<IProps> = props => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const isStatisticsAvailable =
     Object.keys(props.data.schoolData).length ||
     Object.keys(props.data.majorData).length ||
@@ -68,51 +71,96 @@ const GraphAccordionSection: React.FC<IProps> = props => {
         </AccordionButton>
       </h2>
       <AccordionPanel pb={4}>
-        <VStack>
-          <HStack>
-            {Object.keys(props.data.schoolData).length && (
-              <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
-            )}
-            <VStack spacing={10}>
-              {Object.keys(props.data.majorData).length && (
+        {isMobile ? <VStack>
+          {Object.keys(props.data.schoolData).length ? (
+            <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
+          ) : null}
+          {Object.keys(props.data.majorData).length ? (
+            <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
+          ) : null}
+          {Object.keys(props.data.schoolYearData).length ? (
+            <BarGraphView
+              heading="School Year"
+              data={sortObjectByKey(props.data.schoolYearData)}
+            />
+          ) : null}
+          {Object.keys(props.data.shirtSizeData).length ? (
+            <TableView
+              heading="Shirt Size"
+              data={sortObjectByValue(props.data.shirtSizeData)}
+            />
+          ) : null}
+          {Object.keys(props.data.dietaryRestrictionsData).length ? (
+            <TableView
+              heading="Dietary Restrictions"
+              data={sortObjectByValue(props.data.dietaryRestrictionsData)}
+            />
+          ) : null}
+          {Object.keys(props.data.trackPreferenceData).length ? (
+            <PieGraphView
+              heading="Track Preference"
+              data={sortObjectByKey(props.data.trackPreferenceData)}
+            />
+          ) : null}
+          {Object.keys(props.data.marketingData).length ? (
+            <PieGraphView
+              heading="Marketing Source"
+              data={sortObjectByKey(props.data.marketingData)}
+            />
+          ) : null}
+          {Object.keys(props.data.genderData).length ? (
+            <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
+          ) : null}
+        </VStack>
+        : <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(3, 1fr)" gap={7} overflowX="auto" mt={5} justifyItems="center">
+            {Object.keys(props.data.schoolData).length ? (
+              <GridItem pt={10}>
+                <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
+              </GridItem>) : null}
+            {Object.keys(props.data.majorData).length ? (
+              <GridItem pt={10}>
                 <TableView heading="Majors" data={sortObjectByValue(props.data.majorData)} />
-              )}
-              {Object.keys(props.data.schoolYearData).length && (
+              </GridItem>) : null}
+            {Object.keys(props.data.schoolYearData).length ? (
+              <GridItem pt={10}>
                 <BarGraphView
                   heading="School Year"
                   data={sortObjectByKey(props.data.schoolYearData)}
                 />
-              )}
-              {Object.keys(props.data.genderData).length && (
-                <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
-              )}
-              {Object.keys(props.data.trackPreferenceData).length && (
-                <PieGraphView
-                  heading="Track Preference"
-                  data={sortObjectByKey(props.data.trackPreferenceData)}
-                />
-              )}
-              {Object.keys(props.data.marketingData).length && (
-                <PieGraphView
-                  heading="Marketing Source"
-                  data={sortObjectByKey(props.data.marketingData)}
-                />
-              )}
-              {Object.keys(props.data.shirtSizeData).length && (
+              </GridItem>) : null}
+            {Object.keys(props.data.shirtSizeData).length ? (
+              <GridItem pt={10}>
                 <TableView
                   heading="Shirt Size"
                   data={sortObjectByValue(props.data.shirtSizeData)}
                 />
-              )}
-              {Object.keys(props.data.dietaryRestrictionsData).length && (
+              </GridItem>) : null}
+            {Object.keys(props.data.dietaryRestrictionsData).length ? (
+              <GridItem pt={10}>
                 <TableView
                   heading="Dietary Restrictions"
                   data={sortObjectByValue(props.data.dietaryRestrictionsData)}
                 />
-              )}
-            </VStack>
-          </HStack>
-        </VStack>
+              </GridItem>) : null}
+            {Object.keys(props.data.trackPreferenceData).length ? (
+              <GridItem pt={10}>
+                <PieGraphView
+                  heading="Track Preference"
+                  data={sortObjectByKey(props.data.trackPreferenceData)}
+                />
+              </GridItem>) : null}
+            {Object.keys(props.data.marketingData).length ? (
+              <GridItem pt={10}>
+                <PieGraphView
+                  heading="Marketing Source"
+                  data={sortObjectByKey(props.data.marketingData)}
+                />
+              </GridItem>) : null}
+            {Object.keys(props.data.genderData).length ? (
+              <GridItem pt={10}>
+                <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
+              </GridItem>) : null}
+        </Grid>}
       </AccordionPanel>
     </AccordionItem>
   ) : (

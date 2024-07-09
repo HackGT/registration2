@@ -216,6 +216,18 @@ const HexathonModal: React.FC<Props> = props => {
                   </Tooltip>
                 </Checkbox>
               </FormControl>
+              <FormControl>
+                <Checkbox {...register("isDev")}>
+                  Is Dev
+                  <Tooltip
+                    label="Select if this hexathon is a dev hexathon. This will enable team management features in registration and other applications."
+                    placement="auto-start"
+                    hasArrow
+                  >
+                    <QuestionIcon ml="1" mb="1" />
+                  </Tooltip>
+                </Checkbox>
+              </FormControl>
               <Button type="submit" isLoading={formSubmitLoading}>
                 Submit
               </Button>

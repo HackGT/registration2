@@ -44,7 +44,6 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
       multipartFormData.append("file", files[0], files[0].name);
       setFileName(files[0].name);
       const uploadPath = props.hexathonId === undefined ? "/files/upload" : `/files/upload/${props.hexathonId}`;
-      console.log(uploadPath);
       const response = await axios.post(apiUrl(Service.FILES, uploadPath), multipartFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -101,6 +100,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
             disabled={props.disabled}
             cursor="pointer"
             style={{ caretColor: "transparent" }}
+            readOnly
           />
           {fileName && !fileUploadLoading && (
             <InputRightElement cursor="pointer">

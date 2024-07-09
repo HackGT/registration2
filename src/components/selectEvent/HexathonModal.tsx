@@ -220,7 +220,7 @@ const HexathonModal: React.FC<Props> = props => {
                 <Checkbox {...register("isDev")}>
                   Is Dev
                   <Tooltip
-                    label="Select if this hexathon is a dev hexathon. This will enable team management features in registration and other applications."
+                    label="Select if this hexathon is a dev hexathon. This will make the hexathon only available to Hexlabs members."
                     placement="auto-start"
                     hasArrow
                   >

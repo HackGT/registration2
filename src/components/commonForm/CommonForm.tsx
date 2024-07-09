@@ -11,7 +11,7 @@ import SelectField from "./fields/SelectField";
 import CheckboxWidget from "./widgets/CheckboxWidget";
 import EssayWidget from "./widgets/EssayWidget";
 import DateWidget from "./widgets/DateWidget";
-import FileField from "./fields/FileUploadFieldWrapper";
+import FileUploadField from "./fields/FileUploadField";
 
 function transformErrors(errors: any[]) {
   return errors.map((error: any) => {
@@ -61,11 +61,9 @@ const CommonForm: React.FC<Props> = props => {
   }, [props.schema, props.commonDefinitionsSchema]);
   const uiSchema: JSONSchema7 = useMemo(() => JSON.parse(props.uiSchema), [props.uiSchema]);
 
-  
   const fileFieldComponent = (fieldProps: FieldProps<any>) => (
-    <FileField hexathonId={props.hexathonId} fieldProps={fieldProps}/>
+    <FileUploadField {...fieldProps} hexathonId={props.hexathonId}/>
   );
-  // FieldProps<any>
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>

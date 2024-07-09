@@ -24,6 +24,7 @@ import defaultUiSchema from "./defaultSchemas/defaultUiSchema.json";
 import CommonForm from "../../../commonForm/CommonForm";
 import SchemaInput from "./SchemaInput";
 import SchemaOutput from "./SchemaOutput";
+import { useParams } from "react-router-dom";
 
 interface Props {
   formPage: any;
@@ -47,6 +48,7 @@ const BranchFormCreator: React.FC<Props> = props => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const {hexathonId} = useParams();
 
   const handleSaveFormPage = async () => {
     // If JSON schema or UI schema have errors, don't save
@@ -196,6 +198,7 @@ const BranchFormCreator: React.FC<Props> = props => {
             uiSchema={uiSchema}
             commonDefinitionsSchema={props.commonDefinitionsSchema}
             formData={JSON.parse(formData)}
+            hexathonId={hexathonId}
             onChange={(val: any, event: any) => {
               setFormData(JSON.stringify(val.formData, null, 2));
             }}

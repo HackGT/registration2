@@ -17,6 +17,7 @@ import { apiUrl, Service } from "@hex-labs/core";
 import CommonForm from "../commonForm/CommonForm";
 import { AxiosRefetch } from "../../util/types";
 import { ApplicationFormStatus } from "../dashboard/CurrentApplicationTile";
+import { useParams } from "react-router-dom";
 
 interface Props {
   defaultFormData: any;
@@ -33,6 +34,7 @@ interface Props {
 const ApplicationReviewPage: React.FC<Props> = props => {
   const toast = useToast();
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
+  const {hexathonId} = useParams();
 
   const handleSubmit = async () => {
     try {
@@ -98,6 +100,7 @@ const ApplicationReviewPage: React.FC<Props> = props => {
           uiSchema={formPage.uiSchema}
           commonDefinitionsSchema={props.branch.commonDefinitionsSchema}
           formData={props.defaultFormData}
+          hexathonId={props.branch.hexathon}
           key={formPage.id}
           disabled
           readonly

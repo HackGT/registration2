@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { FormProps } from "@rjsf/core";
+import { FieldProps, FormProps } from "@rjsf/core";
 import React, { useMemo } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { Text, VStack } from "@chakra-ui/react";
@@ -8,10 +8,10 @@ import Form from "@rjsf/chakra-ui";
 
 import ObjectFieldTemplate from "./ObjectFieldTemplate";
 import SelectField from "./fields/SelectField";
-import FileUploadField from "./fields/FileUploadField";
 import CheckboxWidget from "./widgets/CheckboxWidget";
 import EssayWidget from "./widgets/EssayWidget";
 import DateWidget from "./widgets/DateWidget";
+import FileField from "./fields/FileUploadFieldWrapper";
 
 function transformErrors(errors: any[]) {
   return errors.map((error: any) => {
@@ -48,6 +48,7 @@ interface Props extends Omit<FormProps<any>, "schema" | "uiSchema"> {
   schema: string;
   uiSchema: string;
   commonDefinitionsSchema: string;
+  hexathonId: string | undefined;
 }
 
 const CommonForm: React.FC<Props> = props => {
@@ -60,6 +61,12 @@ const CommonForm: React.FC<Props> = props => {
   }, [props.schema, props.commonDefinitionsSchema]);
   const uiSchema: JSONSchema7 = useMemo(() => JSON.parse(props.uiSchema), [props.uiSchema]);
 
+  
+  const fileFieldComponent = (fieldProps: FieldProps<any>) => (
+    <FileField hexathonId={props.hexathonId} fieldProps={fieldProps}/>
+  );
+  // FieldProps<any>
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[props.schema, props.uiSchema]}>
       <Form
@@ -67,7 +74,9 @@ const CommonForm: React.FC<Props> = props => {
         schema={combinedSchema}
         uiSchema={uiSchema}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        fields={{ select: SelectField, file: FileUploadField }}
+        fields={{ select: SelectField,
+          file: fileFieldComponent,
+        }}
         widgets={{
           checkbox: CheckboxWidget,
           essay: EssayWidget,

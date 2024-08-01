@@ -17,7 +17,11 @@ import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 
-const FileUploadField: React.FC<FieldProps> = props => {
+interface FileUploadFieldProps extends FieldProps {
+  hexathonId: string | undefined;
+}
+
+const FileUploadField: React.FC<FileUploadFieldProps> = props => {
   const inputRef = useRef<any>();
   const [fileName, setFileName] = React.useState<any>(props.formData?.name ?? "");
   const [fileUploadLoading, setFileUploadLoading] = React.useState(false);
@@ -39,7 +43,8 @@ const FileUploadField: React.FC<FieldProps> = props => {
       multipartFormData.append("type", props.name);
       multipartFormData.append("file", files[0], files[0].name);
       setFileName(files[0].name);
-      const response = await axios.post(apiUrl(Service.FILES, "/files/upload"), multipartFormData, {
+      const uploadPath = props.hexathonId === undefined ? "/files/upload" : `/files/upload/${props.hexathonId}`;
+      const response = await axios.post(apiUrl(Service.FILES, uploadPath), multipartFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -95,6 +100,7 @@ const FileUploadField: React.FC<FieldProps> = props => {
             disabled={props.disabled}
             cursor="pointer"
             style={{ caretColor: "transparent" }}
+            readOnly
           />
           {fileName && !fileUploadLoading && (
             <InputRightElement cursor="pointer">

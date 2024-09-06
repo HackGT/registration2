@@ -104,6 +104,7 @@ const GradingQuestionPage: React.FC = () => {
       score: number;
       isCalibrationQuestion: boolean;
     }) => {
+      setSubmitButtonDisabled(true);
       await axios.post(apiUrl(Service.REGISTRATION, "/grading/actions/submit-review"), {
         ...payload,
         hexathon: hexathonId,
@@ -112,7 +113,6 @@ const GradingQuestionPage: React.FC = () => {
       setLoading(true);
       setValue("");
       setScore("");
-      setSubmitButtonDisabled(true);
       retrieveQuestion();
       window.scrollTo(0, 0);
     },

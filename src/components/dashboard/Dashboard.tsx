@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Flex, Heading, Text, Divider, Link } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
+import { AlertDialog, AlertDialogOverlay, AlertDialogBody, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, Button, Box, Flex, Heading, Text, Divider, Link, useDisclosure } from "@chakra-ui/react";
+import { apiUrl, ErrorScreen, handleAxiosError, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import { QRCodeSVG } from "qrcode.react";
 import useAxios from "axios-hooks";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 import FutureEventsTimeline from "./FutureEventsTimeline";
 import Branches from "./Branches";
@@ -15,6 +16,8 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { currentHexathon } = useCurrentHexathon();
   const { hexathonId } = useParams();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef(null);
 
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const updateDimensions = () => {
@@ -50,6 +53,26 @@ const Dashboard: React.FC = () => {
   const application =
     applications?.applications?.length > 0 ? applications?.applications[0] : undefined;
 
+    const updateStatus = useMemo(
+      () => async (status: string) => {
+        try {
+          await axios.post(
+            apiUrl(
+              Service.REGISTRATION,
+              `/applications/${application.id}/actions/update-status`
+            ),
+            {
+              status,
+            }
+          );
+          window.location.reload();
+        } catch (error: any) {
+          handleAxiosError(error);
+        }
+      },
+      [application]
+    );
+  
   const applicationStatusDescription = useMemo(() => {
     switch (application?.status) {
       case "DRAFT":
@@ -86,6 +109,11 @@ const Dashboard: React.FC = () => {
           <>
             You're all set to attend our event! Please check your email and our social media for any
             updates. We look forward to seeing you!
+
+            If you can no longer attend the event, please let us know.
+            <Button onClick={() => onOpen()} variant="outline" width="100%" colorScheme="red">
+              Unable to Attend
+            </Button>
           </>
         );
       case "DENIED":
@@ -148,6 +176,33 @@ const Dashboard: React.FC = () => {
           </Link>{" "}
           if you have any questions.
         </Text>
+      </Box>
+      <Box>
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Confirm Not Attending
+              </AlertDialogHeader>
+              <AlertDialogBody>Are you sure you're no longer able to attend?</AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    onClose();
+                    updateStatus("NOT_ATTENDING");
+                  }}
+                  ml={3}
+                >
+                  Sorry, I can't make it
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
       </Box>
       <Box paddingX={{ base: "16px", md: "32px" }} paddingY="15px">
         <Flex

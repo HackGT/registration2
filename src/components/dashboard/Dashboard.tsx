@@ -102,6 +102,11 @@ const Dashboard: React.FC = () => {
           <>
             Thank you for applying! At this time, you have been put on our waitlist. We will be
             sending more updates to your email address soon.
+
+            If you would no longer like to be on the waitlist, please let us know..
+            <Button onClick={() => onOpen()} variant="outline" width="100%" colorScheme="red">
+              Decline Waitlist
+            </Button>
           </>
         );
       case "CONFIRMED":
@@ -184,7 +189,7 @@ const Dashboard: React.FC = () => {
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
                 Confirm Not Attending
               </AlertDialogHeader>
-              <AlertDialogBody>Are you sure you're no longer able to attend?</AlertDialogBody>
+              <AlertDialogBody>{application.status === "WAITLISTED" ? "Are you sure you'd like to decline your spot on the waitlist?": "Are you sure you're no longer able to attend?"}</AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={onClose}>
                   Cancel

@@ -189,7 +189,11 @@ const Dashboard: React.FC = () => {
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
                 Confirm Not Attending
               </AlertDialogHeader>
-              <AlertDialogBody>{application.status === "WAITLISTED" ? "Are you sure you'd like to decline your spot on the waitlist?": "Are you sure you're no longer able to attend?"}</AlertDialogBody>
+              <AlertDialogBody>
+                <Text>{application.status === "WAITLISTED" ? "Are you sure you'd like to decline your spot on the waitlist?": "Are you sure you're no longer able to attend?"}</Text>
+
+                <Text color='red.600' fontWeight='bold'>This action cannot be undone.</Text>
+              </AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={onClose}>
                   Cancel

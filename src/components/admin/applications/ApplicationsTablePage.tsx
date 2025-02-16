@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Heading, Link as ChakraLink, Stack, Text, Button } from "@chakra-ui/react";
+import { Box, Heading, Link as ChakraLink, Stack, Text, Button, useDisclosure } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import _ from "lodash";
 import axios from "axios";
 
 import ApplicationStatusTag from "../../../util/ApplicationStatusTag";
+import ApplicationCSVModal from "./ApplicationCSVModal";
 
 const limit = 50;
 
@@ -77,6 +78,7 @@ const ApplicationsTablePage: React.FC = () => {
   const [confirmationBranchSelectValue, setConfirmationBranchSelectValue] = useState<GroupOption[]>(
     []
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [{ data, error }] = useAxios({
     method: "GET",
@@ -311,18 +313,19 @@ const ApplicationsTablePage: React.FC = () => {
         </Box>
         <Box p={4} w="80">
           <br />
-          <Button
-            onClick={(e: any) =>
-              generateCSV(
-                hexathonId,
-                searchParams.get("status")?.split(","),
-                searchParams.get("applicationBranch")?.split(","),
-                searchParams.get("confirmationBranch")?.split(",")
-              )
-            }
-          >
+          <Button onClick={onOpen}>
             Generate CSV
           </Button>
+          <ApplicationCSVModal
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+            hexathonId={hexathonId}
+            status={searchParams.get("status")?.split(",")}
+            applicationBranch={searchParams.get("applicationBranch")?.split(",")}
+            confirmationBranch={searchParams.get("confirmationBranch")?.split(",")}
+            totalApplicants={data?.total}
+          />
         </Box>
       </Stack>
       <SearchableTable

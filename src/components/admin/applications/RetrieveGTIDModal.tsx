@@ -115,7 +115,7 @@ document.gtid_ind_lookup_par_form.byear.value = "${dateOfBirth.year}";`;
                     <Text mt="2" fontSize="sm">
                       Visit the site{" "}
                       <Link
-                        href="https://public.webapps.gatech.edu/cfeis/gtid"
+                        href="https://webapps.gatech.edu/cfeis/buzzid/buzzid_ind_lookup_par.cfm"
                         target="_blank"
                         color="teal.500"
                       >

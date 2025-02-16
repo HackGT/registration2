@@ -182,37 +182,41 @@ const Dashboard: React.FC = () => {
           if you have any questions.
         </Text>
       </Box>
-      <Box>
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-          <AlertDialogOverlay>
-            <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Confirm Not Attending
-              </AlertDialogHeader>
-              <AlertDialogBody>
-                <Text>{application.status === "WAITLISTED" ? "Are you sure you'd like to decline your spot on the waitlist?": "Are you sure you're no longer able to attend?"}</Text>
+      {
+        application && (
+          <Box>
+            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      Confirm Not Attending
+                    </AlertDialogHeader>
+                    <AlertDialogBody>
+                      <Text>{application.status === "WAITLISTED" ? "Are you sure you'd like to decline your spot on the waitlist?": "Are you sure you're no longer able to attend?"}</Text>
 
-                <Text color='red.600' fontWeight='bold'>This action cannot be undone.</Text>
-              </AlertDialogBody>
-              <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => {
-                    onClose();
-                    updateStatus("NOT_ATTENDING");
-                  }}
-                  ml={3}
-                >
-                  Sorry, I can't make it
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
-      </Box>
+                      <Text color='red.600' fontWeight='bold'>This action cannot be undone.</Text>
+                    </AlertDialogBody>
+                    <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        onClick={() => {
+                          onClose();
+                          updateStatus("NOT_ATTENDING");
+                        }}
+                        ml={3}
+                      >
+                        Sorry, I can't make it
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+          </Box>
+        )
+      }
       <Box paddingX={{ base: "16px", md: "32px" }} paddingY="15px">
         <Flex
           direction={["column", "row"]}

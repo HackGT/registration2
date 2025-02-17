@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Heading,
@@ -38,6 +38,7 @@ const BranchTile: React.FC<Props> = props => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const openDate = DateTime.fromISO(new Date(props.branch.settings.open).toISOString());
   const closeDate = DateTime.fromISO(new Date(props.branch.settings.close).toISOString());
@@ -79,6 +80,8 @@ const BranchTile: React.FC<Props> = props => {
   }, [branchStatus]);
 
   const chooseBranchAndNavigate = async () => {
+    setLoading(true); // prevent double-clicking
+
     try {
       const response = await axios.post(
         apiUrl(Service.REGISTRATION, "/applications/actions/choose-application-branch"),
@@ -88,6 +91,7 @@ const BranchTile: React.FC<Props> = props => {
         }
       );
       navigate(`/${hexathonId}/application/${response.data.id}`);
+      setLoading(false);
     } catch (error: any) {
       handleAxiosError(error);
     }
@@ -123,7 +127,7 @@ const BranchTile: React.FC<Props> = props => {
       transition="box-shadow 0.2s ease-in-out"
       style={{ cursor: "pointer" }}
       onClick={async () => {
-        if (branchStatus === BranchStatus.NotStarted) {
+        if (branchStatus === BranchStatus.NotStarted && !loading) {
           await openApplication();
         }
       }}

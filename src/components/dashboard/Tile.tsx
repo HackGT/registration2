@@ -4,7 +4,8 @@ import {
   Heading,
   Text,
   Tag,
-  Flex, useDisclosure
+  Flex,
+  Spinner
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -28,8 +29,6 @@ interface Props {
 const BranchTile: React.FC<Props> = props => {
   const { hexathonId } = useParams();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef(null);
   const [loading, setLoading] = useState(false);
 
   const openDate = DateTime.fromISO(new Date(props.branch.settings.open).toISOString());
@@ -83,10 +82,10 @@ const BranchTile: React.FC<Props> = props => {
         }
       );
       navigate(`/${hexathonId}/application/${response.data.id}`);
-      setLoading(false);
     } catch (error: any) {
       handleAxiosError(error);
     }
+    setLoading(false);
   };
 
   const openApplication = async () => {
@@ -108,12 +107,13 @@ const BranchTile: React.FC<Props> = props => {
         boxShadow: "rgba(0, 0, 0, 0.20) 0px 0px 8px 2px",
       }}
       transition="box-shadow 0.2s ease-in-out"
-      style={{ cursor: "pointer" }}
+      style={{ cursor: `${loading ? "": "pointer"}` }}
       onClick={async () => {
         if (branchStatus === BranchStatus.NotStarted && !loading) {
           await openApplication();
         }
       }}
+      bg={loading ? "gray.200" : "white"}
     >
       <Flex
         bgGradient={props.image ? "" : "linear(to-l, #33c2ff, #7b69ec)"}
@@ -129,7 +129,13 @@ const BranchTile: React.FC<Props> = props => {
 
       <Box padding="20px 32px">
         <Heading fontSize="18px" fontWeight="semibold" marginBottom="6px" color="#212121">
-          <Text>{props.branch.name}</Text>
+          <Text>{props.branch.name}
+            {
+              loading && (
+                <Spinner ml={3}/>
+              )
+            }
+          </Text>
         </Heading>
         <Text fontSize="sm" color="#858585" marginBottom="10px">
           {submissionTimingDescription}

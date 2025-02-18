@@ -4,15 +4,7 @@ import {
   Heading,
   Text,
   Tag,
-  Flex,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-  Button,
+  Flex, useDisclosure
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -97,21 +89,12 @@ const BranchTile: React.FC<Props> = props => {
     }
   };
 
-  const onConfirm = async () => {
-    onClose();
-    await chooseBranchAndNavigate();
-  };
-
   const openApplication = async () => {
     // If the user has an application, ask if they want to start a new one
-    if (props.currApp && Object.keys(props.currApp).length !== 0) {
-      if (branchStatus === BranchStatus.NotStarted) {
-        onOpen();
-      } else if (branchStatus === BranchStatus.InProgress) {
+    if (props.currApp && Object.keys(props.currApp).length !== 0 && branchStatus === BranchStatus.InProgress) {
         navigate(`application/${props.currApp.id}`);
-      }
     } else {
-      await chooseBranchAndNavigate();
+      await chooseBranchAndNavigate(); // handles if user already has an application
     }
   };
 
@@ -132,27 +115,6 @@ const BranchTile: React.FC<Props> = props => {
         }
       }}
     >
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Start a new application?
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You have already started another application. If you start a new one,
-              all previous progress will be lost.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="blue" onClick={onConfirm} ml={3}>
-                Confirm
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
       <Flex
         bgGradient={props.image ? "" : "linear(to-l, #33c2ff, #7b69ec)"}
         borderTopRadius="4px"

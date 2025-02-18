@@ -42,7 +42,7 @@ import {
 import { ErrorScreen, LoadingScreen, apiUrl, Service, handleAxiosError } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
@@ -77,6 +77,7 @@ const ApplicationDetailPage: React.FC = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const extendedDeadlines = watch("extendedDeadlines.enabled");
   const status = watch("status");
+  const navigate = useNavigate();
 
   const addHttpsIfNeed = (url: string) => {
     if (!url.startsWith("https://") && !url.startsWith("http://")) {
@@ -130,6 +131,28 @@ const ApplicationDetailPage: React.FC = () => {
       handleAxiosError(e);
     }
   };
+
+  const handleDeleteApp = async () => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm(`Are you sure you want to delete ${data.name} (${data.email})'s application?`)) {
+      try {
+        await axios.delete(apiUrl(Service.REGISTRATION, `/applications/${applicationId}`));
+        toast({
+          title: "Success",
+          description: "Application deleted successfully!",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        setTimeout(() => {
+          navigate(`/${data.hexathon}/admin/applications`);
+          window.location.reload();
+        }, 1000);
+      } catch (e: any) {
+        handleAxiosError(e);
+      }
+    }
+  }
 
   return (
     <Box paddingX={{ base: "10px", sm: "30px" }} paddingTop="20px">
@@ -198,6 +221,13 @@ const ApplicationDetailPage: React.FC = () => {
                   </PopoverFooter>
                 </PopoverContent>
               </Popover>
+              <Button
+                colorScheme='red'
+                size="sm"
+                onClick={handleDeleteApp}
+              >
+                Delete
+              </Button>
             </Flex>
           </Box>
         </Stack>

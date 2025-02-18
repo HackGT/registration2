@@ -33,6 +33,7 @@ export enum ApplicationFormStatus {
 const CurrentApplicationTile: React.FC<Props> = props => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteModal = useDisclosure();
   const cancelRef = React.useRef(null);
   const { applicationBranch, confirmationBranch } = props.application;
 
@@ -164,7 +165,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }
     return `Submissions closed on ${dates.applicationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
   }, [dates, confirmationBranch, props.application]);
-
+  
   const updateStatus = useMemo(
     () => async (status: string) => {
       try {
@@ -185,10 +186,39 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     [props.application]
   );
 
+  const deleteApplication = useMemo(
+    () => async () => {
+      try {
+        await axios.delete(
+          apiUrl(Service.REGISTRATION, `/applications/${props.application.id}`)
+        );
+        window.location.reload();
+      } catch (error: any) {
+        handleAxiosError(error);
+      }
+    },
+    [props.application]
+  );
+
   const actionButtons = useMemo(() => {
     const openApplication = async (formStatus: ApplicationFormStatus) => {
       navigate(`application/${props.application.id}`, { state: { formStatus } });
     };
+
+    const deleteAppButton = (
+      <Button
+        onClick={() => {
+          deleteModal.onOpen();
+        }}
+        variant="link"
+        colorScheme="red"
+        fontSize='sm'
+        width="100%"
+        mt={4}
+      >
+        Delete Application
+      </Button>
+    )
 
     if (
       props.application.status === "DRAFT" &&
@@ -197,14 +227,18 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           dates.currentDate < dates.applicationExtendedDeadline))
     ) {
       return (
-        <Button
-          onClick={() => openApplication(ApplicationFormStatus.CONTINUE)}
-          variant="outline"
-          width="100%"
-          colorScheme="purple"
-        >
-          Continue Application
-        </Button>
+        <>
+          <Button
+            onClick={() => openApplication(ApplicationFormStatus.CONTINUE)}
+            variant="outline"
+            width="100%"
+            colorScheme="purple"
+          >
+            Continue Application
+          </Button>
+
+          {deleteAppButton}
+        </>
       );
     }
     if (
@@ -214,14 +248,18 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           dates.currentDate < dates.applicationExtendedDeadline))
     ) {
       return (
-        <Button
-          onClick={() => openApplication(ApplicationFormStatus.EDIT)}
-          variant="outline"
-          width="100%"
-          colorScheme="purple"
-        >
-          Edit Application
-        </Button>
+        <>
+          <Button
+            onClick={() => openApplication(ApplicationFormStatus.EDIT)}
+            variant="outline"
+            width="100%"
+            colorScheme="purple"
+          >
+            Edit Application
+          </Button>
+
+          {deleteAppButton}
+        </>
       );
     }
     if (
@@ -291,6 +329,36 @@ const CurrentApplicationTile: React.FC<Props> = props => {
             </AlertDialogContent>
           </AlertDialogOverlay>
         </AlertDialog>
+
+        <AlertDialog isOpen={deleteModal.isOpen} leastDestructiveRef={cancelRef} onClose={deleteModal.onClose}>
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Delete Application
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                Are you sure you want to delete your application for <Text as='span' fontWeight='bold'>{branchTitle}</Text>?
+                <Text as='span' fontStyle='italic'> This action cannot be undone.</Text>
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={deleteModal.onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    deleteModal.onClose();
+                    deleteApplication();
+                  }}
+                  ml={3}
+                >
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
         <Flex
           bgGradient="linear(to-l, #33c2ff, #7b69ec)"
           borderTopRadius="4px"

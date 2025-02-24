@@ -81,7 +81,7 @@ const ApplicationDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [checkInLoading, setCheckInLoading] = React.useState(false); // TODO: remove after hackgteeny
   const [isCheckedIn, setIsCheckedIn] = React.useState(false); // TODO: remove after hackgteeny
-
+  
   const addHttpsIfNeed = (url: string) => {
     if (!url.startsWith("https://") && !url.startsWith("http://")) {
       return `https://${url}`;
@@ -193,50 +193,54 @@ const ApplicationDetailPage: React.FC = () => {
           <Box>
             <Flex gap="4px" flexDirection={{ base: "column", md: "row" }}>
               {/* TEMP FOR HACKGTEENY (not using app) */}
-              <Button
-                colorScheme={
-                  isCheckedIn ? "gray" : "green"
-                }
-                size="sm"
-                onClick={async () => {
-                  try {
-                    setCheckInLoading(true);
-                    const body = {
-                      userId: data.userId,
-                      hexathon: data.hexathon,
-                      type: "check-in",
-                      identifier: "check-in",
-                    }
-  
-                    const res = await axios.post(apiUrl(Service.HEXATHONS, "/interactions"), body);
-
-                    if (res.status === 200) {
-                      toast({
-                        title: "Success",
-                        description: `${data.name} checked in successfully!`,
-                        status: "success",
-                        duration: 5000,
-                        isClosable: true,
-                      });
-                      setIsCheckedIn(true);
-                    }
-                  } catch (e: any) {
-                    handleAxiosError(e);
+              {
+                data.status === "CONFIRMED" && 
+                (    
+                <Button
+                  colorScheme={
+                    isCheckedIn ? "gray" : "green"
                   }
-                  
-                  setCheckInLoading(false);
-                }}
-                disabled={isCheckedIn}
-              >
-                {
-                  checkInLoading && (
-                    <Spinner size="xs" mr={2} />
-                  )
-                }
-                {
-                  isCheckedIn ? "✅ Checked In" : "Check In"
-                }
-              </Button>
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      setCheckInLoading(true);
+                      const body = {
+                        userId: data.userId,
+                        hexathon: data.hexathon,
+                        type: "check-in",
+                        identifier: "check-in",
+                      }
+    
+                      const res = await axios.post(apiUrl(Service.HEXATHONS, "/interactions"), body);
+
+                      if (res.status === 200) {
+                        toast({
+                          title: "Success",
+                          description: `${data.name} checked in successfully!`,
+                          status: "success",
+                          duration: 5000,
+                          isClosable: true,
+                        });
+                        setIsCheckedIn(true);
+                      }
+                    } catch (e: any) {
+                      handleAxiosError(e);
+                    }
+                    
+                    setCheckInLoading(false);
+                  }}
+                  disabled={isCheckedIn}
+                >
+                  {
+                    checkInLoading && (
+                      <Spinner size="xs" mr={2} />
+                    )
+                  }
+                  {
+                    isCheckedIn ? "✅ Checked In" : "Check In"
+                  }
+                </Button>
+              )}
 
               <Button onClick={onOpen} size="sm" colorScheme="blue" alignSelf="start">
                 Edit Applicant Settings

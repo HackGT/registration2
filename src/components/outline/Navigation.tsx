@@ -121,9 +121,10 @@ const Navigation: React.FC = () => {
           <Link to={`/${currentHexathon.id}`}>
             <HeaderItem>Dashboard</HeaderItem>
           </Link>
-          <ChakraLink href="https://match.hexlabs.org" isExternal>
+          {currentHexathon.isTeamBased && 
+          (<ChakraLink href="https://match.hexlabs.org" isExternal>
             <HeaderItem>Team Management</HeaderItem>
-          </ChakraLink>
+          </ChakraLink>)}
           {role.member && (
             <>
               <Link to={`/${currentHexathon.id}/admin`}>

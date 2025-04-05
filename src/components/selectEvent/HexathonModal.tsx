@@ -79,8 +79,8 @@ const HexathonModal: React.FC<Props> = props => {
     setFormSubmitLoading(true);
     const formData = {
       ...data,
-      startDate: DateTime.fromFormat(data.startDate, "yyyy-MM-dd").toISO(),
-      endDate: DateTime.fromFormat(data.endDate, "yyyy-MM-dd").toISO(),
+      startDate: DateTime.fromFormat(data.startDate, "yyyy-MM-dd'T'HH:mm").toISO(),
+      endDate: DateTime.fromFormat(data.endDate, "yyyy-MM-dd'T'HH:mm").toISO(),
     };
 
     // Manually upload images to CDN and add base url
@@ -150,11 +150,11 @@ const HexathonModal: React.FC<Props> = props => {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Start Date</FormLabel>
-                <Input type="date" {...register("startDate")} />
+                <Input type="datetime-local" {...register("startDate")} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>End Date</FormLabel>
-                <Input type="date" {...register("endDate")} />
+                <Input type="datetime-local" {...register("endDate")} />
               </FormControl>
               <FormControl>
                 <FormLabel>

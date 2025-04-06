@@ -4,7 +4,9 @@ import {
   Alert,
   AlertIcon,
   Box,
+  Button,
   Heading,
+  IconButton,
   Stack,
   Tbody,
   Td,
@@ -17,13 +19,16 @@ import {
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
+import { DownloadIcon } from "@chakra-ui/icons";
 
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 import TreeMapView from "./graphs/TreeMapView";
+import XLSXExporter from "../../../util/xlsxExport";
 
 const StatisticsPage: React.FC = () => {
   const { hexathonId } = useParams();
+
   const [{ data, loading, error }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/statistics"),
@@ -32,8 +37,38 @@ const StatisticsPage: React.FC = () => {
     },
   });
 
+  const exportToXLSX = React.useCallback(() => {
+
+    if (!hexathonId) { return; }
+    
+    const exporter = new XLSXExporter({name: "hexathon", id: hexathonId});
+    exporter.addKeyValueData(data.userStatistics, "Overall User Statistics");
+    exporter.addTableData(data.applicationStatistics, "Branch", "Application Statistics");
+    exporter.addTableData(data.confirmationStatistics, "Branch", "Confirmation Statistics");
+
+    // eslint-disable-next-line guard-for-in
+    for (const key in data.applicationDataStatistics) {
+      const branchData = data.applicationDataStatistics[key];
+      exporter.addKeyValueData(branchData, `${key}`);
+    }
+
+    const url = exporter.getDownloadURL();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hexathon-${hexathonId}-statistics.xlsx`;
+    a.click();
+
+    exporter.cleanupDownloadURL();
+    
+  }, [data, hexathonId]);
+
+  if (!hexathonId) {
+    return <ErrorScreen error={new Error("Hexathon ID invalid!")} />;
+  }
+
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
+  
   const {
     userStatistics,
     applicationStatistics,
@@ -50,6 +85,7 @@ const StatisticsPage: React.FC = () => {
           <Text fontSize="lg" color="grey">
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
+          <Button colorScheme="blue" onClick={exportToXLSX}><DownloadIcon />&nbsp;&nbsp;Export to XLSX</Button>
         </VStack>
         <Accordion allowToggle allowMultiple defaultIndex={[0]}>
           <AccordionSection name="Overall Users">

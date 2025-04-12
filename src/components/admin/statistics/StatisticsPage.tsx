@@ -4,7 +4,9 @@ import {
   Alert,
   AlertIcon,
   Box,
+  HStack,
   Heading,
+  Select,
   Stack,
   Tbody,
   Td,
@@ -21,18 +23,44 @@ import useAxios from "axios-hooks";
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 import TreeMapView from "./graphs/TreeMapView";
+import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 
 const StatisticsPage: React.FC = () => {
+  const [selectedBranchId, setSelectedBranchId] = React.useState<string | null>(null);
   const { hexathonId } = useParams();
-  const [{ data, loading, error }] = useAxios({
+
+  // Enable manual mode
+  const [{ data, loading, error }, refetchStatistics] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/statistics"),
+    params: {
+      hexathon: hexathonId,
+      branch: selectedBranchId ?? undefined,
+    },
+  });
+
+  // Fetch statistics whenever selectedBranchId changes
+  React.useEffect(() => {
+    if (hexathonId) {
+      refetchStatistics({
+        params: {
+          hexathon: hexathonId,
+          branch: selectedBranchId ?? undefined,
+        },
+      });
+    }
+  }, [selectedBranchId, hexathonId, refetchStatistics]);
+
+
+  const [{ data: branchData, loading: branchLoading, error: branchError }] = useAxios({
+    method: "GET",
+    url: apiUrl(Service.REGISTRATION, "/branches"),
     params: {
       hexathon: hexathonId,
     },
   });
 
-  if (loading) return <LoadingScreen />;
+  if (loading || branchLoading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
   const {
     userStatistics,
@@ -42,6 +70,9 @@ const StatisticsPage: React.FC = () => {
     eventInteractionStatistics,
   } = data;
 
+
+  const confirmationBranches = branchData.filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
+
   return (
     <Box w="100%" p={5}>
       <Stack>
@@ -50,6 +81,61 @@ const StatisticsPage: React.FC = () => {
           <Text fontSize="lg" color="grey">
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
+
+          <HStack>
+            <Box>
+              <Text fontSize="lg" color="grey">
+                Confirmation Branch
+              </Text>
+              <Select placeholder='Confirmation branch'
+                value={selectedBranchId ?? ""}
+                onChange={(e) => {
+                  setSelectedBranchId(e.target.value);
+                }}
+              >
+                {
+                  confirmationBranches.map((branch: any) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))
+                }
+              </Select>
+            </Box>
+
+            <Box>
+              <Text fontSize="lg" color="grey">
+                Application Branch
+              </Text>
+              <Select placeholder='Application branch'
+              >
+                {
+                  confirmationBranches.map((branch: any) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))
+                }
+              </Select>
+            </Box>
+
+            <Box>
+              <Text fontSize="lg" color="grey">
+                Status
+              </Text>
+              <Select placeholder='Application Status'
+              // default this to confirmed
+              >
+                {
+                  confirmationBranches.map((branch: any) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))
+                }
+              </Select>
+            </Box>
+          </HStack>
         </VStack>
         <Accordion allowToggle allowMultiple defaultIndex={[0]}>
           <AccordionSection name="Overall Users">
@@ -93,6 +179,9 @@ const StatisticsPage: React.FC = () => {
               <Tr>
                 <Td maxW="500px" w="500px">
                   Checked-in Users
+                  <Text fontSize="xs" color="grey">
+                  (not filtered by branch)
+                  </Text>
                 </Td>
                 <Td>{userStatistics.checkedinUsers}</Td>
               </Tr>
@@ -104,7 +193,7 @@ const StatisticsPage: React.FC = () => {
               </Tr>
             </Tbody>
           </AccordionSection>
-          <AccordionSection name="Application Type">
+          <AccordionSection name="Application Type" small="not filtered by branch">
             <Thead>
               <Th>Branch</Th>
               <Th>Draft</Th>
@@ -130,7 +219,7 @@ const StatisticsPage: React.FC = () => {
               ))}
             </Tbody>
           </AccordionSection>
-          <AccordionSection name="Confirmation Type">
+          <AccordionSection name="Confirmation Type" small="not filtered by branch">
             <Thead>
               <Th>Branch</Th>
               <Th>Confirmed</Th>
@@ -148,7 +237,7 @@ const StatisticsPage: React.FC = () => {
               ))}
             </Tbody>
           </AccordionSection>
-          <AccordionSection name="Event Detailed Stats">
+          <AccordionSection name="Event Interaction Stats" small="not filtered by branch">
             <Alert status="info">
               <AlertIcon />
               Numbers displayed here are generally underestimates given issues with badge scanning,
@@ -156,11 +245,21 @@ const StatisticsPage: React.FC = () => {
             </Alert>
             <TreeMapView data={eventInteractionStatistics} />
           </AccordionSection>
-          <GraphAccordionSection
+
+          {/* <GraphAccordionSection
             name="Users Detailed Stats & Graphs"
             data={applicationDataStatistics}
           />
+          */}
+          <AccordionSection name="Users Detailed Stats & Graphs">
+            <GraphAccordionSection
+                name="Users Detailed Stats & Graphs"
+                data={applicationDataStatistics}
+            />
+        </AccordionSection>
+
         </Accordion>
+
       </Stack>
     </Box>
   );

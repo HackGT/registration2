@@ -26,7 +26,8 @@ import TreeMapView from "./graphs/TreeMapView";
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 
 const StatisticsPage: React.FC = () => {
-  const [selectedBranchId, setSelectedBranchId] = React.useState<string | null>(null);
+  const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null);
+  const [selectedStatus, setSelectedStatus] = React.useState<string | null>("CONFIRMED");
   const { hexathonId } = useParams();
 
   // Enable manual mode
@@ -34,22 +35,32 @@ const StatisticsPage: React.FC = () => {
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/statistics"),
     params: {
-      hexathon: hexathonId,
-      branch: selectedBranchId ?? undefined,
+      hexathon: hexathonId
     },
   });
 
   // Fetch statistics whenever selectedBranchId changes
   React.useEffect(() => {
     if (hexathonId) {
-      refetchStatistics({
-        params: {
-          hexathon: hexathonId,
-          branch: selectedBranchId ?? undefined,
-        },
-      });
+      const params: any = { hexathon: hexathonId };
+  
+      if (selectedBranch) {
+        const { type, id } = selectedBranch;
+        if (type === BranchType.CONFIRMATION) {
+          params.confirmationBranch = id;
+        } else if (type === BranchType.APPLICATION) {
+          params.applicationBranch = id;
+        }
+      }
+  
+      if (selectedStatus) {
+        params.status = selectedStatus;
+      }
+
+      refetchStatistics({ params });
     }
-  }, [selectedBranchId, hexathonId, refetchStatistics]);
+  }, [selectedBranch, selectedStatus, hexathonId, refetchStatistics]);
+  
 
 
   const [{ data: branchData, loading: branchLoading, error: branchError }] = useAxios({
@@ -70,9 +81,6 @@ const StatisticsPage: React.FC = () => {
     eventInteractionStatistics,
   } = data;
 
-
-  const confirmationBranches = branchData.filter((branch: Branch) => branch.type === BranchType.CONFIRMATION)
-
   return (
     <Box w="100%" p={5}>
       <Stack>
@@ -85,32 +93,18 @@ const StatisticsPage: React.FC = () => {
           <HStack>
             <Box>
               <Text fontSize="lg" color="grey">
-                Confirmation Branch
+                Branch
               </Text>
-              <Select placeholder='Confirmation branch'
-                value={selectedBranchId ?? ""}
+              <Select placeholder='All'
+                value={selectedBranch?.id ?? ""}
                 onChange={(e) => {
-                  setSelectedBranchId(e.target.value);
+                  const selectedBranchId = e.target.value;
+                  const newSelected = branchData.find((branch: any) => branch.id === selectedBranchId);
+                  setSelectedBranch(newSelected);
                 }}
               >
                 {
-                  confirmationBranches.map((branch: any) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))
-                }
-              </Select>
-            </Box>
-
-            <Box>
-              <Text fontSize="lg" color="grey">
-                Application Branch
-              </Text>
-              <Select placeholder='Application branch'
-              >
-                {
-                  confirmationBranches.map((branch: any) => (
+                  branchData.map((branch: any) => (
                     <option key={branch.id} value={branch.id}>
                       {branch.name}
                     </option>
@@ -123,16 +117,20 @@ const StatisticsPage: React.FC = () => {
               <Text fontSize="lg" color="grey">
                 Status
               </Text>
-              <Select placeholder='Application Status'
-              // default this to confirmed
+              <Select placeholder='All'
+                value={selectedStatus ?? ""}
+                onChange={(e) => {
+                  const newSelectedStatus = e.target.value;
+                  setSelectedStatus(newSelectedStatus);
+                }}
               >
-                {
-                  confirmationBranches.map((branch: any) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))
-                }
+                <option value="DRAFT">Draft</option>
+                <option value="APPLIED">Applied</option>
+                <option value="ACCEPTED">Accepted</option>
+                <option value="WAITLISTED">Waitlisted</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="DENIED">Denied</option>
+                <option value="NOT_ATTENDING">Not Attending</option>
               </Select>
             </Box>
           </HStack>
@@ -193,6 +191,12 @@ const StatisticsPage: React.FC = () => {
               </Tr>
             </Tbody>
           </AccordionSection>
+          <AccordionSection name="Users Detailed Stats & Graphs">
+            <GraphAccordionSection
+                name="Users Detailed Stats & Graphs"
+                data={applicationDataStatistics}
+            />
+          </AccordionSection>
           <AccordionSection name="Application Type" small="not filtered by branch">
             <Thead>
               <Th>Branch</Th>
@@ -251,13 +255,6 @@ const StatisticsPage: React.FC = () => {
             data={applicationDataStatistics}
           />
           */}
-          <AccordionSection name="Users Detailed Stats & Graphs">
-            <GraphAccordionSection
-                name="Users Detailed Stats & Graphs"
-                data={applicationDataStatistics}
-            />
-        </AccordionSection>
-
         </Accordion>
 
       </Stack>

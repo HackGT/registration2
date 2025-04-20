@@ -23,11 +23,13 @@ import TreeMapView from "./graphs/TreeMapView";
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import { RenderStatistics } from "./RenderStatistics";
 import XLSXExporter from "../../../util/xlsxExport";
+import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 
 const StatisticsPage: React.FC = () => {
   const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null);
   const [selectedStatus, setSelectedStatus] = React.useState<string | null>("CONFIRMED");
   const { hexathonId } = useParams();
+  const { currentHexathon } = useCurrentHexathon();
 
   // Enable manual mode
   const [{ data, loading, error }, refetchStatistics] = useAxios({
@@ -42,7 +44,10 @@ const StatisticsPage: React.FC = () => {
 
     if (!hexathonId) { return; }
     
-    const exporter = new XLSXExporter({name: "hexathon", id: hexathonId});
+    // whitespaces bad
+    const noWhitespaceName = (currentHexathon.name as string).replaceAll(" ", "_");
+
+    const exporter = new XLSXExporter({name: noWhitespaceName, id: hexathonId});
     exporter.addKeyValueData(data.userStatistics, "Overall User Statistics");
     exporter.addTableData(data.applicationStatistics, "Branch", "Application Statistics");
     exporter.addTableData(data.confirmationStatistics, "Branch", "Confirmation Statistics");
@@ -55,13 +60,18 @@ const StatisticsPage: React.FC = () => {
 
     const url = exporter.getDownloadURL();
     const a = document.createElement("a");
+
+    let downloadName = noWhitespaceName;
+    if (selectedBranch) downloadName = downloadName.concat(`_filterBranch-${selectedBranch.name}`);
+    if (selectedStatus) downloadName = downloadName.concat(`_filterStatus-${selectedStatus}`);
+
+    a.download = downloadName.concat(".xlsx");
     a.href = url;
-    a.download = `hexathon-${hexathonId}-statistics.xlsx`;
     a.click();
 
     exporter.cleanupDownloadURL();
     
-  }, [data, hexathonId]);
+  }, [currentHexathon.name, data, hexathonId, selectedBranch, selectedStatus]);
 
   // Fetch statistics whenever selectedBranchId changes
   React.useEffect(() => {
@@ -106,7 +116,10 @@ const StatisticsPage: React.FC = () => {
           <Text fontSize="lg" color="grey">
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
-          <Button colorScheme="blue" onClick={exportToXLSX}><DownloadIcon />&nbsp;&nbsp;Export to XLSX</Button>
+          <Box>
+            <Button colorScheme="blue" onClick={exportToXLSX}><DownloadIcon />&nbsp;&nbsp;Export to XLSX</Button>
+            <Text fontSize="sm" textAlign="center" opacity={0.5}>(Filters will be reflected)</Text>
+          </Box>
 
           {branchLoading? (
             <Spinner />

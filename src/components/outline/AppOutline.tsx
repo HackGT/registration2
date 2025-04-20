@@ -2,6 +2,7 @@ import { LoadingScreen, ErrorScreen, apiUrl, Service, Footer } from "@hex-labs/c
 import useAxios from "axios-hooks";
 import React from "react";
 import { Navigate, Outlet, useLocation, useParams } from "react-router-dom";
+import { Box } from "@chakra-ui/react";
 
 import Navigation from "./Navigation";
 import { CurrentHexathonProvider } from "../../contexts/CurrentHexathonContext";
@@ -22,7 +23,9 @@ const AppOutline: React.FC = () => {
       <Navigation />
       {!currentHexathon && location.pathname !== "/" ? <Navigate to="/" /> : <Outlet />}
       <HelpScoutBeacon />
-      <Footer />
+      <Box backgroundColor="white">
+        <Footer />
+      </Box>
     </CurrentHexathonProvider>
   );
 };

@@ -1,11 +1,19 @@
-.registration-topbanner {
-	display: flex;
-	flex-direction: column;
-	row-gap: 2rem;
-
+.registration-bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	z-index: -10;
 	background-image: url("../assets/hexlabs_bg.jpg");
 	background-position: center;
 	background-size: cover;
+}
+
+.registration-list-container {
+	display: flex;
+	flex-direction: column;
+	row-gap: 2rem;
 	
 	padding: min(20vh, 8rem) 10%;
 	height: 100%;
@@ -13,27 +21,24 @@
 	color: white;
 }
 
-.registration-topbanner h1 {
+.registration-list-container .h1 {
 	font-family: DM Sans;
-	text-align: left;
-	font-size: 72px;
 	font-weight: 700;
 	margin: 0;
 	text-shadow: 2px 2px 0 rgba(29, 22, 46, 0.5);
 }
 
-.registration-topbanner p {
+.registration-list-container .p {
 	font-weight: 500;
 	font-family: DM Sans;
-	font-size: 1rem;
 }
 
 @media screen and (max-width: 768px) {
-	.registration-topbanner {
+	.registration-list-container {
 		padding-left: 5%;
 		padding-right: 5%;
 	}
-	.registration-topbanner h1 {
+	.registration-list-container h1 {
 		font-size: 3rem !important;
 	}
 }

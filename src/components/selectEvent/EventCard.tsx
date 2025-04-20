@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, Heading, HStack, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
+import { CalendarIcon } from "@chakra-ui/icons";
 
 interface Props {
   name: string;
@@ -10,6 +11,9 @@ interface Props {
   description?: string;
   image?: string;
 }
+
+export const CARD_HEIGHT = "12rem";
+export const CARD_HEIGHT_SM = "min(25vw, 6rem)";
 
 const EventCard: React.FC<Props> = props => {
   const navigate = useNavigate();
@@ -35,38 +39,55 @@ const EventCard: React.FC<Props> = props => {
   return (
     <Box
       position="relative"
-      marginBottom={3}
       bg="white"
-      w="90%"
-      p={4}
+      w="100%"
       color="black"
       border="1px"
       borderColor="gray.200"
+      borderRadius={6}
+      overflow="hidden"
       shadow="sm"
-      h="150px"
+      height={{base: CARD_HEIGHT_SM, lg: CARD_HEIGHT}}
       cursor="pointer"
-      transition=".5s"
+      transition=".1s"
       _hover={{
-        shadow: "md",
+        shadow: "lg",
       }}
       onClick={handleClick}
     >
-      <HStack>
-        <Heading>{props.name}</Heading>
+      <Flex w="full">
+        <Box flexGrow={1} padding={{base: 3, lg: 5}}> 
+
+          {/* I HATE RESPONSIVE DESIGN WHY DOES EVERYONE HAVE DIFFERENT SCREEN SIZES
+          these font sizes are scuffed but they work (tested on 500% browser zoom + iphone 12)
+          theres nothing else we can do about long titles cuz of the image on the right...
+          this WILL break if name.length is big so PLEASE DONT LET THAT HAPPEN */}
+          <Heading fontSize={{base: `min(1.4rem, ${6-props.name.length/20}vw)`, lg: '4xl'}} fontFamily="DM Sans, system-ui">
+            {props.name}
+          </Heading>
+
+          <Box fontSize={{base: `min(0.7rem, ${3-props.name.length/40}vw)`, lg: 'md'}} opacity={0.6}> 
+            <CalendarIcon verticalAlign="-0.1em" />&nbsp;&nbsp;
+            <Text display="inline" fontFamily="DM Sans, system-ui">
+              {new Date(data.startDate).toLocaleDateString("en-US", {
+                month: "long", day: "numeric", year: "numeric"
+              })}
+            </Text>
+          </Box>
+        </Box>
         <Image
-          position="absolute"
-          right="0px"
-          top="0px"
-          height="148px"
+          height={{base: CARD_HEIGHT_SM, lg: CARD_HEIGHT}}
+          width={{base: CARD_HEIGHT_SM, lg: CARD_HEIGHT}}
+          objectFit="cover"
           src={data.coverImage ?? "/events/default-event-logo.jpeg"}
           onError={(e: any) => {
             // add fallback if no logo exists
             e.target.onError = null;
             e.target.src = "/events/default-event-logo.jpeg";
           }}
-          alt="hexathon event logo"
+          alt={`${props.name} event logo`}
         />
-      </HStack>
+      </Flex>
     </Box>
   );
 };

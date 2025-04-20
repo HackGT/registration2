@@ -1,13 +1,16 @@
-import { Button, Flex, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, Heading, Text, useDisclosure } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EditIcon } from "@chakra-ui/icons";
+import { EditIcon, ExternalLinkIcon, LinkIcon } from "@chakra-ui/icons";
+import { FiArrowRight } from "react-icons/fi";
 
 import EventCard from "./EventCard";
 import HexathonModal from "./HexathonModal";
+import EmptyEventCard from "./EmptyEventCard";
+import "../../styles/selectEvent.css";
 
 const SelectEvent: React.FC = () => {
   const { user } = useAuth();
@@ -30,7 +33,6 @@ const SelectEvent: React.FC = () => {
 
   const navigate = useNavigate();
   const [{ data, loading, error }, refetch] = useAxios(apiUrl(Service.HEXATHONS, "/hexathons"));
-
   const {
     isOpen: isEditHexathonOpen,
     onOpen: onEditHexathonOpen,
@@ -71,22 +73,58 @@ const SelectEvent: React.FC = () => {
 
   return (
     <>
-      <Flex paddingY={{ base: "32px", md: "32px" }} direction="column" justify="center">
-        {data.map((hexathon: any) => (
-          <Flex key={hexathon.id} justifyContent="space-around">
-            <EventCard name={hexathon.name} id={hexathon.id} />
-            {role.admin && (
-              <Button onClick={() => handleModalOpen(hexathon)} h="150px">
-                <EditIcon />
-              </Button>
-            )}
+      <div className="registration-bg" />
+
+      <Flex direction="column" justify="center">
+        <div className="registration-list-container">
+          <Box textAlign={{base: "center", lg: "left"}} >
+            <Heading 
+            fontSize={{base: '3rem', lg: '5rem'}}
+            className="h1">
+              Hexlabs Registration
+            </Heading>
+            <Text 
+            mt={2}
+            fontSize={{base: '1rem', lg: '1.25rem'}} 
+            className="p">
+              All events currently accepting applications are listed below. We hope to see you there!
+            </Text>
+          </Box>
+
+          <Flex direction={{base: "column", md: "row"}} alignItems="center" justifyContent={{base: "center", lg: "left"}} gap={4}>
+            <a target="_blank" rel="noreferrer" href="https://hexlabs.org/events">
+              <Button variant="outline" _hover={{backgroundColor: 'white', color: "black"}}>Events Page&nbsp;&nbsp;<ExternalLinkIcon /></Button>
+            </a>
+            <a target="_blank" rel="noreferrer" href="https://archive.hack.gt/">
+              <Button variant="outline" _hover={{backgroundColor: 'white', color: "black"}}>Past Events&nbsp;&nbsp;<ExternalLinkIcon /></Button>
+            </a>
           </Flex>
-        ))}
-        {role.admin && (
-          <Button onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
-            Create Hexathon
-          </Button>
-        )}
+
+          <hr />
+
+          {data.length > 0? 
+            <Grid templateColumns={{base: "1fr", xl: "1fr 1fr"}} gap={4}>
+              {data.map((hexathon: any) => (
+                <Flex key={hexathon.id}>
+                  <EventCard name={hexathon.name} id={hexathon.id} />
+                  {role.admin && (
+                    <Button onClick={() => handleModalOpen(hexathon)} h="150px">
+                      <EditIcon />
+                    </Button>
+                  )}
+                </Flex>
+              ))}
+              <EmptyEventCard />
+            </Grid>
+            :
+            <EmptyEventCard noEvents />
+          }
+          {role.admin && (
+            <Button onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
+              Create Hexathon
+            </Button>
+          )}
+        </div>
       </Flex>
 
       <HexathonModal

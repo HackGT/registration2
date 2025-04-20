@@ -61,16 +61,7 @@ const GraphAccordionSection: React.FC<IProps> = props => {
     Object.keys(props.data.trackPreferenceData).length;
 
   return isStatisticsAvailable ? (
-    <AccordionItem>
-      <h2>
-        <AccordionButton paddingY="15px">
-          <Box flex="1" textAlign="left">
-            <Heading size="md">{props.name}</Heading>
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4}>
+    <Box>
         {isMobile ? <VStack>
           {Object.keys(props.data.schoolData).length ? (
             <TableView heading="Universities" data={sortObjectByValue(props.data.schoolData)} />
@@ -161,24 +152,9 @@ const GraphAccordionSection: React.FC<IProps> = props => {
                 <PieGraphView heading="Gender" data={sortObjectByKey(props.data.genderData)} />
               </GridItem>) : null}
         </Grid>}
-      </AccordionPanel>
-    </AccordionItem>
+    </Box>
   ) : (
-    <AccordionItem>
-      <h2>
-        <AccordionButton paddingY="15px">
-          <Box flex="1" textAlign="left">
-            <Heading size="md">{props.name}</Heading>
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4}>
-        <VStack>
-          <Heading size="md">No statistics available</Heading>
-        </VStack>
-      </AccordionPanel>
-    </AccordionItem>
+    <Heading size="md">No statistics available</Heading>
   );
 };
 

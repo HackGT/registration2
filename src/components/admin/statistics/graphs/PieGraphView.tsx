@@ -17,14 +17,16 @@ const PieGraphView: React.FC<IProps> = props => {
       {
         data: Object.values(props.data),
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#db3d44", "#4257b2", "#FFCE56"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#db3d44", "#4257b2", "#36A2EB"],
+        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#db3d44", "#4257b2", "#FFCE56"],
       },
     ],
   };
 
   return (
-    <div className="col-12 col-sm-6" style={{overflow: "auto"}}>
-      <Box style={{ width: "300px", maxWidth: "300px", display: "inline-block" , marginTop: "20px"}}>
+    <div className="col-12 col-sm-6" style={{ overflow: "auto" }}>
+      <Box
+        style={{ width: "300px", maxWidth: "300px", display: "inline-block", marginTop: "20px" }}
+      >
         <Heading style={{ textAlign: "center", fontSize: "25px" }}>{props.heading}</Heading>
         <Pie style={{ width: "300px" }} data={data} />
       </Box>

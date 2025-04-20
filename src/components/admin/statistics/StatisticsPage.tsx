@@ -1,22 +1,13 @@
 import React from "react";
 import {
-  Accordion,
-  Alert,
-  AlertIcon,
   Box,
   HStack,
   Button,
   Heading,
   Select,
   Spinner,
-  IconButton,
   Stack,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   VStack,
 } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
@@ -24,9 +15,11 @@ import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
 import { DownloadIcon } from "@chakra-ui/icons";
 
+/*
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 import TreeMapView from "./graphs/TreeMapView";
+*/
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import { RenderStatistics } from "./RenderStatistics";
 import XLSXExporter from "../../../util/xlsxExport";
@@ -70,12 +63,6 @@ const StatisticsPage: React.FC = () => {
     
   }, [data, hexathonId]);
 
-  if (!hexathonId) {
-    return <ErrorScreen error={new Error("Hexathon ID invalid!")} />;
-  }
-
-  if (loading) return <LoadingScreen />;
-
   // Fetch statistics whenever selectedBranchId changes
   React.useEffect(() => {
     if (hexathonId) {
@@ -106,15 +93,10 @@ const StatisticsPage: React.FC = () => {
     },
   });
 
+  if (!hexathonId) return <ErrorScreen error={new Error("Hexathon ID invalid!")} />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
-  
-  const {
-    userStatistics,
-    applicationStatistics,
-    confirmationStatistics,
-    applicationDataStatistics,
-    eventInteractionStatistics,
-  } = data;
+  if (branchError) return <ErrorScreen error={branchError} />
 
   return (
     <Box w="100%" p={5}>
@@ -126,7 +108,7 @@ const StatisticsPage: React.FC = () => {
           </Text>
           <Button colorScheme="blue" onClick={exportToXLSX}><DownloadIcon />&nbsp;&nbsp;Export to XLSX</Button>
 
-          {branchLoading ? (
+          {branchLoading? (
             <Spinner />
           ) : (
             <HStack>

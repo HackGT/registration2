@@ -89,10 +89,10 @@ const CurrentApplicationTile: React.FC<Props> = props => {
       </>
     );
     switch (props.application.decisionData?.travelReimbursement) {
-      case "gas":
+      case "gas/flight":
         return (
           <>
-            You've been awarded gas reimbursement for your travel.
+            You've been awarded gas/flight reimbursement for your travel.
             {travelReimbursementInfoLink}
           </>
         );
@@ -165,7 +165,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }
     return `Submissions closed on ${dates.applicationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
   }, [dates, confirmationBranch, props.application]);
-  
+
   const updateStatus = useMemo(
     () => async (status: string) => {
       try {
@@ -189,9 +189,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
   const deleteApplication = useMemo(
     () => async () => {
       try {
-        await axios.delete(
-          apiUrl(Service.REGISTRATION, `/applications/${props.application.id}`)
-        );
+        await axios.delete(apiUrl(Service.REGISTRATION, `/applications/${props.application.id}`));
         window.location.reload();
       } catch (error: any) {
         handleAxiosError(error);
@@ -212,13 +210,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
         }}
         variant="link"
         colorScheme="red"
-        fontSize='sm'
+        fontSize="sm"
         width="100%"
         mt={4}
       >
         Delete Application
       </Button>
-    )
+    );
 
     if (
       props.application.status === "DRAFT" &&
@@ -330,15 +328,26 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           </AlertDialogOverlay>
         </AlertDialog>
 
-        <AlertDialog isOpen={deleteModal.isOpen} leastDestructiveRef={cancelRef} onClose={deleteModal.onClose}>
+        <AlertDialog
+          isOpen={deleteModal.isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={deleteModal.onClose}
+        >
           <AlertDialogOverlay>
             <AlertDialogContent>
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
                 Delete Application
               </AlertDialogHeader>
               <AlertDialogBody>
-                Are you sure you want to delete your application for <Text as='span' fontWeight='bold'>{branchTitle}</Text>?
-                <Text as='span' fontStyle='italic'> This action cannot be undone.</Text>
+                Are you sure you want to delete your application for{" "}
+                <Text as="span" fontWeight="bold">
+                  {branchTitle}
+                </Text>
+                ?
+                <Text as="span" fontStyle="italic">
+                  {" "}
+                  This action cannot be undone.
+                </Text>
               </AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={deleteModal.onClose}>

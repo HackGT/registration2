@@ -68,6 +68,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     return applicationBranch.name;
   }, [applicationBranch, confirmationBranch]);
 
+  const branchDescription = useMemo(() => {
+    if (confirmationBranch?.description) {
+      return confirmationBranch.description;
+    }
+    return applicationBranch.description;
+  }, [applicationBranch, confirmationBranch]);
+
   const travelReimbursementDescription = useMemo(() => {
     if (!["ACCEPTED", "CONFIRMED"].includes(props.application.status)) {
       return "";
@@ -379,6 +386,9 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
             <Text>{branchTitle}</Text>
           </Heading>
+          <Text fontSize="sm" color="#858585">
+            {branchDescription}
+          </Text>
           <Text fontSize="sm" mb="8px">
             {travelReimbursementDescription}
           </Text>

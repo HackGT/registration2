@@ -24,7 +24,7 @@ const ApplicationSubmittedPage = () => (
           width={{ md: "600px", base: "90%" }}
           textAlign={{ lg: "left", md: "center", base: "center" }}
         >
-          Thank you for applying! You’ll hear from us soon! :))
+          Thank you for applying, you&apos;ll hear from us soon!
         </Heading>
       </Center>
     </Box>

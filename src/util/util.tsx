@@ -21,7 +21,9 @@ export const parseDateTimeForm = (date?: string | null) => {
     return "";
   }
 
-  return DateTime.fromISO(date, { zone: "America/New_York" }).toISO({ includeOffset: false}).slice(0, -7);
+  return DateTime.fromISO(date, { zone: "America/New_York" })
+    .toISO({ includeOffset: false })
+    .slice(0, -7);
 };
 
 /**
@@ -32,7 +34,7 @@ export const parseDateString = (date?: string | null) => {
     return "";
   }
 
-  return DateTime.fromISO(date, { zone: "America/New_York" }).toFormat("yyyy-MM-dd");
+  return DateTime.fromISO(date, { zone: "America/New_York" }).toFormat("yyyy-MM-dd'T'HH:mm");
 };
 
 /**

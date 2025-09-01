@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Heading,
@@ -15,6 +15,7 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Link,
+  Spinner,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -36,6 +37,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
   const deleteModal = useDisclosure();
   const cancelRef = React.useRef(null);
   const { applicationBranch, confirmationBranch } = props.application;
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Convert dates into DateTime objects
   const dates = useMemo(
@@ -68,6 +70,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     return applicationBranch.name;
   }, [applicationBranch, confirmationBranch]);
 
+  const branchDescription = useMemo(() => {
+    if (confirmationBranch?.description) {
+      return confirmationBranch.description;
+    }
+    return applicationBranch.description;
+  }, [applicationBranch, confirmationBranch]);
+
   const travelReimbursementDescription = useMemo(() => {
     if (!["ACCEPTED", "CONFIRMED"].includes(props.application.status)) {
       return "";
@@ -89,10 +98,10 @@ const CurrentApplicationTile: React.FC<Props> = props => {
       </>
     );
     switch (props.application.decisionData?.travelReimbursement) {
-      case "gas":
+      case "gas/flight":
         return (
           <>
-            You've been awarded gas reimbursement for your travel.
+            You've been awarded gas/flight reimbursement for your travel.
             {travelReimbursementInfoLink}
           </>
         );
@@ -165,7 +174,7 @@ const CurrentApplicationTile: React.FC<Props> = props => {
     }
     return `Submissions closed on ${dates.applicationClose.toLocaleString(DateTime.DATETIME_FULL)}`;
   }, [dates, confirmationBranch, props.application]);
-  
+
   const updateStatus = useMemo(
     () => async (status: string) => {
       try {
@@ -189,12 +198,13 @@ const CurrentApplicationTile: React.FC<Props> = props => {
   const deleteApplication = useMemo(
     () => async () => {
       try {
-        await axios.delete(
-          apiUrl(Service.REGISTRATION, `/applications/${props.application.id}`)
-        );
+        setDeleteLoading(true);
+        await axios.delete(apiUrl(Service.REGISTRATION, `/applications/${props.application.id}`));
         window.location.reload();
       } catch (error: any) {
         handleAxiosError(error);
+      } finally {
+        setDeleteLoading(false);
       }
     },
     [props.application]
@@ -212,51 +222,49 @@ const CurrentApplicationTile: React.FC<Props> = props => {
         }}
         variant="link"
         colorScheme="red"
-        fontSize='sm'
+        fontSize="sm"
         width="100%"
         mt={4}
       >
         Delete Application
       </Button>
-    )
+    );
 
-    if (
-      props.application.status === "DRAFT" &&
-      (dates.currentDate < dates.applicationClose ||
-        (dates.applicationExtendedDeadline &&
-          dates.currentDate < dates.applicationExtendedDeadline))
-    ) {
+    if (props.application.status === "DRAFT") {
       return (
         <>
-          <Button
-            onClick={() => openApplication(ApplicationFormStatus.CONTINUE)}
-            variant="outline"
-            width="100%"
-            colorScheme="purple"
-          >
-            Continue Application
-          </Button>
+          {(dates.currentDate < dates.applicationClose ||
+            (dates.applicationExtendedDeadline &&
+              dates.currentDate < dates.applicationExtendedDeadline)) && (
+            <Button
+              onClick={() => openApplication(ApplicationFormStatus.CONTINUE)}
+              variant="outline"
+              width="100%"
+              colorScheme="purple"
+            >
+              Continue Application
+            </Button>
+          )}
 
           {deleteAppButton}
         </>
       );
     }
-    if (
-      props.application.status === "APPLIED" &&
-      (dates.currentDate < dates.applicationClose ||
-        (dates.applicationExtendedDeadline &&
-          dates.currentDate < dates.applicationExtendedDeadline))
-    ) {
+    if (props.application.status === "APPLIED") {
       return (
         <>
-          <Button
-            onClick={() => openApplication(ApplicationFormStatus.EDIT)}
-            variant="outline"
-            width="100%"
-            colorScheme="purple"
-          >
-            Edit Application
-          </Button>
+          {(dates.currentDate < dates.applicationClose ||
+            (dates.applicationExtendedDeadline &&
+              dates.currentDate < dates.applicationExtendedDeadline)) && (
+            <Button
+              onClick={() => openApplication(ApplicationFormStatus.EDIT)}
+              variant="outline"
+              width="100%"
+              colorScheme="purple"
+            >
+              Edit Application
+            </Button>
+          )}
 
           {deleteAppButton}
         </>
@@ -330,15 +338,26 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           </AlertDialogOverlay>
         </AlertDialog>
 
-        <AlertDialog isOpen={deleteModal.isOpen} leastDestructiveRef={cancelRef} onClose={deleteModal.onClose}>
+        <AlertDialog
+          isOpen={deleteModal.isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={deleteModal.onClose}
+        >
           <AlertDialogOverlay>
             <AlertDialogContent>
               <AlertDialogHeader fontSize="lg" fontWeight="bold">
                 Delete Application
               </AlertDialogHeader>
               <AlertDialogBody>
-                Are you sure you want to delete your application for <Text as='span' fontWeight='bold'>{branchTitle}</Text>?
-                <Text as='span' fontStyle='italic'> This action cannot be undone.</Text>
+                Are you sure you want to delete your application for{" "}
+                <Text as="span" fontWeight="bold">
+                  {branchTitle}
+                </Text>
+                ?
+                <Text as="span" fontStyle="italic">
+                  {" "}
+                  This action cannot be undone.
+                </Text>
               </AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={deleteModal.onClose}>
@@ -346,13 +365,14 @@ const CurrentApplicationTile: React.FC<Props> = props => {
                 </Button>
                 <Button
                   colorScheme="red"
-                  onClick={() => {
+                  onClick={async () => {
+                    await deleteApplication();
                     deleteModal.onClose();
-                    deleteApplication();
                   }}
                   ml={3}
+                  disabled={deleteLoading}
                 >
-                  Delete
+                  {deleteLoading ? <Spinner size="sm" mr="2" /> : <Text>Delete</Text>}
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -370,6 +390,9 @@ const CurrentApplicationTile: React.FC<Props> = props => {
           <Heading fontSize="18px" fontWeight="semibold" marginBottom="10px" color="#212121">
             <Text>{branchTitle}</Text>
           </Heading>
+          <Text fontSize="sm" color="#858585">
+            {branchDescription}
+          </Text>
           <Text fontSize="sm" mb="8px">
             {travelReimbursementDescription}
           </Text>

@@ -43,28 +43,9 @@ const GradingQuestionPage: React.FC = () => {
   });
   const [score, setScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(true);
+  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
   const toast = useToast();
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
-
-  // Create timer based on length of answer to disable submit button
-  useEffect(() => {
-    if (questionData.answer) {
-      const readingSpeed = 700; // Words per minute constant
-      const numWords = questionData.answer.split(" ").length;
-      const timer = setTimeout(
-        () => setSubmitButtonDisabled(false),
-        (numWords / readingSpeed) * 60 * 1000
-      );
-
-      // Clear timeout on unmount
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-
-    return () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
-  }, [questionData]);
 
   const { setValue, getRootProps, getRadioProps } = useRadioGroup({
     onChange: setScore,
@@ -115,6 +96,7 @@ const GradingQuestionPage: React.FC = () => {
       setScore("");
       retrieveQuestion();
       window.scrollTo(0, 0);
+      setSubmitButtonDisabled(false);
     },
     [gradingGroup, hexathonId, setValue, retrieveQuestion]
   );
@@ -264,6 +246,7 @@ const GradingQuestionPage: React.FC = () => {
           Skip Question
         </Button>
         <Button
+          isLoading={submitButtonDisabled}
           disabled={!score || submitButtonDisabled}
           onClick={() =>
             submitReview({

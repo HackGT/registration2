@@ -12,6 +12,7 @@ import {
   Spinner,
   Center,
 } from "@chakra-ui/react";
+
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 import TreeMapView from "./graphs/TreeMapView";
@@ -45,7 +46,7 @@ export const RenderStatistics = ({
   } = data;
 
   return (
-    <Accordion allowToggle allowMultiple defaultIndex={[0]}>
+    <Accordion allowMultiple defaultIndex={[0]}>
       <AccordionSection name="Overall Users" small="filterable by branch">
         <Tbody>
           <Tr>
@@ -112,18 +113,18 @@ export const RenderStatistics = ({
       </AccordionSection>
       <AccordionSection name="Application Type" small="not filterable">
         <Thead>
-          <Th>Branch</Th>
-          <Th>Draft</Th>
-          <Th>Applied</Th>
-          <Th>Total</Th>
-          <Th>Accepted</Th>
-          <Th>Waitlisted</Th>
-          <Th>Denied</Th>
-          <Th>Decision Pending</Th>
+          <Th key="Branch">Branch</Th>
+          <Th key="Draft">Draft</Th>
+          <Th key="Applied">Applied</Th>
+          <Th key="Total">Total</Th>
+          <Th key="Accepted">Accepted</Th>
+          <Th key="Waitlisted">Waitlisted</Th>
+          <Th key="Denied">Denied</Th>
+          <Th key="Decision_Pending">Decision Pending</Th>
         </Thead>
         <Tbody>
           {Object.entries(applicationStatistics).map(([key, branchData]: [string, any]) => (
-            <Tr>
+            <Tr key={`appStats-${key}`}>
               <Td>{key}</Td>
               <Td>{branchData.draft}</Td>
               <Td>{branchData.applied}</Td>
@@ -145,7 +146,7 @@ export const RenderStatistics = ({
         </Thead>
         <Tbody>
           {Object.entries(confirmationStatistics).map(([key, branchData]: [string, any]) => (
-            <Tr>
+            <Tr key={`confirmationStats-${key}`}>
               <Td>{key}</Td>
               <Td>{branchData.confirmed}</Td>
               <Td>{branchData.notAttending}</Td>

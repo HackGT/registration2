@@ -30,6 +30,10 @@ export const applicationStatusOptions = [
     label: "Not Attending",
     value: "NOT_ATTENDING",
   },
+  {
+    label: "Checked In",
+    value: "CHECKED_IN",
+  },
 ];
 
 interface Props {
@@ -78,6 +82,12 @@ const ApplicationStatusTag: React.FC<Props> = props => {
       return (
         <Tag colorScheme={includeColor ? "gray" : "gray"} {...rest}>
           Not Attending
+        </Tag>
+      );
+    case "CHECKED_IN":
+      return (
+        <Tag colorScheme={includeColor ? "teal" : "gray"} {...rest}>
+          Checked In
         </Tag>
       );
     default:

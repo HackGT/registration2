@@ -128,6 +128,7 @@ const StatisticsPage: React.FC = () => {
                   <option value="CONFIRMED">Confirmed</option>
                   <option value="DENIED">Denied</option>
                   <option value="NOT_ATTENDING">Not Attending</option>
+                  <option value="CHECKED_IN">Checked In</option>
                 </Select>
               </Box>
             </HStack>

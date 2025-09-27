@@ -79,8 +79,6 @@ const ApplicationDetailPage: React.FC = () => {
   const extendedDeadlines = watch("extendedDeadlines.enabled");
   const status = watch("status");
   const navigate = useNavigate();
-  const [checkInLoading, setCheckInLoading] = React.useState(false); // TODO: remove after hackgteeny
-  const [isCheckedIn, setIsCheckedIn] = React.useState(false); // TODO: remove after hackgteeny
 
   const addHttpsIfNeed = (url: string) => {
     if (!url.startsWith("https://") && !url.startsWith("http://")) {
@@ -197,8 +195,12 @@ const ApplicationDetailPage: React.FC = () => {
               </Button>
               <Popover>
                 <PopoverTrigger>
-                  <Button size="sm" colorScheme="blue" disabled={data.status !== "CONFIRMED"}>
-                    View Check-In QR Code
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    disabled={!(data.status === "CONFIRMED" || data.status === "CHECKED_IN")}
+                  >
+                    View Participant QR Code
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent>

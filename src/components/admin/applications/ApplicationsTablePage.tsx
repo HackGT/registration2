@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Heading, Link as ChakraLink, Stack, Text, Button, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Link as ChakraLink,
+  Stack,
+  Text,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
@@ -121,6 +129,10 @@ const ApplicationsTablePage: React.FC = () => {
       {
         label: "Confirmed",
         value: "CONFIRMED",
+      },
+      {
+        label: "Checked In",
+        value: "CHECKED_IN",
       },
       {
         label: "Denied",
@@ -313,9 +325,7 @@ const ApplicationsTablePage: React.FC = () => {
         </Box>
         <Box p={4} w="80">
           <br />
-          <Button onClick={onOpen}>
-            Generate CSV
-          </Button>
+          <Button onClick={onOpen}>Generate CSV</Button>
           <ApplicationCSVModal
             isOpen={isOpen}
             onOpen={onOpen}

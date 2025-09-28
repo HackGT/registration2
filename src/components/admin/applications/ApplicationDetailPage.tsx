@@ -93,7 +93,7 @@ const ApplicationDetailPage: React.FC = () => {
   }, [data, reset]);
 
   useEffect(() => {
-    if (!["CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(status)) {
+    if (!["CHECKED_IN", "CONFIRMED", "ACCEPTED", "NOT_ATTENDING"].includes(status)) {
       setValue("confirmationBranch", null);
     } else {
       setValue("confirmationBranch", data.confirmationBranch ? data.confirmationBranch.id : "");
@@ -127,7 +127,7 @@ const ApplicationDetailPage: React.FC = () => {
         duration: 5000,
         isClosable: true,
       });
-      setTimeout(() => window.location.reload(), 1000);
+      // setTimeout(() => window.location.reload(), 1000);
     } catch (e: any) {
       handleAxiosError(e);
     }

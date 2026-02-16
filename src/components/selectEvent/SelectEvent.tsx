@@ -4,8 +4,7 @@ import useAxios from "axios-hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EditIcon, ExternalLinkIcon, LinkIcon } from "@chakra-ui/icons";
-import { FiArrowRight } from "react-icons/fi";
+import { ExternalLinkIcon, PlusSquareIcon } from "@chakra-ui/icons";
 
 import EventCard from "./EventCard";
 import HexathonModal from "./HexathonModal";
@@ -79,7 +78,7 @@ const SelectEvent: React.FC = () => {
         <div className="registration-list-container">
           <Box textAlign={{base: "center", lg: "left"}} >
             <Heading 
-            fontSize={{base: '3rem', lg: '5rem'}}
+            fontSize={{base: '2rem', lg: '4rem'}}
             className="h1">
               Hexlabs Registration
             </Heading>
@@ -92,6 +91,11 @@ const SelectEvent: React.FC = () => {
           </Box>
 
           <Flex direction={{base: "column", md: "row"}} alignItems="center" justifyContent={{base: "center", lg: "left"}} gap={4}>
+            {role.admin && (
+              <Button colorScheme="blackAlpha" onClick={() => handleModalOpen(null)}>
+                <PlusSquareIcon />&nbsp;Create Hexathon
+              </Button>
+            )}
             <a target="_blank" rel="noreferrer" href="https://hexlabs.org/events">
               <Button variant="outline" _hover={{backgroundColor: 'white', color: "black"}}>Events Page&nbsp;&nbsp;<ExternalLinkIcon /></Button>
             </a>
@@ -105,14 +109,7 @@ const SelectEvent: React.FC = () => {
           {data.length > 0? 
             <Grid templateColumns={{base: "1fr", xl: "1fr 1fr"}} gap={4}>
               {data.map((hexathon: any) => (
-                <Flex key={hexathon.id}>
-                  <EventCard name={hexathon.name} id={hexathon.id} />
-                  {role.admin && (
-                    <Button onClick={() => handleModalOpen(hexathon)} h="150px">
-                      <EditIcon />
-                    </Button>
-                  )}
-                </Flex>
+                <EventCard name={hexathon.name} id={hexathon.id} role={role} onEdit={() => handleModalOpen(hexathon)} />
               ))}
               <EmptyEventCard />
             </Grid>
@@ -120,8 +117,8 @@ const SelectEvent: React.FC = () => {
             <EmptyEventCard noEvents />
           }
           {role.admin && (
-            <Button onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
-              Create Hexathon
+            <Button colorScheme="blackAlpha" onClick={() => handleModalOpen(null)} alignSelf="center" mt="4">
+              <PlusSquareIcon />&nbsp;Create Hexathon
             </Button>
           )}
         </div>

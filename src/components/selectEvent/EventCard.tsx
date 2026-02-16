@@ -1,13 +1,15 @@
 import React from "react";
-import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import useAxios from "axios-hooks";
-import { CalendarIcon } from "@chakra-ui/icons";
+import { CalendarIcon, EditIcon } from "@chakra-ui/icons";
 
 interface Props {
   name: string;
   id: string;
+  role: any;
+  onEdit: () => void;
   description?: string;
   image?: string;
 }
@@ -74,6 +76,12 @@ const EventCard: React.FC<Props> = props => {
               })}
             </Text>
           </Box>
+          
+          {props.role.admin && (
+            <Button colorScheme="purple" mt={2} onClick={props.onEdit}>
+              <EditIcon />&nbsp;Edit Event
+            </Button>
+          )}
         </Box>
         <Image
           height={{base: CARD_HEIGHT_SM, lg: CARD_HEIGHT}}

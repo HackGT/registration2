@@ -10,7 +10,8 @@ const EmptyEventCard = (props: {noEvents?: boolean}) => (
 	w="100%"
 	alignItems="center"
 	justifyContent="center"
-	color="white"
+	color="black"
+	backgroundColor="#FFF8"
 	border="1px"
 	borderColor="gray.200"
 	borderRadius={6}

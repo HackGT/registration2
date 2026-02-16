@@ -78,7 +78,10 @@ const EventCard: React.FC<Props> = props => {
           </Box>
           
           {props.role.admin && (
-            <Button colorScheme="purple" mt={2} onClick={props.onEdit}>
+            <Button colorScheme="purple" mt={2} onClick={e => {
+              e.stopPropagation();
+              props.onEdit();
+            }}>
               <EditIcon />&nbsp;Edit Event
             </Button>
           )}

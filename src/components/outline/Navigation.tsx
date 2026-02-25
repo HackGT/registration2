@@ -35,7 +35,9 @@ const Navigation: React.FC = () => {
   const logOut = async () => {
     window.localStorage.removeItem("hexathonId");
     await axios.post(apiUrl(Service.AUTH, "/auth/logout"));
-    window.location.href = `https://login.hexlabs.org/login?redirect=${window.location.href}`;
+    const redirectUrl = encodeURIComponent(window.location.href);
+    window.location.replace(`https://login.hexlabs.org/login?redirect=${redirectUrl}`);
+    
   };
 
   useEffect(() => {

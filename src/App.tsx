@@ -40,7 +40,11 @@ export const App = () => {
   }
 
   if (!loggedIn) {
-    window.location.href = `https://login.hexlabs.org?redirect=${window.location.href}`;
+    // Send users directly to the auth portal instead of the root landing page to
+    // avoid briefly flashing stale marketing content (e.g., old event pages)
+    // while the auth service processes the redirect.
+    const redirectUrl = encodeURIComponent(window.location.href);
+    window.location.replace(`https://login.hexlabs.org/login?redirect=${redirectUrl}`);
     return <LoadingScreen />;
   }
 

@@ -25,7 +25,7 @@ import AppOutline from "./components/outline/AppOutline";
 import StartApplication from "./components/application/StartApplication";
 
 export const app = initializeApp({
-  apiKey: "AIzaSyCsukUZtMkI5FD_etGfefO4Sr7fHkZM7Rg",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "auth.hexlabs.org",
 });
 setPersistence(getAuth(app), inMemoryPersistence);

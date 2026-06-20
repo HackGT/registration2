@@ -79,8 +79,8 @@ const HexathonModal: React.FC<Props> = props => {
     setFormSubmitLoading(true);
     const formData = {
       ...data,
-      startDate: DateTime.fromFormat(data.startDate, "yyyy-MM-dd'T'HH:mm").toISO(),
-      endDate: DateTime.fromFormat(data.endDate, "yyyy-MM-dd'T'HH:mm").toISO(),
+      startDate: DateTime.fromFormat(data.startDate, "yyyy-MM-dd'T'HH:mm", {zone: "America/New_York"}).toISO(),
+      endDate: DateTime.fromFormat(data.endDate, "yyyy-MM-dd'T'HH:mm", {zone: "America/New_York"}).toISO(),
     };
 
     // Manually upload images to CDN and add base url

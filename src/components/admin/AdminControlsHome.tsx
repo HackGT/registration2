@@ -126,6 +126,11 @@ const AdminControlsHome: React.FC = () => {
           href="applications"
         />
         <AdminMenuCard
+          title="Referrals"
+          description="View referral information with filter & search tools"
+          href="referrals"
+        />
+        <AdminMenuCard
           title="Send Emails"
           description="Send one-off emails and view past emails sent"
           href="email"

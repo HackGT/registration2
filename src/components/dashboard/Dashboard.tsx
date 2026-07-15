@@ -13,6 +13,7 @@ import {
   Text,
   Divider,
   Link,
+  SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
 import {
@@ -33,6 +34,9 @@ import Branches from "./Branches";
 import { useCurrentHexathon } from "../../contexts/CurrentHexathonContext";
 import ApplicationStatusTag from "../../util/ApplicationStatusTag";
 import CurrentApplicationTile from "./CurrentApplicationTile";
+import ReferTile from "./ReferTile";
+import CurrentReferralTile from "./CurrentReferralTile";
+import { Referral } from "../../util/types";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -72,8 +76,42 @@ const Dashboard: React.FC = () => {
     },
   });
 
+  const canAccessReferrals = Boolean(profile?.roles?.member || profile?.roles?.admin);
+
+  const [
+    { data: referralsData, loading: referralsLoading, error: referralsError },
+    fetchReferrals,
+  ] = useAxios(
+    {
+      url: apiUrl(Service.REGISTRATION, "/referrals"),
+      method: "GET",
+      params: {
+        hexathon: hexathonId,
+        mine: true,
+      },
+    },
+    { useCache: false, manual: true }
+  );
+
+  useEffect(() => {
+    if (canAccessReferrals) {
+      fetchReferrals();
+    }
+  }, [canAccessReferrals, fetchReferrals]);
+
   const application =
     applications?.applications?.length > 0 ? applications?.applications[0] : undefined;
+
+  let referrals: Referral[] = [];
+  if (Array.isArray(referralsData?.referrals)) {
+    referrals = referralsData.referrals;
+  } else if (Array.isArray(referralsData)) {
+    referrals = referralsData;
+  }
+  const sortedReferrals = [...referrals].sort(
+    (first, second) =>
+      (Date.parse(second.updatedAt || "") || 0) - (Date.parse(first.updatedAt || "") || 0)
+  );
 
   const updateStatus = useMemo(
     () => async (status: string) => {
@@ -165,15 +203,21 @@ const Dashboard: React.FC = () => {
           </>
         );
     }
-  }, [application]);
+  }, [application, onOpen]);
 
-  if (profileLoading || applicationsLoading || branchesLoading) {
+  if (
+    profileLoading ||
+    applicationsLoading ||
+    branchesLoading ||
+    (canAccessReferrals && referralsLoading)
+  ) {
     return <LoadingScreen />;
   }
 
   if (profileError) return <ErrorScreen error={profileError} />;
   if (applicationsError) return <ErrorScreen error={applicationsError} />;
   if (branchesError) return <ErrorScreen error={branchesError} />;
+  if (canAccessReferrals && referralsError) return <ErrorScreen error={referralsError} />;
 
   return (
     <Flex flexDir="column" padding={{ base: "0 0 16px", md: "32px 48px" }} margin="auto" gap="30px">
@@ -304,6 +348,39 @@ const Dashboard: React.FC = () => {
           </Text>
           <Branches application={application} branches={branches} />
         </Box>
+      )}
+
+      {canAccessReferrals && (
+        <>
+          {sortedReferrals.length > 0 && (
+            <Box marginX={{ base: "15px", md: 0 }}>
+              <Heading fontWeight="semibold" marginBottom="10px">
+                Your Referrals
+              </Heading>
+              <Text marginBottom="20px">
+                Continue, edit, or review the referrals you've created for {currentHexathon.name}.
+              </Text>
+              <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={4}>
+                {sortedReferrals.map(referral => (
+                  <CurrentReferralTile
+                    key={referral.id}
+                    referral={referral}
+                    onDeleted={fetchReferrals}
+                  />
+                ))}
+              </SimpleGrid>
+            </Box>
+          )}
+          <Box marginX={{ base: "15px", md: 0 }}>
+            <Heading fontWeight="semibold" marginBottom="10px">
+              Start a Referral
+            </Heading>
+            <Text marginBottom="20px">
+              Refer someone you think would be a great fit for {currentHexathon.name}.
+            </Text>
+            <ReferTile />
+          </Box>
+        </>
       )}
       <Divider alignSelf="center" width="95%" />
       <Heading fontWeight="semibold" alignSelf="center" marginX={{ base: "15px", md: 0 }}>

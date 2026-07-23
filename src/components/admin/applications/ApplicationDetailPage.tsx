@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Alert,
+  AlertIcon,
   Box,
   Heading,
   Text,
@@ -39,19 +41,38 @@ import {
   PopoverTrigger,
   Tooltip,
   Spinner,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { ErrorScreen, LoadingScreen, apiUrl, Service, handleAxiosError } from "@hex-labs/core";
 import axios from "axios";
 import useAxios from "axios-hooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CopyIcon, QuestionIcon } from "@chakra-ui/icons";
 import { QRCodeSVG } from "qrcode.react";
 
 import ApplicationStatusTag, { applicationStatusOptions } from "../../../util/ApplicationStatusTag";
+import ReferralStatusTag from "../../../util/ReferralStatusTag";
+import { Referral, ReferralsResponse } from "../../../util/types";
 import { dateToServerFormat, parseDateTimeForm } from "../../../util/util";
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import RetrieveGTIDModal from "./RetrieveGTIDModal";
+
+interface DetailFieldProps {
+  label: string;
+  value?: React.ReactNode;
+}
+
+const DetailField: React.FC<DetailFieldProps> = ({ label, value }) => (
+  <Box>
+    <Text color="gray" fontSize="sm">
+      {label}
+    </Text>
+    <Text>{value ?? "Not provided"}</Text>
+  </Box>
+);
+
+const normalizeEmail = (email?: string) => email?.trim().toLowerCase() ?? "";
 
 const ApplicationDetailPage: React.FC = () => {
   const { applicationId } = useParams();
@@ -79,6 +100,9 @@ const ApplicationDetailPage: React.FC = () => {
   const extendedDeadlines = watch("extendedDeadlines.enabled");
   const status = watch("status");
   const navigate = useNavigate();
+  const [matchingReferrals, setMatchingReferrals] = useState<Referral[]>([]);
+  const [referralsLoading, setReferralsLoading] = useState(false);
+  const [referralsError, setReferralsError] = useState(false);
 
   const addHttpsIfNeed = (url: string) => {
     if (!url.startsWith("https://") && !url.startsWith("http://")) {
@@ -99,6 +123,53 @@ const ApplicationDetailPage: React.FC = () => {
       setValue("confirmationBranch", data.confirmationBranch ? data.confirmationBranch.id : "");
     }
   }, [status]);
+
+  useEffect(() => {
+    const applicantEmail = normalizeEmail(data?.email);
+
+    if (!applicantEmail || !data?.hexathon) {
+      setMatchingReferrals([]);
+      setReferralsLoading(false);
+      setReferralsError(false);
+      return undefined;
+    }
+
+    let cancelled = false;
+    setReferralsLoading(true);
+    setReferralsError(false);
+
+    axios
+      .get<ReferralsResponse>(apiUrl(Service.REGISTRATION, "/referrals"), {
+        params: {
+          hexathon: data.hexathon,
+          status: ["SUBMITTED"],
+          search: data.email,
+          offset: 0,
+        },
+      })
+      .then(response => {
+        if (cancelled) return;
+
+        const exactMatches = (response.data.referrals ?? []).filter(
+          referral =>
+            referral.status === "SUBMITTED" &&
+            normalizeEmail(referral.referralData?.email) === applicantEmail
+        );
+        setMatchingReferrals(exactMatches);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setMatchingReferrals([]);
+        setReferralsError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setReferralsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data?.email, data?.hexathon]);
 
   if (loading || branchesLoading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
@@ -160,6 +231,12 @@ const ApplicationDetailPage: React.FC = () => {
       <VStack spacing="1px" align="left" paddingBottom="10px">
         <Stack flexDirection={{ base: "column", sm: "row" }} gap="1.5">
           <ApplicationStatusTag status={data.status} includeColor alignSelf="start" />
+          {matchingReferrals.length > 0 && (
+            <Tag colorScheme="teal" alignSelf="start" margin="0 !important">
+              Referred
+            </Tag>
+          )}
+          {referralsLoading && <Spinner size="xs" alignSelf="center" />}
           <Tag alignSelf="start" margin="0 !important">
             <TagLabel>{`ID: ${data.id}`}</TagLabel>
             <TagRightIcon
@@ -471,7 +548,92 @@ const ApplicationDetailPage: React.FC = () => {
             </Stack>
           </AccordionPanel>
         </AccordionItem>
+
+        {matchingReferrals.length > 0 && (
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">
+                  <Text style={{ fontWeight: "bold" }}>Referral Information</Text>
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <VStack align="stretch" spacing={6}>
+                {matchingReferrals.map(referral => {
+                  const { referralData } = referral;
+                  const candidateName = [referralData?.firstName, referralData?.lastName]
+                    .filter(Boolean)
+                    .join(" ");
+
+                  return (
+                    <Box key={referral.id} borderWidth="1px" borderRadius="md" padding={4}>
+                      <Stack
+                        justifyContent="space-between"
+                        flexDirection={{ base: "column", md: "row" }}
+                        marginBottom={4}
+                      >
+                        <Stack flexDirection={{ base: "column", sm: "row" }} gap="1.5">
+                          <ReferralStatusTag
+                            status={referral.status}
+                            includeColor
+                            alignSelf="start"
+                          />
+                          <Tag alignSelf="start" margin="0 !important">
+                            {`Referral ID: ${referral.id}`}
+                          </Tag>
+                        </Stack>
+                        <Link
+                          as={RouterLink}
+                          to={`/${data.hexathon}/admin/referrals/${referral.id}`}
+                          alignSelf="start"
+                        >
+                          View referral details
+                        </Link>
+                      </Stack>
+
+                      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                        <DetailField label="Referrer Name" value={referral.referrerName} />
+                        <DetailField label="Referrer Email" value={referral.referrerEmail} />
+                        <DetailField
+                          label="Candidate Name"
+                          value={candidateName || undefined}
+                        />
+                        <DetailField label="Candidate Email" value={referralData?.email} />
+                        <DetailField label="University" value={referralData?.school} />
+                        <DetailField
+                          label="Refer For Early Application"
+                          value={referralData?.referForEarlyApplication ? "Yes" : "No"}
+                        />
+                        <DetailField
+                          label="Refer For Travel Reimbursement"
+                          value={referralData?.referForReimbursement ? "Yes" : "No"}
+                        />
+                        <DetailField label="Resume" value={referralData?.resume?.name} />
+                      </SimpleGrid>
+
+                      <Box marginTop={4}>
+                        <DetailField
+                          label="Why Would They Make a Good Candidate?"
+                          value={referralData?.essay}
+                        />
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </VStack>
+            </AccordionPanel>
+          </AccordionItem>
+        )}
       </Accordion>
+
+      {referralsError && (
+        <Alert status="warning" marginTop={4}>
+          <AlertIcon />
+          Referral information could not be loaded.
+        </Alert>
+      )}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

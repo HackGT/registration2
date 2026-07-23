@@ -7,6 +7,7 @@ import { setPersistence, getAuth, inMemoryPersistence } from "firebase/auth";
 
 import "./App.css";
 import ApplicationContainer from "./components/application/ApplicationContainer";
+import ReferralContainer from "./components/referral/ReferralContainer";
 import Dashboard from "./components/dashboard/Dashboard";
 import EmailPage from "./components/admin/email/EmailPage";
 import BranchEmailTemplatesPage from "./components/admin/branchEmailTemplates/BranchEmailTemplates";
@@ -23,6 +24,8 @@ import BranchEditorPage from "./components/admin/branchSettings/branchEditor/Bra
 import TeamManagementPage from "./components/teamManagement/TeamManagementPage";
 import AppOutline from "./components/outline/AppOutline";
 import StartApplication from "./components/application/StartApplication";
+import ReferralsTablePage from "./components/admin/referrals/ReferralsTablePage";
+import ReferralDetailPage from "./components/admin/referrals/ReferralDetailPage";
 
 export const app = initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -57,6 +60,7 @@ export const App = () => {
             <Route path="" element={<Dashboard />} />
             <Route path="start-application/:branchId" element={<StartApplication />} />
             <Route path="application/:applicationId" element={<ApplicationContainer />} />
+            <Route path="referral/:referralId" element={<ReferralContainer />} />
             <Route path="admin" element={<AdminControlsHome />} />
             <Route path="admin/email" element={<EmailPage />} />
             <Route path="admin/branch-email-templates" element={<BranchEmailTemplatesPage />} />
@@ -64,6 +68,8 @@ export const App = () => {
             <Route path="admin/branch-settings/:branchId" element={<BranchEditorPage />} />
             <Route path="admin/applications" element={<ApplicationsTablePage />} />
             <Route path="admin/applications/:applicationId" element={<ApplicationDetailPage />} />
+            <Route path="admin/referrals" element={<ReferralsTablePage />} />
+            <Route path="admin/referrals/:referralId" element={<ReferralDetailPage />} />
             <Route path="admin/statistics" element={<StatisticsPage />} />
             <Route path="grading" element={<GradingDashboardPage />} />
             <Route path="grading/:gradingGroup/question" element={<GradingQuestionPage />} />

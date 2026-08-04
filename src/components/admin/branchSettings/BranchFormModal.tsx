@@ -36,7 +36,7 @@ import { QuestionIcon } from "@chakra-ui/icons";
 
 import { Branch, BranchType } from "./BranchSettingsPage";
 import { AxiosRefetch } from "../../../util/types";
-import { dateToServerFormat, parseDateTimeForm, parseDateTimeString } from "../../../util/util";
+import { dateToServerFormat, parseDateTimeForm } from "../../../util/util";
 
 enum FormModalType {
   Create = "CREATE",

@@ -20,9 +20,8 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { apiUrl, handleAxiosError, Service } from "@hex-labs/core";
 import { QuestionIcon } from "@chakra-ui/icons";
-import { DateTime } from "luxon";
 
-import { parseDateString } from "../../util/util";
+import { dateToServerFormat, parseDateString } from "../../util/util";
 import { AxiosRefetch } from "../../util/types";
 
 enum FormModalType {
@@ -78,16 +77,10 @@ const HexathonModal: React.FC<Props> = props => {
   const onSubmit = async (data: any) => {
     setFormSubmitLoading(true);
 
-    const serializeDateTime = (value: string) =>
-      DateTime.fromFormat(value, "yyyy-MM-dd'T'HH:mm", { zone: "America/New_York" }).toISO({
-        // fixes editing in non-ET timezone making the time offset
-        includeOffset: false,
-      });
-
     const formData = {
       ...data,
-      startDate: serializeDateTime(data.startDate),
-      endDate: serializeDateTime(data.endDate),
+      startDate: dateToServerFormat(data.startDate),
+      endDate: dateToServerFormat(data.endDate),
     };
 
     // Manually upload images to CDN and add base url

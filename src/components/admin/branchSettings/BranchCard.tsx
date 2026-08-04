@@ -45,6 +45,7 @@ const BranchCard: React.FC<Props> = props => {
             </Text>
             <Text>{`Opens at: ${parseDateTimeString(props.branch.settings.open)}`}</Text>
             <Text>{`Closes at: ${parseDateTimeString(props.branch.settings.close)}`}</Text>
+            <Text fontSize="sm">{`Branch ID: ${props.branch.id}`}</Text>
           </Stack>
           <Stack direction={{ base: "column", md: "row" }} spacing="3">
             <Button size="sm" onClick={() => props.openModal(props.branch)}>

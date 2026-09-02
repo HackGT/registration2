@@ -28,6 +28,18 @@ import { apiUrl, handleAxiosError, LoadingScreen, Service } from "@hex-labs/core
 import ApplicantAnswer from "./ApplicantAnswer";
 import ScoreButton from "./ScoreButton";
 
+// Graders rate how much an essay reads like AI separately from its score, so they can grade the
+// content on its merits and record the suspicion on its own axis.
+const AI_SCORE_OPTIONS = [
+  { value: "1", description: "No or very little chance of AI" },
+  { value: "2", description: "Some hints but unsure, sounds possibly like AI" },
+  { value: "3", description: "Fairly or very confident this is AI" },
+];
+
+// Keyboard shortcuts for the AI score. 1-4 are already bound to the essay score, so this uses the
+// home row instead.
+const AI_SCORE_KEYS: Record<string, string> = { a: "1", s: "2", d: "3" };
+
 const GradingQuestionPage: React.FC = () => {
   const { hexathonId, gradingGroup } = useParams();
   const navigate = useNavigate();
@@ -42,16 +54,33 @@ const GradingQuestionPage: React.FC = () => {
     isCalibrationQuestion: false,
   });
   const [score, setScore] = useState<string>("");
+  const [aiScore, setAiScore] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
   const toast = useToast();
   const [isDesktop] = useMediaQuery("(min-width: 600px)");
 
   const { setValue, getRootProps, getRadioProps } = useRadioGroup({
+    name: "score",
     onChange: setScore,
   });
 
+  const {
+    setValue: setAiValue,
+    getRootProps: getAiRootProps,
+    getRadioProps: getAiRadioProps,
+  } = useRadioGroup({
+    name: "aiScore",
+    onChange: setAiScore,
+  });
+
   const group = getRootProps();
+  const aiGroup = getAiRootProps();
+
+  // Calibration questions are graded against canned answers and the API discards any AI score sent
+  // with them, so only ask for one on real applications.
+  const requiresAiScore = !questionData.isCalibrationQuestion;
+  const canSubmit = !!score && (!requiresAiScore || !!aiScore);
 
   const retrieveQuestion = useCallback(async () => {
     try {
@@ -74,8 +103,15 @@ const GradingQuestionPage: React.FC = () => {
       hexathon: hexathonId,
     });
     setLoading(true);
+    // Clear the same state submitReview does. Without this the next essay renders with the
+    // previous one's buttons still selected and submitting already enabled, so a single stray
+    // click or Enter files the previous essay's scores against a different applicant.
+    setValue("");
+    setScore("");
+    setAiValue("");
+    setAiScore("");
     retrieveQuestion();
-  }, [hexathonId, retrieveQuestion]);
+  }, [hexathonId, setValue, setAiValue, retrieveQuestion]);
 
   const submitReview = useCallback(
     async (payload: {
@@ -83,6 +119,7 @@ const GradingQuestionPage: React.FC = () => {
       essayId: string;
       criteria: string;
       score: number;
+      aiScore?: number;
       isCalibrationQuestion: boolean;
     }) => {
       setSubmitButtonDisabled(true);
@@ -94,11 +131,13 @@ const GradingQuestionPage: React.FC = () => {
       setLoading(true);
       setValue("");
       setScore("");
+      setAiValue("");
+      setAiScore("");
       retrieveQuestion();
       window.scrollTo(0, 0);
       setSubmitButtonDisabled(false);
     },
-    [gradingGroup, hexathonId, setValue, retrieveQuestion]
+    [gradingGroup, hexathonId, setValue, setAiValue, retrieveQuestion]
   );
 
   useEffect(() => {
@@ -106,7 +145,11 @@ const GradingQuestionPage: React.FC = () => {
       if (key === "1" || key === "2" || key === "3" || key === "4") {
         setScore(key);
         setValue(key);
-      } else if (key === "Enter" && !!score) {
+      } else if (requiresAiScore && AI_SCORE_KEYS[key?.toLowerCase()]) {
+        const value = AI_SCORE_KEYS[key.toLowerCase()];
+        setAiScore(value);
+        setAiValue(value);
+      } else if (key === "Enter" && canSubmit) {
         if (submitButtonDisabled) {
           toast({
             title: "Please wait",
@@ -120,6 +163,7 @@ const GradingQuestionPage: React.FC = () => {
             essayId: questionData?.essayId,
             criteria: questionData?.criteria,
             score: parseInt(score),
+            aiScore: requiresAiScore ? parseInt(aiScore) : undefined,
             isCalibrationQuestion: questionData?.isCalibrationQuestion,
           });
         }
@@ -132,7 +176,18 @@ const GradingQuestionPage: React.FC = () => {
     return () => {
       window.removeEventListener("keyup", keyUpHandler);
     };
-  }, [questionData, score, setValue, submitButtonDisabled, submitReview, toast]);
+  }, [
+    questionData,
+    score,
+    aiScore,
+    canSubmit,
+    requiresAiScore,
+    setValue,
+    setAiValue,
+    submitButtonDisabled,
+    submitReview,
+    toast,
+  ]);
 
   useEffect(() => {
     retrieveQuestion();
@@ -162,7 +217,7 @@ const GradingQuestionPage: React.FC = () => {
           <AlertIcon />
           <AlertTitle>Tip</AlertTitle>
           <AlertDescription>
-            Try using the keyboard (1, 2, 3, 4) + Enter to submit your scores quicker!
+            We have keyboard shortcuts! 1-4 for main score, a-s-d for AI rating!
           </AlertDescription>
         </Alert>
       )}
@@ -241,19 +296,45 @@ const GradingQuestionPage: React.FC = () => {
             </ScoreButton>
           ))}
       </HStack>
+      {requiresAiScore && (
+        <Box maxWidth="400px" margin="auto" paddingX="15px" paddingBottom="25px">
+          <Divider marginBottom="20px" />
+          <Text fontWeight="semibold" textAlign="center">
+            Likelihood of AI
+          </Text>
+          <Text fontSize="sm" color="gray.600" textAlign="center" marginTop="4px">
+            How much does this sound like AI?
+          </Text>
+          <HStack justifyContent="space-between" padding="20px 0px" {...aiGroup}>
+            {AI_SCORE_OPTIONS.map(option => (
+              <ScoreButton key={option.value} {...getAiRadioProps({ value: option.value })}>
+                {option.value}
+              </ScoreButton>
+            ))}
+          </HStack>
+          <Stack spacing="3px">
+            {AI_SCORE_OPTIONS.map(option => (
+              <Text key={option.value} fontSize="xs" color="gray.600">
+                <b>{option.value}</b>: {option.description}
+              </Text>
+            ))}
+          </Stack>
+        </Box>
+      )}
       <HStack margin="auto" width="300px" direction="row" justifyContent="space-between">
         <Button disabled={questionData.isCalibrationQuestion} onClick={skipQuestion}>
           Skip Question
         </Button>
         <Button
           isLoading={submitButtonDisabled}
-          disabled={!score || submitButtonDisabled}
+          disabled={!canSubmit || submitButtonDisabled}
           onClick={() =>
             submitReview({
               applicationId: questionData?.applicationId,
               essayId: questionData?.essayId,
               criteria: questionData?.criteria,
               score: parseInt(score),
+              aiScore: requiresAiScore ? parseInt(aiScore) : undefined,
               isCalibrationQuestion: questionData?.isCalibrationQuestion,
             })
           }

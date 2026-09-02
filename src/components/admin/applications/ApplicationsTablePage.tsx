@@ -45,6 +45,11 @@ const columns = [
     header: "Status",
     accessor: (row: any) => <ApplicationStatusTag status={row.status} includeColor />,
   },
+  {
+    key: 4,
+    header: "Final Score",
+    accessor: (row: any) => row.finalScore ?? "N/A",
+  },
 ];
 
 const ApplicationsTablePage: React.FC = () => {
@@ -71,6 +76,7 @@ const ApplicationsTablePage: React.FC = () => {
       confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
       search: searchText,
       offset,
+      requireApplicationData: true,
     },
   });
   const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({

@@ -31,9 +31,9 @@ import ScoreButton from "./ScoreButton";
 // Graders rate how much an essay reads like AI separately from its score, so they can grade the
 // content on its merits and record the suspicion on its own axis.
 const AI_SCORE_OPTIONS = [
-  { value: "1", description: "No chance of AI" },
-  { value: "2", description: "Some hints, sounds kinda like AI" },
-  { value: "3", description: "Fairly confident this is AI" },
+  { value: "1", description: "No or very little chance of AI" },
+  { value: "2", description: "Some hints but unsure, sounds possibly like AI" },
+  { value: "3", description: "Fairly or very confident this is AI" },
 ];
 
 // Keyboard shortcuts for the AI score. 1-4 are already bound to the essay score, so this uses the
@@ -217,8 +217,7 @@ const GradingQuestionPage: React.FC = () => {
           <AlertIcon />
           <AlertTitle>Tip</AlertTitle>
           <AlertDescription>
-            Try using the keyboard &mdash; 1&ndash;4 for the score, A/S/D for likelihood of AI, then
-            Enter to submit!
+            We have keyboard shortcuts! 1-4 for main score, a-s-d for AI rating!
           </AlertDescription>
         </Alert>
       )}
@@ -304,8 +303,7 @@ const GradingQuestionPage: React.FC = () => {
             Likelihood of AI
           </Text>
           <Text fontSize="sm" color="gray.600" textAlign="center" marginTop="4px">
-            Separate from the score above &mdash; grade the essay normally, then rate how much it
-            reads like AI.
+            How much does this sound like AI?
           </Text>
           <HStack justifyContent="space-between" padding="20px 0px" {...aiGroup}>
             {AI_SCORE_OPTIONS.map(option => (
@@ -317,7 +315,7 @@ const GradingQuestionPage: React.FC = () => {
           <Stack spacing="3px">
             {AI_SCORE_OPTIONS.map(option => (
               <Text key={option.value} fontSize="xs" color="gray.600">
-                <b>{option.value}</b> &mdash; {option.description}
+                <b>{option.value}</b>: {option.description}
               </Text>
             ))}
           </Stack>

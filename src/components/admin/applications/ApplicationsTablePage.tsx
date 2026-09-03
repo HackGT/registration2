@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Heading,
+  Input,
   Link as ChakraLink,
   Stack,
   Text,
@@ -66,6 +67,9 @@ const ApplicationsTablePage: React.FC = () => {
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [topPercentageInput, setTopPercentageInput] = useState("");
+  const [topPercentage, setTopPercentage] = useState<number | undefined>(undefined);
+
   const [{ data, error }] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
@@ -75,6 +79,7 @@ const ApplicationsTablePage: React.FC = () => {
       applicationBranch: searchParams.get("applicationBranch")?.split(","),
       confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
       search: searchText,
+      topPercentage,
       offset,
       requireApplicationData: true,
     },
@@ -160,6 +165,12 @@ const ApplicationsTablePage: React.FC = () => {
       )
     );
   }, [searchParams, statusOptions, applicationBranchOptions, confirmationBranchOptions]);
+
+  const applyTopPercentage = () => {
+    const parsed = parseInt(topPercentageInput);
+    setTopPercentage(!isNaN(parsed) && parsed >= 1 && parsed <= 100 ? parsed : undefined);
+    setOffset(0);
+  };
 
   const onPreviousClicked = () => {
     setOffset(offset - limit);
@@ -302,6 +313,20 @@ const ApplicationsTablePage: React.FC = () => {
             }}
           />
         </Box>
+        <Box p={4} w="52">
+          <Text size="xs">Top X% by Score</Text>
+          <Input
+            type="number"
+            min={1}
+            max={100}
+            size="sm"
+            placeholder="e.g. 25"
+            value={topPercentageInput}
+            onChange={e => setTopPercentageInput(e.target.value)}
+            onBlur={applyTopPercentage}
+            onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && applyTopPercentage()}
+          />
+        </Box>
         <Box p={4} w="80">
           <br />
           <Button onClick={onOpen}>Generate CSV</Button>
@@ -313,6 +338,8 @@ const ApplicationsTablePage: React.FC = () => {
             status={searchParams.get("status")?.split(",")}
             applicationBranch={searchParams.get("applicationBranch")?.split(",")}
             confirmationBranch={searchParams.get("confirmationBranch")?.split(",")}
+            search={searchText || undefined}
+            topPercentage={topPercentage}
             totalApplicants={data?.total}
           />
         </Box>

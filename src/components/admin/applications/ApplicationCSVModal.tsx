@@ -20,11 +20,13 @@ const generateCSV = async (
     status: any,
     applicationBranch: any,
     confirmationBranch: any,
+    search: any,
+    topPercentage: any,
     rowLimit: any
   ) => {
     await axios
       .get(apiUrl(Service.REGISTRATION, `applications/generate-csv`), {
-        params: { hexathon: hexathonId, status, applicationBranch, confirmationBranch, limit: rowLimit },
+        params: { hexathon: hexathonId, status, applicationBranch, confirmationBranch, search, topPercentage, limit: rowLimit },
         responseType: "blob",
       })
       .then(response => {
@@ -51,10 +53,12 @@ interface ApplicationCSVModalProps {
     status: any;
     applicationBranch: any;
     confirmationBranch: any;
+    search: any;
+    topPercentage: any;
     totalApplicants: any;
 };
 
-const ApplicationCSVModal: React.FC<ApplicationCSVModalProps> = ({isOpen, onOpen, onClose, hexathonId, status, applicationBranch, confirmationBranch, totalApplicants}) => {
+const ApplicationCSVModal: React.FC<ApplicationCSVModalProps> = ({isOpen, onOpen, onClose, hexathonId, status, applicationBranch, confirmationBranch, search, topPercentage, totalApplicants}) => {
     const [ rowLimit, setRowLimit ] = useState(totalApplicants);
 
     useEffect(() => {
@@ -84,6 +88,8 @@ const ApplicationCSVModal: React.FC<ApplicationCSVModalProps> = ({isOpen, onOpen
                         status,
                         applicationBranch,
                         confirmationBranch,
+                        search,
+                        topPercentage,
                         rowLimit
                         )
                     }

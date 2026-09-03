@@ -85,7 +85,7 @@ const ApplicationsTablePage: React.FC = () => {
   const [topPercentageInput, setTopPercentageInput] = useState("");
   const [topPercentage, setTopPercentage] = useState<number | undefined>(undefined);
 
-  const [{ data, error }] = useAxios({
+  const [{ data, error }, refetch] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
@@ -225,6 +225,7 @@ const ApplicationsTablePage: React.FC = () => {
         duration: 5000,
         isClosable: true,
       });
+      refetch();
     } catch (e: any) {
       toast({
         title: "Error",

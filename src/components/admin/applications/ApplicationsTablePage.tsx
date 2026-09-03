@@ -8,8 +8,9 @@ import {
   Text,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, SearchableTable, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
@@ -66,6 +67,20 @@ const ApplicationsTablePage: React.FC = () => {
     []
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const { user } = useAuth();
+  const [role, setRole] = useState<any>({ member: false, exec: false, admin: false });
+
+  useEffect(() => {
+    if (user?.uid) {
+      axios
+        .get(apiUrl(Service.USERS, `/users/${user.uid}`))
+        .then(res => setRole({ ...res.data.roles }));
+    }
+  }, [user?.uid]);
+
+  const [targetConfirmationBranch, setTargetConfirmationBranch] = useState<GroupOption | null>(null);
+  const [isBulkAssigning, setIsBulkAssigning] = useState(false);
 
   const [topPercentageInput, setTopPercentageInput] = useState("");
   const [topPercentage, setTopPercentage] = useState<number | undefined>(undefined);
@@ -165,6 +180,63 @@ const ApplicationsTablePage: React.FC = () => {
       )
     );
   }, [searchParams, statusOptions, applicationBranchOptions, confirmationBranchOptions]);
+
+  const handleBulkAssign = async () => {
+    if (!targetConfirmationBranch) return;
+    setIsBulkAssigning(true);
+    try {
+      const total = data?.total ?? 0;
+      const pages = Math.ceil(total / limit);
+      const responses = await Promise.all(
+        Array.from({ length: pages }, (_, i) =>
+          axios.get(apiUrl(Service.REGISTRATION, "/applications"), {
+            params: {
+              hexathon: hexathonId,
+              status: searchParams.get("status")?.split(","),
+              applicationBranch: searchParams.get("applicationBranch")?.split(","),
+              confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
+              search: searchText || undefined,
+              topPercentage,
+              limit,
+              offset: i * limit,
+            },
+          })
+        )
+      );
+      const allApps = responses.flatMap(r => r.data.applications);
+
+      await Promise.all(
+        allApps.map((app: any) =>
+          axios.post(
+            apiUrl(Service.REGISTRATION, `/applications/${app.id}/actions/update-application`),
+            {
+              applicationBranch: app.applicationBranch.id,
+              status: "ACCEPTED",
+              confirmationBranch: targetConfirmationBranch.value,
+            }
+          )
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: `Assigned ${allApps.length} applicants to "${targetConfirmationBranch.label}".`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e?.response?.data?.message ?? "Bulk assign failed. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsBulkAssigning(false);
+    }
+  };
 
   const applyTopPercentage = () => {
     const parsed = parseInt(topPercentageInput);
@@ -344,6 +416,34 @@ const ApplicationsTablePage: React.FC = () => {
           />
         </Box>
       </Stack>
+
+      {role.admin && (
+        <Box marginLeft={6} my={3} w="80">
+          <Heading as="h5" size="sm" mb={2} mt={4}>
+            Bulk Actions:
+          </Heading>
+          <Select<GroupOption, false, GroupBase<GroupOption>>
+            options={confirmationBranchOptions}
+            placeholder="Assign to confirmation branch..."
+            value={targetConfirmationBranch}
+            isLoading={branchesLoading}
+            size="sm"
+            onChange={(e: GroupOption | null) => setTargetConfirmationBranch(e)}
+            isClearable
+          />
+          <Button
+            mt={2}
+            colorScheme="blue"
+            size="sm"
+            isDisabled={!targetConfirmationBranch}
+            isLoading={isBulkAssigning}
+            onClick={handleBulkAssign}
+          >
+            {`Accept & assign ${data?.total ?? 0} applicant${data?.total !== 1 ? "s" : ""}`}
+          </Button>
+        </Box>
+      )}
+
       <SearchableTable
         title="Applications"
         data={data?.applications}

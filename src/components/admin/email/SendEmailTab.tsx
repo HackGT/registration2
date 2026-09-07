@@ -58,29 +58,31 @@ const SendEmailTab: React.FC = () => {
 
   const branchList = useWatch({ control, name: "branchList", defaultValue: [] });
   const status = useWatch({ control, name: "status" });
-  const [recipientCountTxt, setRecipientCountTxt] = useState<string>("Select a Filter");
+  const [recipientCountTxt, setRecipientCountTxt] = useState<string>("Filter incomplete");
   const toast = useToast();
 
   useEffect(() => {
     let isCurrentRequest = true;
 
     if (!hexathonId || branchList.length === 0 || !status) {
-      setRecipientCountTxt("Select a Filter");
+      setRecipientCountTxt("Filter incomplete");
     } else {
       const getNRecipients = async () => {
 
-        const applicationBranches = branchList
+        const applicationBranchIds = branchList
+          .filter((option: any) => 
+            branches.find((b: any) => b.id === option.value)?.type === "APPLICATION")
+          .map((option: any) => option.value);
+        const confirmationBranchIds = branchList
+          .filter((option: any) => 
+            branches.find((b: any) => b.id === option.value)?.type === "CONFIRMATION")
           .map((option: any) => option.value)
-          .filter((value: any) => value.type === "APPLICATION");
-        const confirmationBranches = branchList
-          .map((option: any) => option.value)
-          .filter((value: any) => value.type === "CONFIRMATION");
 
-        const response = await axios.get(apiUrl(Service.REGISTRATION, "/"), {
+        const response = await axios.get(apiUrl(Service.REGISTRATION, "/applications"), {
           params: {
             hexathon: hexathonId,
-            applicationBranch: applicationBranches,
-            confirmationBranch: confirmationBranches,
+            applicationBranch: applicationBranchIds,
+            confirmationBranch: confirmationBranchIds,
             status: [status.value],
           },
         });
@@ -98,7 +100,7 @@ const SendEmailTab: React.FC = () => {
     }
 
     return () => {isCurrentRequest = false};
-  }, [branchList, hexathonId, status]);
+  }, [branchList, hexathonId, status, branches]);
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;

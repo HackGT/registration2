@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Heading,
@@ -13,6 +13,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
+  Text,
 } from "@chakra-ui/react";
 import { convertToRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -23,7 +24,7 @@ import { useParams } from "react-router-dom";
 import { Letter } from "react-letter";
 import { Select } from "chakra-react-select";
 import { LoadingScreen, ErrorScreen, Service, apiUrl } from "@hex-labs/core";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import axios from "axios";
 
 import styles from "./email.module.css";
@@ -54,7 +55,50 @@ const SendEmailTab: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const branchList = useWatch({ control, name: "branchList", defaultValue: [] });
+  const status = useWatch({ control, name: "status" });
+  const [recipientCountTxt, setRecipientCountTxt] = useState<string>("Select a Filter");
   const toast = useToast();
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    if (!hexathonId || branchList.length === 0 || !status) {
+      setRecipientCountTxt("Select a Filter");
+    } else {
+      const getNRecipients = async () => {
+
+        const applicationBranches = branchList
+          .map((option: any) => option.value)
+          .filter((value: any) => value.type === "APPLICATION");
+        const confirmationBranches = branchList
+          .map((option: any) => option.value)
+          .filter((value: any) => value.type === "CONFIRMATION");
+
+        const response = await axios.get(apiUrl(Service.REGISTRATION, "/"), {
+          params: {
+            hexathon: hexathonId,
+            applicationBranch: applicationBranches,
+            confirmationBranch: confirmationBranches,
+            status: [status.value],
+          },
+        });
+
+        if (isCurrentRequest) setRecipientCountTxt(response.data.total);
+      };
+
+      getNRecipients().catch((e) => {
+        if (isCurrentRequest) setRecipientCountTxt(`
+          Error getting recipient count: ${e}.
+          This doesn't necessarily affect sending emails, but you should
+          probably check in with a tech director first to avoid any issues.
+        `);
+      });
+    }
+
+    return () => {isCurrentRequest = false};
+  }, [branchList, hexathonId, status]);
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
@@ -182,6 +226,11 @@ const SendEmailTab: React.FC = () => {
               minHeight: "250px",
             }}
           />
+
+          <Text>
+            Number of recipients: {recipientCountTxt ?? "-"}
+          </Text>
+
           <Button colorScheme="purple" maxW="150px" type="submit" isLoading={isSubmitting}>
             Send Emails!
           </Button>

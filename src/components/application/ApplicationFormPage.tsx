@@ -105,13 +105,13 @@ const ApplicationFormPage: React.FC<Props> = props => {
             {isDesktop && <Text marginLeft="2">Back</Text>}
           </Button>
           <Button
-            colorScheme="purple"
+            colorScheme="gray"
             onClick={() => handleSaveData(false)}
             isLoading={saveDataLoading}
           >
             Save
           </Button>
-          <Button colorScheme="purple" type="submit" variant="outline">
+          <Button colorScheme="purple" type="submit">
             {isDesktop && <Text marginRight="2">Next</Text>}
             <ArrowForwardIcon />
           </Button>

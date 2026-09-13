@@ -210,6 +210,50 @@ const GradingQuestionPage: React.FC = () => {
     );
   }
 
+  const rubricTable = (
+    <Table width="100%">
+      <Thead position="sticky" top="0" bg="white">
+        <Tr>
+          <Th isNumeric>Score</Th>
+          <Th>Criteria</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {questionData.gradingRubric &&
+          Object.keys(questionData.gradingRubric).map(key => (
+            <Tr key={key}>
+              <Td isNumeric fontWeight="bold">
+                {key}
+              </Td>
+              <Td>
+                {questionData.gradingRubric[key]
+                  .split("\n")
+                  .map((line: string, index: number, array: any[]) =>
+                    line.includes("•") ? (
+                      <Text
+                        key={line}
+                        paddingBottom={index === array.length - 1 ? "0px" : "5px"}
+                        style={{ marginLeft: 20, textIndent: -11 }}
+                      >
+                        {line}
+                      </Text>
+                    ) : (
+                      <Text
+                        key={line}
+                        fontWeight="semibold"
+                        paddingBottom={index === array.length - 1 ? "0px" : "5px"}
+                      >
+                        {line}
+                      </Text>
+                    )
+                  )}
+              </Td>
+            </Tr>
+          ))}
+      </Tbody>
+    </Table>
+  );
+
   return (
     <>
       {isDesktop && (
@@ -238,48 +282,8 @@ const GradingQuestionPage: React.FC = () => {
             {questionData?.answer}
           </Text>
         </Box>
-        <Box margin="auto" width={{ base: "100%", md: "50%" }}>
-          <Table width="100%">
-            <Thead position="sticky" top="0" bg="white">
-              <Tr>
-                <Th isNumeric>Score</Th>
-                <Th>Criteria</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {questionData.gradingRubric &&
-                Object.keys(questionData.gradingRubric).map(key => (
-                  <Tr key={key}>
-                    <Td isNumeric fontWeight="bold">
-                      {key}
-                    </Td>
-                    <Td>
-                      {questionData.gradingRubric[key]
-                        .split("\n")
-                        .map((line: string, index: number, array: any[]) =>
-                          line.includes("•") ? (
-                            <Text
-                              key={line}
-                              paddingBottom={index === array.length - 1 ? "0px" : "5px"}
-                              style={{ marginLeft: 20, textIndent: -11 }}
-                            >
-                              {line}
-                            </Text>
-                          ) : (
-                            <Text
-                              key={line}
-                              fontWeight="semibold"
-                              paddingBottom={index === array.length - 1 ? "0px" : "5px"}
-                            >
-                              {line}
-                            </Text>
-                          )
-                        )}
-                    </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
+        <Box margin="auto" width="50%" display={{ base: "none", md: "block" }}>
+          {rubricTable}
         </Box>
       </Stack>
       <HStack
@@ -342,6 +346,9 @@ const GradingQuestionPage: React.FC = () => {
           Submit Review
         </Button>
       </HStack>
+      <Box width="90%" margin="auto" marginTop="30px" display={{ base: "block", md: "none" }}>
+        {rubricTable}
+      </Box>
     </>
   );
 };

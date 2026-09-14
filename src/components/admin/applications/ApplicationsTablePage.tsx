@@ -203,24 +203,20 @@ const ApplicationsTablePage: React.FC = () => {
           })
         )
       );
-      const allApps = responses.flatMap(r => r.data.applications);
+      const allIds = responses.flatMap(r => r.data.applications.map((app: any) => app.id));
 
-      await Promise.all(
-        allApps.map((app: any) =>
-          axios.post(
-            apiUrl(Service.REGISTRATION, `/applications/${app.id}/actions/update-application`),
-            {
-              applicationBranch: app.applicationBranch.id,
-              status: "ACCEPTED",
-              confirmationBranch: targetConfirmationBranch.value,
-            }
-          )
-        )
+      const result = await axios.post(
+        apiUrl(Service.REGISTRATION, "/applications/bulk/decide-applications"),
+        {
+          ids: allIds,
+          newStatus: "ACCEPTED",
+          confirmationBranchId: targetConfirmationBranch.value,
+        }
       );
 
       toast({
         title: "Success",
-        description: `Assigned ${allApps.length} applicants to "${targetConfirmationBranch.label}".`,
+        description: `Assigned ${result.data.updatedCount} applicants to "${targetConfirmationBranch.label}".`,
         status: "success",
         duration: 5000,
         isClosable: true,

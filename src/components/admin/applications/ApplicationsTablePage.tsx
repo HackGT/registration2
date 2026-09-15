@@ -185,25 +185,18 @@ const ApplicationsTablePage: React.FC = () => {
     if (!targetConfirmationBranch) return;
     setIsBulkAssigning(true);
     try {
-      const total = data?.total ?? 0;
-      const pages = Math.ceil(total / limit);
-      const responses = await Promise.all(
-        Array.from({ length: pages }, (_, i) =>
-          axios.get(apiUrl(Service.REGISTRATION, "/applications"), {
-            params: {
-              hexathon: hexathonId,
-              status: searchParams.get("status")?.split(","),
-              applicationBranch: searchParams.get("applicationBranch")?.split(","),
-              confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
-              search: searchText || undefined,
-              topPercentage,
-              limit,
-              offset: i * limit,
-            },
-          })
-        )
-      );
-      const allIds = responses.flatMap(r => r.data.applications.map((app: any) => app.id));
+      const response = await axios.get(apiUrl(Service.REGISTRATION, "/applications"), {
+        params: {
+          hexathon: hexathonId,
+          status: searchParams.get("status")?.split(","),
+          applicationBranch: searchParams.get("applicationBranch")?.split(","),
+          confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
+          search: searchText || undefined,
+          topPercentage,
+          limit: data?.total,
+        },
+      });
+      const allIds = response.data.applications.map((app: any) => app.id);
 
       const result = await axios.post(
         apiUrl(Service.REGISTRATION, "/applications/bulk/decide-applications"),

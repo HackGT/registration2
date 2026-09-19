@@ -2,13 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Heading,
+  Input,
   Link as ChakraLink,
   Stack,
   Text,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { apiUrl, ErrorScreen, SearchableTable, Service } from "@hex-labs/core";
+import { apiUrl, ErrorScreen, SearchableTable, Service, useAuth } from "@hex-labs/core";
 import useAxios from "axios-hooks";
 import { createSearchParams, Link, useParams, useSearchParams } from "react-router-dom";
 import { GroupBase, OptionBase, Select } from "chakra-react-select";
@@ -45,34 +47,12 @@ const columns = [
     header: "Status",
     accessor: (row: any) => <ApplicationStatusTag status={row.status} includeColor />,
   },
+  {
+    key: 4,
+    header: "Final Score",
+    accessor: (row: any) => row.finalScore ?? "N/A",
+  },
 ];
-
-const generateCSV = async (
-  hexathonId: any,
-  status: any,
-  applicationBranch: any,
-  confirmationBranch: any
-) => {
-  await axios
-    .get(apiUrl(Service.REGISTRATION, `applications/generate-csv`), {
-      params: { hexathon: hexathonId, status, applicationBranch, confirmationBranch },
-      responseType: "blob",
-    })
-    .then(response => {
-      const href = URL.createObjectURL(response.data);
-
-      // create "a" HTML element with href to file & click
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("download", "Applications.csv");
-      document.body.appendChild(link);
-      link.click();
-
-      // clean up "a" element & remove ObjectURL
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
-    });
-};
 
 const ApplicationsTablePage: React.FC = () => {
   const { hexathonId } = useParams();
@@ -87,8 +67,25 @@ const ApplicationsTablePage: React.FC = () => {
     []
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const { user } = useAuth();
+  const [role, setRole] = useState<any>({ member: false, exec: false, admin: false });
 
-  const [{ data, error }] = useAxios({
+  useEffect(() => {
+    if (user?.uid) {
+      axios
+        .get(apiUrl(Service.USERS, `/users/${user.uid}`))
+        .then(res => setRole({ ...res.data.roles }));
+    }
+  }, [user?.uid]);
+
+  const [targetConfirmationBranch, setTargetConfirmationBranch] = useState<GroupOption | null>(null);
+  const [isBulkAssigning, setIsBulkAssigning] = useState(false);
+
+  const [topPercentageInput, setTopPercentageInput] = useState("");
+  const [topPercentage, setTopPercentage] = useState<number | undefined>(undefined);
+
+  const [{ data, error }, refetch] = useAxios({
     method: "GET",
     url: apiUrl(Service.REGISTRATION, "/applications"),
     params: {
@@ -97,7 +94,9 @@ const ApplicationsTablePage: React.FC = () => {
       applicationBranch: searchParams.get("applicationBranch")?.split(","),
       confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
       search: searchText,
+      topPercentage,
       offset,
+      requireApplicationData: true,
     },
   });
   const [{ data: branches, loading: branchesLoading, error: branchesError }] = useAxios({
@@ -181,6 +180,59 @@ const ApplicationsTablePage: React.FC = () => {
       )
     );
   }, [searchParams, statusOptions, applicationBranchOptions, confirmationBranchOptions]);
+
+  const handleBulkAssign = async () => {
+    if (!targetConfirmationBranch) return;
+    setIsBulkAssigning(true);
+    try {
+      const response = await axios.get(apiUrl(Service.REGISTRATION, "/applications"), {
+        params: {
+          hexathon: hexathonId,
+          status: searchParams.get("status")?.split(","),
+          applicationBranch: searchParams.get("applicationBranch")?.split(","),
+          confirmationBranch: searchParams.get("confirmationBranch")?.split(","),
+          search: searchText || undefined,
+          topPercentage,
+          limit: data?.total,
+        },
+      });
+      const allIds = response.data.applications.map((app: any) => app.id);
+
+      const result = await axios.post(
+        apiUrl(Service.REGISTRATION, "/applications/bulk/decide-applications"),
+        {
+          ids: allIds,
+          newStatus: "ACCEPTED",
+          confirmationBranchId: targetConfirmationBranch.value,
+        }
+      );
+
+      toast({
+        title: "Success",
+        description: `Assigned ${result.data.updatedCount} applicants to "${targetConfirmationBranch.label}".`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      refetch();
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e?.response?.data?.message ?? "Bulk assign failed. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsBulkAssigning(false);
+    }
+  };
+
+  const applyTopPercentage = () => {
+    const parsed = parseInt(topPercentageInput);
+    setTopPercentage(!isNaN(parsed) && parsed >= 1 && parsed <= 100 ? parsed : undefined);
+    setOffset(0);
+  };
 
   const onPreviousClicked = () => {
     setOffset(offset - limit);
@@ -323,6 +375,20 @@ const ApplicationsTablePage: React.FC = () => {
             }}
           />
         </Box>
+        <Box p={4} w="52">
+          <Text size="xs">Top X% by Score</Text>
+          <Input
+            type="number"
+            min={1}
+            max={100}
+            size="sm"
+            placeholder="e.g. 25"
+            value={topPercentageInput}
+            onChange={e => setTopPercentageInput(e.target.value)}
+            onBlur={applyTopPercentage}
+            onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && applyTopPercentage()}
+          />
+        </Box>
         <Box p={4} w="80">
           <br />
           <Button onClick={onOpen}>Generate CSV</Button>
@@ -334,10 +400,40 @@ const ApplicationsTablePage: React.FC = () => {
             status={searchParams.get("status")?.split(",")}
             applicationBranch={searchParams.get("applicationBranch")?.split(",")}
             confirmationBranch={searchParams.get("confirmationBranch")?.split(",")}
+            search={searchText || undefined}
+            topPercentage={topPercentage}
             totalApplicants={data?.total}
           />
         </Box>
       </Stack>
+
+      {role.admin && (
+        <Box marginLeft={6} my={3} w="80">
+          <Heading as="h5" size="sm" mb={2} mt={4}>
+            Bulk Actions:
+          </Heading>
+          <Select<GroupOption, false, GroupBase<GroupOption>>
+            options={confirmationBranchOptions}
+            placeholder="Assign to confirmation branch..."
+            value={targetConfirmationBranch}
+            isLoading={branchesLoading}
+            size="sm"
+            onChange={(e: GroupOption | null) => setTargetConfirmationBranch(e)}
+            isClearable
+          />
+          <Button
+            mt={2}
+            colorScheme="blue"
+            size="sm"
+            isDisabled={!targetConfirmationBranch}
+            isLoading={isBulkAssigning}
+            onClick={handleBulkAssign}
+          >
+            {`Accept & assign ${data?.total ?? 0} applicant${data?.total !== 1 ? "s" : ""}`}
+          </Button>
+        </Box>
+      )}
+
       <SearchableTable
         title="Applications"
         data={data?.applications}

@@ -1,36 +1,35 @@
 import React from "react";
 import {
-  Accordion,
-  Alert,
-  AlertIcon,
   Box,
   HStack,
+  Button,
   Heading,
   Select,
   Spinner,
   Stack,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   VStack,
 } from "@chakra-ui/react";
 import { apiUrl, ErrorScreen, LoadingScreen, Service } from "@hex-labs/core";
 import { useParams } from "react-router-dom";
 import useAxios from "axios-hooks";
+import { DownloadIcon } from "@chakra-ui/icons";
 
+/*
 import AccordionSection from "./AccordionSection";
 import GraphAccordionSection from "./GraphAccordionSection";
 import TreeMapView from "./graphs/TreeMapView";
+*/
 import { Branch, BranchType } from "../branchSettings/BranchSettingsPage";
 import { RenderStatistics } from "./RenderStatistics";
+import XLSXExporter from "../../../util/xlsxExport";
+import { useCurrentHexathon } from "../../../contexts/CurrentHexathonContext";
 
 const StatisticsPage: React.FC = () => {
   const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null);
   const [selectedStatus, setSelectedStatus] = React.useState<string | null>("CONFIRMED");
   const { hexathonId } = useParams();
+  const { currentHexathon } = useCurrentHexathon();
 
   // Enable manual mode
   const [{ data, loading, error }, refetchStatistics] = useAxios({
@@ -40,6 +39,39 @@ const StatisticsPage: React.FC = () => {
       hexathon: hexathonId,
     },
   });
+
+  const exportToXLSX = React.useCallback(() => {
+
+    if (!hexathonId) { return; }
+    
+    // whitespaces bad
+    const noWhitespaceName = (currentHexathon.name as string).replaceAll(" ", "_");
+
+    const exporter = new XLSXExporter({name: noWhitespaceName, id: hexathonId});
+    exporter.addKeyValueData(data.userStatistics, "Overall User Statistics");
+    exporter.addTableData(data.applicationStatistics, "Branch", "Application Statistics");
+    exporter.addTableData(data.confirmationStatistics, "Branch", "Confirmation Statistics");
+
+    // eslint-disable-next-line guard-for-in
+    for (const key in data.applicationDataStatistics) {
+      const branchData = data.applicationDataStatistics[key];
+      exporter.addKeyValueData(branchData, `${key}`);
+    }
+
+    const url = exporter.getDownloadURL();
+    const a = document.createElement("a");
+
+    let downloadName = noWhitespaceName;
+    if (selectedBranch) downloadName = downloadName.concat(`_filterBranch-${selectedBranch.name}`);
+    if (selectedStatus) downloadName = downloadName.concat(`_filterStatus-${selectedStatus}`);
+
+    a.download = downloadName.concat(".xlsx");
+    a.href = url;
+    a.click();
+
+    exporter.cleanupDownloadURL();
+    
+  }, [currentHexathon.name, data, hexathonId, selectedBranch, selectedStatus]);
 
   // Fetch statistics whenever selectedBranchId changes
   React.useEffect(() => {
@@ -71,7 +103,10 @@ const StatisticsPage: React.FC = () => {
     },
   });
 
+  if (!hexathonId) return <ErrorScreen error={new Error("Hexathon ID invalid!")} />;
+  if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
+  if (branchError) return <ErrorScreen error={branchError} />
 
   return (
     <Box w="100%" p={5}>
@@ -81,8 +116,12 @@ const StatisticsPage: React.FC = () => {
           <Text fontSize="lg" color="grey">
             All of the data crunched into this page from all of the applications we recieved.
           </Text>
+          <Box>
+            <Button colorScheme="blue" onClick={exportToXLSX}><DownloadIcon />&nbsp;&nbsp;Export to XLSX</Button>
+            <Text fontSize="sm" textAlign="center" opacity={0.5}>(Filters will be reflected)</Text>
+          </Box>
 
-          {branchLoading ? (
+          {branchLoading? (
             <Spinner />
           ) : (
             <HStack>

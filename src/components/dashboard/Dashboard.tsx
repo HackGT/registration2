@@ -38,6 +38,23 @@ import ReferTile from "./ReferTile";
 import CurrentReferralTile from "./CurrentReferralTile";
 import { Referral } from "../../util/types";
 
+/**
+ * most of the time people will only have 1 app, with one exception:
+ * if someone gets rejected they can still apply for volunteer
+ *
+ * in that special case we should show the volunteer application
+ */
+function getApplicationToShow(apps: any[]) {
+  if (apps.length <= 1) {
+    return apps[0];
+  }
+
+  return ( // return volunteer app if there is one otherwise idk return first
+    apps.find(app => app.applicationBranch.applicationGroup === "VOLUNTEER")
+    ?? apps[0]
+  );
+}
+
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { currentHexathon } = useCurrentHexathon();
@@ -99,8 +116,7 @@ const Dashboard: React.FC = () => {
     }
   }, [canAccessReferrals, fetchReferrals]);
 
-  const application =
-    applications?.applications?.length > 0 ? applications?.applications[0] : undefined;
+  const application = getApplicationToShow(applications?.applications || []);
 
   let referrals: Referral[] = [];
   if (Array.isArray(referralsData?.referrals)) {

@@ -49,6 +49,11 @@ function getApplicationToShow(apps: any[]) {
     return apps[0];
   }
 
+  const confirmedApplication = apps.find(app => app.status === "CONFIRMED");
+  if (confirmedApplication) {
+    return confirmedApplication;
+  }
+
   return ( // return volunteer app if there is one otherwise idk return first
     apps.find(app => app.applicationBranch.applicationGroup === "VOLUNTEER")
     ?? apps[0]

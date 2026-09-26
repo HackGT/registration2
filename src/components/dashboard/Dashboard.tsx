@@ -49,9 +49,9 @@ function getApplicationToShow(apps: any[]) {
     return apps[0];
   }
 
-  const confirmedApplication = apps.find(app => app.status === "CONFIRMED");
-  if (confirmedApplication) {
-    return confirmedApplication;
+  const bestApplication = apps.find(app => ["CONFIRMED", "CHECKED_IN"].includes(app.status));
+  if (bestApplication) {
+    return bestApplication;
   }
 
   return ( // return volunteer app if there is one otherwise idk return first
